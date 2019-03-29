@@ -205,9 +205,9 @@ workflows:
       - prepare:
           context: TPI
       - build-mbinit:
-        context: TPI
-        requires:
-          - prepare
+          context: TPI
+          requires:
+            - prepare
       - build-frontend:      
           context: TPI
           requires:
