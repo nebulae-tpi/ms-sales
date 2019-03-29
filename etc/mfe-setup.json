@@ -1,7 +1,7 @@
 [
     {
-        "name": "msname",
-        "src": "frontend/frontendid/msname",
+        "name": "sales",
+        "src": "frontend/emi/sales",
         "groups": [
             {
               "id": "GROUP_NAME",
@@ -16,15 +16,15 @@
         "contents": [
             {
                 "groupId": "GROUP_NAME",
-                "id": "msname",
+                "id": "sales",
                 "icon": "dashboard",
                 "translate": {
-                    "en": "msname_en",
-                    "es": "msname_es"
+                    "en": "sales_en",
+                    "es": "sales_es"
                 },
-                "navURL": "/msname",
-                "path": "msname",
-                "loadChildren": "./main/content/msname/msname.module#msnamepascalModule",
+                "navURL": "/sales",
+                "path": "sales",
+                "loadChildren": "./main/content/sales/sales.module#SalesModule",
                 "priority": 1000,
                 "roles" : ["developer"],
                 "default" : false

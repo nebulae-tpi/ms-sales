@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sale-mongo
+spec:
+  ports:
+  - port: 27017
+    name: sale-mongo
+  selector:
+    app: sale-mongo
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sale-mongo-pv-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 0.5Gi
+---
+apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: sale-mongo
+spec:
+  selector:
+    matchLabels:
+      app: sale-mongo
+  strategy:
+    type: Recreate      
+  template:
+    metadata:
+      labels:
+        app: sale-mongo
+    spec:
+      containers:
+      - image: mongo:4
+        name: sale-mongo        
+        ports:
+        - containerPort: 27017
+          name: sale-mongo
+        volumeMounts:
+        - name: sale-mongo-persistent-storage
+          mountPath: /data/db
+        resources:
+          requests:
+            cpu: "50m"
+      volumes:
+      - name: sale-mongo-persistent-storage
+        persistentVolumeClaim:
+          claimName: sale-mongo-pv-claim      
