@@ -29,7 +29,6 @@ export class SalesService {
       );
   }
   
-
   /**
   * Hello World subscription sample, please remove
   */

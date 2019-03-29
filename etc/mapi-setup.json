@@ -2,7 +2,7 @@
     {
         "name": "sales",
         "type": "graphql",        
-        "src": "api/emi-gateway/graphql/sales",
+        "src": "api/emi-gateway/graphql/pos",
         "preBuildCommands": []
     }
 ]

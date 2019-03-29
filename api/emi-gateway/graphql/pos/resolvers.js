@@ -54,7 +54,6 @@ module.exports = {
     //// MUTATIONS ///////
 
 
-
     //// SUBSCRIPTIONS ///////
     Subscription: {
         SalesHelloWorldSubscription: {

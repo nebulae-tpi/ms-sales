@@ -50,7 +50,7 @@ The MicroService exposes its interfaces as Micro-APIs that are nested on the gen
 ## GraphQL throught emi-gateway API <a name="api_emi-gateway_graphql"></a>
 These are the exposed GraphQL functions throught the [emi-gateway API](https://github.com/nebulae-tpi/emi-gateway).  
 
-Note: You may find the GraphQL schema [here](api/emi-gateway/graphql/sales/schema.gql)
+Note: You may find the GraphQL schema [here](api/emi-gateway/graphql/pos/schema.gql)
 
 ### GraphQL Enums
 
