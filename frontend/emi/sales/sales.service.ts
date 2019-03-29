@@ -5,7 +5,7 @@ import { GatewayService } from '../../../api/gateway.service';
 import {
   getHelloWorld,
   SalesHelloWorldSubscription
-} from './gql/Sales';
+} from './gql/sales';
 
 @Injectable()
 export class SalesService {
@@ -37,7 +37,10 @@ export class SalesService {
     .subscribe({
       query: SalesHelloWorldSubscription
     })
-    .map(resp => resp.data.EventSourcingMonitorHelloWorldSubscription.sn);
+    .map(resp => {
+      console.log(resp);
+      return resp.data.SalesHelloWorldSubscription.sn;
+    });
 }
 
 }

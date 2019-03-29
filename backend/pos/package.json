@@ -1,7 +1,7 @@
 {
-  "name": "@nebulae-tpi/mbe-sales",
+  "name": "@nebulae-tpi/mbe-pos",
   "version": "1.0.0",
-  "description": "BackEnd for the sales Microservice",
+  "description": "BackEnd for the pos Microservice",
   "main": "server.js",
   "bin": {
     "mbe-sales": "bin/server.js"

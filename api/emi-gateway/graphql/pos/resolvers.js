@@ -61,7 +61,9 @@ module.exports = {
                 (payload, variables, context, info) => {
                     return pubsub.asyncIterator("SalesHelloWorldSubscription");
                 },
+                // FILTER
                 (payload, variables, context, info) => {
+                    console.log(payload);
                     return true;
                 }
             )
@@ -76,7 +78,7 @@ module.exports = {
 
 const eventDescriptors = [
     {
-        backendEventName: 'SalesHelloWorldEvent',
+        backendEventName: 'businessWalletHelloWorldEvent',
         gqlSubscriptionName: 'SalesHelloWorldSubscription',
         dataExtractor: (evt) => evt.data,// OPTIONAL, only use if needed
         onError: (error, descriptor) => console.log(`Error processing ${descriptor.backendEventName}`),// OPTIONAL, only use if needed

@@ -7,7 +7,7 @@ services:
       - "9001:9001"
       - "1883:1883"
     volumes:
-      - broker-mqtt-data-sales:/mosquitto/data            
+      - tpi-broker-mqtt-data-sales:/mosquitto/data            
   store-mongo-sales:
     image: mongo:4
     ports:
@@ -15,7 +15,7 @@ services:
     environment: 
         - storageEngine=wiredTiger
     volumes: 
-      - store-mongo-db-sales:/data/db
+      - tpi-store-mongo-db-sales:/data/db
   keycloak-mysql-sales:
      image: mysql:5.6
      ports:
@@ -26,7 +26,7 @@ services:
          - MYSQL_USER=keycloak
          - MYSQL_PASSWORD=keycloak
      volumes:
-       - keycloak-mysql-data-sales:/var/lib/mysql
+       - tpi-keycloak-mysql-data-sales:/var/lib/mysql
   keycloak-sales:
        image: nebulaetpi/keycloak:latest
        environment:
@@ -44,11 +44,11 @@ services:
          - 8080:8080
          - 9990:9990
        volumes:
-         - keycloak-data-sales:/opt/jboss/keycloak/standalone/data      
+         - tpi-keycloak-data-sales:/opt/jboss/keycloak/standalone/data      
        depends_on: 
          - keycloak-mysql-sales
 volumes: 
-  store-mongo-db-sales:
-  broker-mqtt-data-sales:
-  keycloak-mysql-data-sales:
-  keycloak-data-sales:
+  tpi-store-mongo-db-sales:
+  tpi-broker-mqtt-data-sales:
+  tpi-keycloak-mysql-data-sales:
+  tpi-keycloak-data-sales:

@@ -11,7 +11,6 @@ export const getHelloWorld = gql`
   }
 `;
 
-
 //Hello world sample, please remove
 export const SalesHelloWorldSubscription = gql`
   subscription{

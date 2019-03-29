@@ -1,20 +1,20 @@
 apiVersion: apps/v1beta2 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: sales
+  name: pos
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sales
+      app: pos
   template:
     metadata:
       labels:
-        app: sales
+        app: pos
     spec:      
       containers:
-      - image: nebulaetpi/sales.backend.sales:0.0.1
-        name: sales
+      - image: DOCKERHUB/pos.backend.pos:0.0.1
+        name: pos
         volumeMounts:
         - name: google-application-credentials
           mountPath: "/etc/GOOGLE_APPLICATION_CREDENTIALS"
@@ -45,7 +45,10 @@ spec:
           value: sales
         # JWT CONGIF        
         - name: JWT_PUBLIC_KEY
-          value: -----BEGIN PUBLIC KEY-----\n\n-----END PUBLIC KEY-----
+          valueFrom:
+            configMapKeyRef:
+              name: keycloak-jwt-public-key
+              key: jwt_public_key          
         # API - EMI-GATEWAY CONFIG
         - name: EMI-GATEWAY_REPLIES_TOPIC_SUBSCRIPTION
           value: emi-gateway-replies-topic-mbe-sales

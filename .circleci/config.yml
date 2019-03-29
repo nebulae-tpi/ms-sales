@@ -1,8 +1,8 @@
 
-version: 2
+version: 2.1
 jobs:
   prepare:
-    /home/nesas-12/Documents/projects/TPI: ~/nebulae/
+    working_directory: ~/nebulae/
     docker:
       - image: circleci/node:9.9.0
         command: bash
@@ -18,7 +18,7 @@ jobs:
 # ################ FRONT END ################
 
   build-frontend:
-    /home/nesas-12/Documents/projects/TPI: ~/nebulae/
+    working_directory: ~/nebulae/
     docker:
       - image: circleci/node:9.9.0
         command: bash
@@ -30,7 +30,7 @@ jobs:
           command: |            
             source ~/nebulae/repo/.circleci/scripts/gitChanged.sh
             cd ~/nebulae/repo/            
-            gitChanged frontend || echo $GCP_SERVICE_ACCOUNT_PROD | base64 --decode --ignore-garbage > /tmp/gcloud-service-key.json
+            gitChanged frontend || echo $GCP_SERVICE_ACCOUNT_DEV | base64 --decode --ignore-garbage > /tmp/gcloud-service-key.json
             gitChanged frontend || npm config set prefix '~/.npm-global'
             gitChanged frontend || export PATH=~/.npm-global/bin:$PATH
             gitChanged frontend || source ~/.profile
@@ -71,10 +71,10 @@ jobs:
             
 # ################ API ################
 
-  build-api:    
-    /home/nesas-12/Documents/projects/TPI: ~/nebulae/
+  build-api-emi:    
+    working_directory: ~/nebulae/
     docker:
-      - image: circleci/node:9.9.0
+      - image: circleci/node:10.15.1
         command: bash
     steps:
       - attach_workspace:
@@ -84,7 +84,7 @@ jobs:
           command: |    
             source ~/nebulae/repo/.circleci/scripts/gitChanged.sh
             cd ~/nebulae/repo/            
-            gitChanged api || echo $GCP_SERVICE_ACCOUNT_PROD | base64 --decode --ignore-garbage > /tmp/gcloud-service-key.json
+            gitChanged api || echo $GCP_SERVICE_ACCOUNT_DEV | base64 --decode --ignore-garbage > /tmp/gcloud-service-key.json
             gitChanged api || npm config set prefix '~/.npm-global'
             gitChanged api || export PATH=~/.npm-global/bin:$PATH
             gitChanged api || source ~/.profile
@@ -113,7 +113,7 @@ jobs:
 # ################ MBINIT ################ 
             
   build-mbinit:    
-    /home/nesas-12/Documents/projects/TPI: ~/nebulae/
+    working_directory: ~/nebulae/
     docker:
       - image: golang:1.9-alpine
         command: sh
@@ -136,8 +136,8 @@ jobs:
 
 # ################ BACK END ################ 
             
-  build-backend:    
-    /home/nesas-12/Documents/projects/TPI: ~/nebulae/
+  build-backend-pos:    
+    working_directory: ~/nebulae/
     docker:
       - image: circleci/node:9.9.0
         command: bash
@@ -146,18 +146,18 @@ jobs:
           at: ~/nebulae
       - setup_remote_docker      
       - run:
-          name: Build docker image for sales
+          name: Build docker image for pos
           command: |
             source ~/nebulae/repo/.circleci/scripts/gitChanged.sh
             cd ~/nebulae/repo/
             mkdir ~/nebulae/backend
-            cp ~/nebulae/go/mbinit ~/nebulae/repo/backend/sales/
-            export DOCKERHUB_IMAGE=sales.backend.sales
+            cp ~/nebulae/go/mbinit ~/nebulae/repo/backend/pos/
+            export DOCKERHUB_IMAGE=pos.backend.pos
             export DOCKERHUB_TAG=0.0.1
-            gitChanged backend/sales || docker build  -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:$DOCKERHUB_TAG -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:latest ~/nebulae/repo/backend/sales/
-            gitChanged backend/sales || docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
-            gitChanged backend/sales || docker push $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:$DOCKERHUB_TAG
-            gitChanged backend/sales || docker push $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:latest      
+            gitChanged backend/pos || docker build  -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:$DOCKERHUB_TAG -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:latest ~/nebulae/repo/backend/pos/
+            gitChanged backend/pos || docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
+            gitChanged backend/pos || docker push $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:$DOCKERHUB_TAG
+            gitChanged backend/pos || docker push $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:latest      
       - persist_to_workspace:
           root: ~/nebulae/
           paths:
@@ -165,8 +165,8 @@ jobs:
 
 # ################ DEPLOYMENT ################ 
 
-  deploy-prod:
-      /home/nesas-12/Documents/projects/TPI: ~/nebulae/
+  deploy-dev:
+      working_directory: ~/nebulae/
       docker:
         - image: google/cloud-sdk:latest
       steps:
@@ -176,10 +176,10 @@ jobs:
             name: Setup gcloud & kubectl
             command: |
               ls -a ~/nebulae
-              echo $GCP_SERVICE_ACCOUNT_PROD | base64 --decode --ignore-garbage > /root/gcloud-service-key.json
+              echo $GCP_SERVICE_ACCOUNT_DEV | base64 --decode --ignore-garbage > /root/gcloud-service-key.json
               gcloud auth activate-service-account --key-file /root/gcloud-service-key.json            
-              gcloud --quiet config set project $GKE_PROJECT_PROD
-              gcloud --quiet config set compute/zone $GKE_ZONE_PROD
+              gcloud --quiet config set project $GKE_PROJECT_DEV
+              gcloud --quiet config set compute/zone $GKE_ZONE_DEV
               gcloud --quiet container clusters get-credentials $GKE_CLUSTER
         - run:
             name: Deploy emi FrontEnd
@@ -199,31 +199,84 @@ jobs:
 
 
 workflows: 
-  version: 2
+  version: 2.1
   build-and-deploy:
     jobs:
       - prepare:
           context: TPI
-      - build-frontend:
-          context: TPI
-          requires:
-            - prepare
-      - build-api:
-          context: TPI
-          requires:
-            - prepare
       - build-mbinit:
+        context: TPI
+        requires:
+          - prepare
+      # DEVELOP 
+      - build-frontend:      
           context: TPI
           requires:
             - prepare
-      - build-backend:
+          filters:
+            branches:
+              only:
+                - develop
+      - build-api-emi:
           context: TPI
           requires:
             - prepare
-            - build-mbinit      
-      - deploy-prod:
+          filters:
+            branches:
+              only:
+                - develop      
+      - build-backend-pos:
+          context: TPI
+          requires:
+            - prepare
+            - build-mbinit
+          filters:
+            branches:
+              only:
+                - develop     
+      - deploy-dev:
           context: TPI
           requires:
             - build-frontend
-            - build-api
-            - build-backend
+            - build-api-emi
+            - build-backend-pos
+          filters:
+            branches:
+              only:
+                - develop
+      # MASTER
+      - build-frontend:      
+          context: TPI_PROD
+          requires:
+            - prepare
+          filters:
+            branches:
+              only:
+                - master
+      - build-api-emi:
+          context: TPI_PROD
+          requires:
+            - prepare
+          filters:
+            branches:
+              only:
+                - master      
+      - build-backend-pos:
+          context: TPI_PROD
+          requires:
+            - prepare
+            - build-mbinit
+          filters:
+            branches:
+              only:
+                - master     
+      - deploy-dev:
+          context: TPI_PROD
+          requires:
+            - build-frontend
+            - build-api-emi
+            - build-backend-pos
+          filters:
+            branches:
+              only:
+                - master
