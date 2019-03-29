@@ -44,11 +44,11 @@ spec:
         - name: MONGODB_DB_NAME
           value: sales
         # JWT CONGIF        
-        - name: JWT_PUBLIC_KEY
-          valueFrom:
-            configMapKeyRef:
-              name: keycloak-jwt-public-key
-              key: jwt_public_key          
+        # - name: JWT_PUBLIC_KEY
+        #   valueFrom:
+        #     configMapKeyRef:
+        #       name: keycloak-jwt-public-key
+        #       key: jwt_public_key          
         # API - EMI-GATEWAY CONFIG
         - name: EMI-GATEWAY_REPLIES_TOPIC_SUBSCRIPTION
           value: emi-gateway-replies-topic-mbe-sales
