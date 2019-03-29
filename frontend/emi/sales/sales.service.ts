@@ -28,6 +28,7 @@ export class SalesService {
         resp => resp.data.getHelloWorldFromSales.sn
       );
   }
+  
 
   /**
   * Hello World subscription sample, please remove
