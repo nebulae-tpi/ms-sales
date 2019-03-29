@@ -247,6 +247,7 @@ workflows:
       # MASTER
       - build-frontend:      
           context: TPI_PROD
+          name: build-frontend-prod
           requires:
             - prepare
           filters:
@@ -255,6 +256,7 @@ workflows:
                 - master
       - build-api-emi:
           context: TPI_PROD
+          name: build-api-emi-prod
           requires:
             - prepare
           filters:
@@ -263,6 +265,7 @@ workflows:
                 - master      
       - build-backend-pos:
           context: TPI_PROD
+          name: build-backend-pos-prod
           requires:
             - prepare
             - build-mbinit
@@ -272,6 +275,7 @@ workflows:
                 - master     
       - deploy-dev:
           context: TPI_PROD
+          name: deploy-prod
           requires:
             - build-frontend
             - build-api-emi
