@@ -208,7 +208,6 @@ workflows:
         context: TPI
         requires:
           - prepare
-      # DEVELOP 
       - build-frontend:      
           context: TPI
           requires:
@@ -244,7 +243,6 @@ workflows:
             branches:
               only:
                 - develop
-      # MASTER
       - build-frontend:      
           context: TPI_PROD
           name: build-frontend-prod
