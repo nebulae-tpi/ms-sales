@@ -6,7 +6,7 @@ import gql from "graphql-tag";
 export const getHelloWorld = gql`
   query getHelloWorldFromSales{
     getHelloWorldFromSales{
-      sn      
+      sn
     }
   }
 `;

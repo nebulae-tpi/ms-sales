@@ -4,13 +4,13 @@ import { SharedModule } from '../../../core/modules/shared.module';
 import { DatePipe } from '@angular/common';
 import { FuseWidgetModule } from '../../../core/components/widget/widget.module';
 
-import { SalesService } from './sales.service';
-import { SalesComponent } from './sales.component';
+import { PosService } from './pos.service';
+import { PosComponent } from './pos.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: SalesComponent,
+    component: PosComponent,
   }
 ];
 
@@ -21,9 +21,9 @@ const routes: Routes = [
     FuseWidgetModule
   ],
   declarations: [
-    SalesComponent    
+    PosComponent    
   ],
-  providers: [ SalesService, DatePipe]
+  providers: [ PosService, DatePipe]
 })
 
-export class SalesModule {}
+export class PosModule {}

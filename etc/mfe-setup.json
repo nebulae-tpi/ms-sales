@@ -1,7 +1,7 @@
 [
     {
-        "name": "sales",
-        "src": "frontend/emi/sales",
+        "name": "pos",
+        "src": "frontend/emi/pos",
         "groups": [
             {
               "id": "GROUP_NAME",
@@ -16,15 +16,15 @@
         "contents": [
             {
                 "groupId": "GROUP_NAME",
-                "id": "sales",
+                "id": "pos",
                 "icon": "dashboard",
                 "translate": {
-                    "en": "sales_en",
-                    "es": "sales_es"
+                    "en": "pos_en",
+                    "es": "pos_es"
                 },
-                "navURL": "/sales",
-                "path": "sales",
-                "loadChildren": "./main/content/sales/sales.module#SalesModule",
+                "navURL": "/pos",
+                "path": "pos",
+                "loadChildren": "./main/content/pos/pos.module#PosModule",
                 "priority": 1000,
                 "roles" : ["developer", "PLATFORM-ADMIN", "POS"],
                 "default" : false

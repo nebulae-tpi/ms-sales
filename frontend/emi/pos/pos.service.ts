@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import * as Rx from 'rxjs';
+import { of } from 'rxjs';
 import { GatewayService } from '../../../api/gateway.service';
 import {
   getHelloWorld,
   SalesHelloWorldSubscription
-} from './gql/sales';
+} from './gql/pos';
 
 @Injectable()
-export class SalesService {
+export class PosService {
 
 
   constructor(private gateway: GatewayService) {
@@ -22,13 +22,13 @@ export class SalesService {
     return this.gateway.apollo
       .watchQuery<any>({
         query: getHelloWorld,
-        fetchPolicy: "network-only"
+        fetchPolicy: 'network-only'
       })
       .valueChanges.map(
         resp => resp.data.getHelloWorldFromSales.sn
       );
   }
-  
+
   /**
   * Hello World subscription sample, please remove
   */
@@ -41,6 +41,37 @@ export class SalesService {
       console.log(resp);
       return resp.data.SalesHelloWorldSubscription.sn;
     });
+}
+
+getWalletsByFilter(filterText: String, businessId: String, limit: number): Observable<any> {
+  // return this.gateway.apollo
+  //   .query<any>({
+  //     query: getWalletsByFilter,
+  //     variables: { filterText, businessId, limit },
+  //     fetchPolicy: 'network-only',
+  //     errorPolicy: 'all'
+  //   });
+  return of([
+    {
+      fullname: 'felipe santa',
+      pockets: {
+        main: 125
+      }
+    },
+    {
+      fullname: 'fernando santa',
+      pockets: {
+        main: 125
+      }
+    },
+    {
+      fullname: 'daniel santa',
+      pockets: {
+        main: 125
+      }
+    }
+
+  ]);
 }
 
 }

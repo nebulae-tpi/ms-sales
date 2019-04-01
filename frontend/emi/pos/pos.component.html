@@ -1,0 +1,101 @@
+<!-- <div class="page-layout blank p-24" fusePerfectScrollbar>
+  <h2> {{helloWorld}} </h2>
+  <h2>{{ helloWorldLabelQuery$ | async}}</h2>
+  <h2>{{ helloWorldLabelSubscription$ | async}}</h2>
+</div> -->
+
+<div id="pos" class="page-layout carded fullwidth" fusePerfectScrollbar>
+
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg mat-accent-bg"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- CENTER -->
+  <div class="center">
+  
+    <!-- HEADER -->
+    <div class="header white-fg" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-xs="row"
+      fxLayoutAlign.gt-xs="space-between center">
+  
+      <!-- APP TITLE -->
+      <div class="logo my-12 m-sm-0" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">business
+        </mat-icon>
+        <span class="logo-text h1" *fuseIfOnDom
+          [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">{{'POS.TITLE' | translate}}</span>
+      </div>
+      <!-- / APP TITLE -->
+  
+     
+  
+      <!-- <button mat-raised-button (click)="addNewBusiness()" class="add-product-button mat-white-bg my-12 mt-sm-0">
+        <span>{{'BUSINESS.ADD_BUSINESS' | translate}}</span>
+      </button> -->
+    </div>
+    <!-- / HEADER -->
+  
+    <!-- CONTENT CARD -->
+    <div class="content-card mat-white-bg">
+      
+      <div fxFlex="100" fxLayout="row wrap">
+        <!-- LEFT -->
+        <div fxFlex.gt-xs="35" fxFlex="100"  class="p-8">
+          <div fxlayout="column" fxFlex="100">
+              <div>
+                <mat-form-field fxFlex="100" class="example-full-width">
+                  <input matInput [placeholder]="'POS.SELECT_WALLET' | translate" [(value)]="selectedWallet"
+                    [formControl]="walletFilterCtrl" fxFlex [matAutocomplete]="auto">
+                </mat-form-field>
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)='onSelectWalletEvent($event.option.value)'
+                  [displayWith]="displayFnWrapper()">
+                  <mat-option *ngFor="let wallet of walletQueryFiltered$ | async" [value]="wallet">
+                    {{ wallet.fullname }}:{{ ' ' + wallet.documentId }} ({{ 'WALLET.ENTITY_TYPES.' + wallet.type | translate }})
+                  </mat-option>
+                </mat-autocomplete>
+              </div>
+
+
+            <div>estado actual de la billetera</div>
+
+            <div fxLayout="column" id="wallet-sumary">
+              <mat-form-field>
+                <input matInput placeholder="$NOMBRE" value="FELIPE SANTA">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="$DOCUMENTO" value="10450505698">
+              </mat-form-field>
+              <div>
+                  <span class="title">{{'WALLET.TRANSACTION_VALUE' | translate}}:</span>
+                  <span class="value" [ngClass]="{'green-fg': selectedWallet.pockets.main > 0, 'red-fg':selectedWallet.pockets.main < 0}">{{selectedWallet.pockets.main | currency}}</span>
+              </div>                         
+            </div>
+
+            <div>
+              $ ULTIMOS MOVIMIENTOS
+            </div>
+            <div fxLayout="column">
+              <div *ngFor="let mov of lastMovements" class="border" >
+                {{mov}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- RIGTH -->
+        <div fxLayout="row wrap" fxFlex.gt-xs="65" fxFlex="100" class="p-8">
+          <!-- RELOAD -->
+          <div fxFlex="100" fxLayout="column">
+              <div>{{'POS.REALOAD_TITLE' | translate}}</div>
+              
+
+          </div>
+          <!-- PRODUCTS SALES -->
+          <div fxFlex="100">
+              pagos
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- / CONTENT CARD -->
+  </div>
+  <!-- / CENTER -->
+</div>
