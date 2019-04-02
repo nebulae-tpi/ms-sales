@@ -30,7 +30,9 @@
                 "default" : false
             }            
         ],
-        "preBuildCommands": [],
+        "preBuildCommands": [
+          "npm install ng2-currency-mask"
+        ],
         "environmentVars": {
         }
     }

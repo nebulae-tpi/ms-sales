@@ -10,11 +10,13 @@ const mongoDB = require('./data/MongoDB').singleton();
 const HelloWorldDA = require('./data/HelloWorldDA');
 const graphQlService = require('./services/emi-gateway/GraphQlService')();
 const Rx = require('rxjs');
+const Pos = require("./domain/pos");
 
 const start = () => {
     Rx.concat(
         eventSourcing.eventStore.start$(),
         eventStoreService.start$(),
+        Pos.start$,
         mongoDB.start$(),
         HelloWorldDA.start$(),
         graphQlService.start$()

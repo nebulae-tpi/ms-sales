@@ -1,9 +1,3 @@
-<!-- <div class="page-layout blank p-24" fusePerfectScrollbar>
-  <h2> {{helloWorld}} </h2>
-  <h2>{{ helloWorldLabelQuery$ | async}}</h2>
-  <h2>{{ helloWorldLabelSubscription$ | async}}</h2>
-</div> -->
-
 <div id="pos" class="page-layout carded fullwidth" fusePerfectScrollbar>
 
   <!-- TOP BACKGROUND -->
@@ -12,90 +6,165 @@
 
   <!-- CENTER -->
   <div class="center">
-  
+
     <!-- HEADER -->
-    <div class="header white-fg" fxLayout="column" fxLayoutAlign="center center" fxLayout.gt-xs="row"
+    <div class="header white-fg" fxLayoutAlign="center center"
       fxLayoutAlign.gt-xs="space-between center">
-  
+
       <!-- APP TITLE -->
       <div class="logo my-12 m-sm-0" fxLayout="row" fxLayoutAlign="start center">
-        <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">business
+        <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">
+          business
         </mat-icon>
         <span class="logo-text h1" *fuseIfOnDom
           [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">{{'POS.TITLE' | translate}}</span>
       </div>
       <!-- / APP TITLE -->
-  
-     
-  
+
+
+
       <!-- <button mat-raised-button (click)="addNewBusiness()" class="add-product-button mat-white-bg my-12 mt-sm-0">
         <span>{{'BUSINESS.ADD_BUSINESS' | translate}}</span>
       </button> -->
     </div>
     <!-- / HEADER -->
-  
+
     <!-- CONTENT CARD -->
     <div class="content-card mat-white-bg">
-      
+
       <div fxFlex="100" fxLayout="row wrap">
         <!-- LEFT -->
-        <div fxFlex.gt-xs="35" fxFlex="100"  class="p-8">
-          <div fxlayout="column" fxFlex="100">
-              <div>
-                <mat-form-field fxFlex="100" class="example-full-width">
-                  <input matInput [placeholder]="'POS.SELECT_WALLET' | translate" [(value)]="selectedWallet"
-                    [formControl]="walletFilterCtrl" fxFlex [matAutocomplete]="auto">
-                </mat-form-field>
-                <mat-autocomplete #auto="matAutocomplete" (optionSelected)='onSelectWalletEvent($event.option.value)'
-                  [displayWith]="displayFnWrapper()">
-                  <mat-option *ngFor="let wallet of walletQueryFiltered$ | async" [value]="wallet">
-                    {{ wallet.fullname }}:{{ ' ' + wallet.documentId }} ({{ 'WALLET.ENTITY_TYPES.' + wallet.type | translate }})
-                  </mat-option>
-                </mat-autocomplete>
-              </div>
+        <div fxFlex.gt-xs="50" fxFlex="100" class="pl-12 pt-12 pb-12 pr-8">
 
+          <div>
+            <mat-form-field fxFlex="100">
+              <input #walletInputFilter matInput [placeholder]="'POS.SELECT_WALLET' | translate"
+                [formControl]="walletFilterCtrl" fxFlex [matAutocomplete]="auto">
+              <button mat-button *ngIf="selectedWallet" matSuffix mat-icon-button aria-label="Clear"
+                (click)="clearSelectedWallet()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)='onSelectWalletEvent($event.option.value)'
+              [displayWith]="displayFnWrapper()">
+              <mat-option *ngFor="let wallet of walletQueryFiltered$ | async" [value]="wallet">
+                {{ wallet.fullname }}:{{ ' ' + wallet.documentId }}
+                ({{ 'POS.ENTITY_TYPES.' + wallet.type | translate }})
+              </mat-option>
+            </mat-autocomplete>
+          </div>
 
-            <div>estado actual de la billetera</div>
+          
 
-            <div fxLayout="column" id="wallet-sumary">
-              <mat-form-field>
-                <input matInput placeholder="$NOMBRE" value="FELIPE SANTA">
-              </mat-form-field>
-              <mat-form-field>
-                <input matInput placeholder="$DOCUMENTO" value="10450505698">
-              </mat-form-field>
-              <div>
-                  <span class="title">{{'WALLET.TRANSACTION_VALUE' | translate}}:</span>
-                  <span class="value" [ngClass]="{'green-fg': selectedWallet.pockets.main > 0, 'red-fg':selectedWallet.pockets.main < 0}">{{selectedWallet.pockets.main | currency}}</span>
-              </div>                         
+          
+          <h2 *ngIf="!selectedWallet">{{'POS.MISSING_WALLET' | translate}}</h2>
+          
+          
+
+          <div *ngIf="selectedWallet" fxLayout="row wrap" id="wallet-sumary">
+
+            <div fxFlex="100" fxLayout="row" fxLayoutAlign="start center" >
+              <h3 class="pl-8" >{{'POS.CURRENT_WALLET_STATE' | translate}}</h3>
+              <h3 class="pl-8" [ngClass]="{'green-fg': selectedWallet.pockets.main > 0, 'red-fg':selectedWallet.pockets.main < 0}">
+                {{ selectedWallet.pockets.main | currency}}
+              </h3>
             </div>
 
-            <div>
-              $ ULTIMOS MOVIMIENTOS
-            </div>
-            <div fxLayout="column">
-              <div *ngFor="let mov of lastMovements" class="border" >
-                {{mov}}
+            <mat-form-field fxFlex="100" fxFlex.gt-sm="50" class="pr-8 pl-8">
+              <input matInput readonly placeholder="{{ 'POS.WALLET_INFO.NAME' | translate }}"
+                value="{{ selectedWallet.fullname }}">
+            </mat-form-field>
+            <mat-form-field fxFlex="100" fxFlex.gt-sm="50" class="pr-8 pl-8">
+              <input matInput readonly placeholder="{{ 'POS.WALLET_INFO.DOCUMENT_ID' | translate }}"
+                value="{{ selectedWallet.documentId }}">
+            </mat-form-field>
+            
+            <h3 fxFlex="100">{{'POS.WALLET_INFO.LAST_MOVEMENTS' | translate}}</h3>
+          <div  fxFlex="100" style="overflow: scroll" fxLayout="column" style="overflow: scroll">
+            <div *ngFor="let mov of lastMovements" class="border">
+              <!-- {{ mov }} -->
+              <div fxLayout="row wrap" fxLayoutAlign="space-around center">
+                <div>{{ mov.timestamp | date: "dd/MM/y HH:mm:ss" }}</div>
+                <div>{{ mov.concept }}</div>
+                <div [ngClass]="{'green-fg': mov.amount > 0, 'red-fg':mov.amount < 0}">
+                  {{ mov.amount }}
+                </div>
               </div>
             </div>
           </div>
+
+
+          </div>        
+
         </div>
+
         <!-- RIGTH -->
-        <div fxLayout="row wrap" fxFlex.gt-xs="65" fxFlex="100" class="p-8">
+        <div fxLayout="column" fxFlex.gt-xs="50" fxFlex="100" class="pl-8 pt-12 pr-12 pb-12">
           <!-- RELOAD -->
-          <div fxFlex="100" fxLayout="column">
-              <div>{{'POS.REALOAD_TITLE' | translate}}</div>
-              
+          <div fxLayout="column">
+            <div name="chargebalanceForm" [formGroup]="chargebalanceForm" fxFlex="100" fxLayout="column">
+              <h2>{{'POS.REALOAD_TITLE' | translate}}</h2>
+
+              <mat-form-field fxLayout="column" class="p-8">
+                <input matInput name="chargeValue" formControlName="chargeValue" maxlength="9" min="1"
+                  placeholder="{{'POS.CHARGE_BALANCE.AMOUNT' | translate}}" currencyMask
+                  [options]="{ prefix: '$ ', thousands: ',', precision: '0' }">
+                <mat-error *ngIf="chargebalanceForm.hasError('required', ['chargeValue'])">
+                  {{'POS.CHARGE_BALANCE.AMOUNT_REQUIRED' | translate}}
+                </mat-error>
+              </mat-form-field>
+
+              <div>
+                <button [disabled]="!selectedWallet || chargeBtnDisabled || chargebalanceForm.invalid"
+                  (click)="makeBalanceReload()"  mat-raised-button color="primary">
+                  {{'POS.CHARGE_BALANCE.MAKE_RELOAD' | translate}}
+                </button>
+              </div>
+            </div>
+
 
           </div>
           <!-- PRODUCTS SALES -->
-          <div fxFlex="100">
-              pagos
+          <div>
+            <div name="productPaymentForm" [formGroup]="productPaymentForm" fxFlex="100" fxLayout="column">
+              <h2>{{'POS.PAYMENTS.TITLE' | translate}}</h2>
+              <mat-form-field fxLayout="column" class="p-8">
+                <input matInput name="plate" formControlName="plate" maxlength="9"
+                  placeholder="{{'POS.PAYMENTS.LICENSE_PLATE' | translate}}">
+                <mat-error *ngIf="productPaymentForm.hasError('required', ['plate'])">
+                  {{'POS.PAYMENTS.LICENSE_PLATE_REQUIRED' | translate}}
+                </mat-error>
+              </mat-form-field>
+              <div fxLayoutAlign="space-around center" fxFlexLayout="row wrap">
+                <mat-form-field fxflex="50">
+                  <mat-label>{{'POS.PAYMENTS.PACK_NAME_LBL' | translate}}</mat-label>
+                  <mat-select name="pack" formControlName="pack">
+                    <mat-option *ngFor="let food of packOptions" [value]="food">
+                      {{ 'POS.PAYMENTS.PACK_OPTIONS.' + food | translate}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field fxFlex="50" fxLayout="column" class="p-8">
+                  <input matInput type="number" name="qty" formControlName="qty" max="100" min="0"
+                    placeholder="{{'POS.PAYMENTS.PACK_QUANTITY' | translate}}">
+                  <mat-error *ngIf="productPaymentForm.hasError('min', ['qty'])">
+                    {{'POS.PAYMENTS.LICENSE_PLATE_REQUIRED' | translate}}
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div>
+                <button mat-raised-button color="primary" (click)="makePayment()"
+                  [disabled]="!selectedWallet || paymentBtnDisabled || productPaymentForm.invalid ">
+                  {{'POS.PAYMENTS.MAKE_PAYMENT' | translate}}
+                </button>
+              </div>
             </div>
+          </div>
         </div>
       </div>
+      <!-- / CONTENT CARD -->
     </div>
-    <!-- / CONTENT CARD -->
+    <!-- / CENTER -->
   </div>
-  <!-- / CENTER -->
-</div>

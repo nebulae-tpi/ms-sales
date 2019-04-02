@@ -1,6 +1,7 @@
 "use strict";
 
 const { helloWorldCQRS } = require("../../domain/hello-word");
+const { PosCQRS } = require("../../domain/pos");
 const broker = require("../../tools/broker/BrokerFactory")();
 const { of, from } = require("rxjs");
 const jsonwebtoken = require("jsonwebtoken");
@@ -149,7 +150,23 @@ class GraphQlService {
       {
         aggregateType: "HelloWorld",
         messageType: "emi-gateway.graphql.query.getHelloWorldFromSales"
-      }     
+      },
+      {
+        aggregateType: "Pos",
+        messageType: "emigateway.graphql.query.salesWalletsByFilter"
+      },
+      {
+        aggregateType: "Pos",
+        messageType: "emigateway.graphql.mutation.salesPosReloadBalance"
+      },
+      {
+        aggregateType: "Pos",
+        messageType: "emigateway.graphql.mutation.salesPosPayVehicleSubscription"
+      },
+      {
+        aggregateType: "Pos",
+        messageType: "emigateway.graphql.query.salesPosGetLastTransactions"
+      },
     ];
   }
 
@@ -163,7 +180,23 @@ class GraphQlService {
       "emi-gateway.graphql.query.getHelloWorldFromSales": {
         fn: helloWorldCQRS.getHelloWorld$,
         obj: helloWorldCQRS
-      },      
+      },
+      "emigateway.graphql.query.salesWalletsByFilter":{
+        fn: PosCQRS.salesWalletsByFilter$,
+        obj: PosCQRS
+      },
+      "emigateway.graphql.mutation.salesPosReloadBalance":{
+        fn: PosCQRS.salesPosReloadBalance$,
+        obj: PosCQRS
+      },
+      "emigateway.graphql.mutation.salesPosPayVehicleSubscription":{
+        fn: PosCQRS.salesPosPayVehicleSubscription$,
+        obj: PosCQRS
+      },
+      "emigateway.graphql.query.salesPosGetLastTransactions":{
+        fn: PosCQRS.salesPosGetLastTransactions$,
+        obj: PosCQRS
+      }
     };
   }
 }

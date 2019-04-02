@@ -1,6 +1,7 @@
 //Every single error code
 // please use the prefix assigned to this micorservice
 const INTERNAL_SERVER_ERROR_CODE = 00001;
+const PERMISSION_DENIED_ERROR = {code: 19002, description: 'Permission denied'};
 
 /**
  * class to emcapsulute diferent errors.
@@ -44,5 +45,7 @@ class CustomError extends Error {
 
   module.exports =  { 
     CustomError,
-    DefaultError
+    DefaultError,
+    PERMISSION_DENIED: 00002,
+    PERMISSION_DENIED_ERROR
   } 

@@ -4,7 +4,11 @@ import { of } from 'rxjs';
 import { GatewayService } from '../../../api/gateway.service';
 import {
   getHelloWorld,
-  SalesHelloWorldSubscription
+  SalesHelloWorldSubscription,
+  salesWalletsByFilter,
+  MakeBalanceReaload,
+  SalesPosPayVehicleSubscription,
+  SalesPosGetLastTransactions
 } from './gql/pos';
 
 @Injectable()
@@ -44,34 +48,44 @@ export class PosService {
 }
 
 getWalletsByFilter(filterText: String, businessId: String, limit: number): Observable<any> {
-  // return this.gateway.apollo
-  //   .query<any>({
-  //     query: getWalletsByFilter,
-  //     variables: { filterText, businessId, limit },
-  //     fetchPolicy: 'network-only',
-  //     errorPolicy: 'all'
-  //   });
-  return of([
-    {
-      fullname: 'felipe santa',
-      pockets: {
-        main: 125
-      }
-    },
-    {
-      fullname: 'fernando santa',
-      pockets: {
-        main: 125
-      }
-    },
-    {
-      fullname: 'daniel santa',
-      pockets: {
-        main: 125
-      }
-    }
-
-  ]);
+  return this.gateway.apollo
+    .query<any>({
+      query: salesWalletsByFilter,
+      variables: { filterText, businessId, limit },
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all'
+    });
 }
+
+getlastwalletsMovements$(walletId, limit){
+  return this.gateway.apollo
+    .query<any>({
+      query: SalesPosGetLastTransactions,
+      variables: { walletId, limit },
+      fetchPolicy: 'network-only',
+      errorPolicy: 'all'
+    });
+}
+
+reloadBalance$(walletId: string, businessId: string, amount: number){
+  return this.gateway.apollo
+  .mutate<any>({
+    mutation: MakeBalanceReaload,
+    variables: { walletId, businessId, amount },
+    errorPolicy: 'all'
+  });
+
+}
+
+payVehicleSubscription$(walletId: string, businessId: string, plate: string, pack: string, qty: number){
+  return this.gateway.apollo
+  .mutate<any>({
+    mutation: SalesPosPayVehicleSubscription,
+    variables: { walletId, businessId, plate, pack, qty },
+    errorPolicy: 'all'
+  });
+
+}
+
 
 }

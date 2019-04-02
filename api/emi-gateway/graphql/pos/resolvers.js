@@ -48,10 +48,89 @@ module.exports = {
                 catchError(err => handleError$(err, "getHelloWorldFromSales")),
                 mergeMap(response => getResponseFromBackEnd$(response))
             ).toPromise();
-        }
+        },
+        salesWalletsByFilter(root, args, context) {
+            return RoleValidator.checkPermissions$(
+                context.authToken.realm_access.roles, 'ms-Sales', 'SalesWalletsByFilter',
+                PERMISSION_DENIED_ERROR_CODE, 'Permission denied', ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
+                )
+            .pipe(
+                mergeMap(() =>
+                    broker
+                    .forwardAndGetReply$(
+                        "Pos",
+                        "emigateway.graphql.query.salesWalletsByFilter",
+                        { root, args, jwt: context.encodedToken },
+                        2000
+                    )
+                ),
+                catchError(err => handleError$(err, "salesWalletsByFilter")),
+                mergeMap(response => getResponseFromBackEnd$(response))
+            ).toPromise();
+        },
+        SalesPosGetLastTransactions(root, args, context) {
+            return RoleValidator.checkPermissions$(
+                context.authToken.realm_access.roles, 'ms-sales', 'SalesPosGetLastTransactions',
+                PERMISSION_DENIED_ERROR_CODE, 'Permission denied', ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
+                )
+            .pipe(
+                mergeMap(() =>
+                    broker.forwardAndGetReply$(
+                        "Pos",
+                        "emigateway.graphql.query.salesPosGetLastTransactions",
+                        { root, args, jwt: context.encodedToken },
+                        2000
+                    )
+                ),
+                catchError(err => handleError$(err, "SalesPosGetLastTransactions")),
+                mergeMap(response => getResponseFromBackEnd$(response))
+            ).toPromise();
+        },
     },
 
     //// MUTATIONS ///////
+    Mutation: {
+        SalesPosReloadBalance(root, args, context) {
+            // console.log("ServiceAssignVehicleToDriver", args);
+            return RoleValidator.checkPermissions$(
+                context.authToken.realm_access.roles, 'ms-Sales', 'SalesPosReloadBalance',
+                PERMISSION_DENIED_ERROR_CODE, 'Permission denied', ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
+                )
+                .pipe(
+                    mergeMap(() =>
+                        context.broker.forwardAndGetReply$(
+                            "Pos",
+                            "emigateway.graphql.mutation.salesPosReloadBalance",
+                            { root, args, jwt: context.encodedToken },
+                            2000
+                        )
+                    ),
+                    catchError(err => handleError$(err, "persistBusiness")),
+                    mergeMap(response => getResponseFromBackEnd$(response))
+                )
+                .toPromise();
+        },
+        SalesPosPayVehicleSubscription(root, args, context) {
+            // console.log("ServiceAssignVehicleToDriver", args);
+            return RoleValidator.checkPermissions$(
+                context.authToken.realm_access.roles, 'ms-Sales', 'SalesPosPayVehicleSubscription',
+                PERMISSION_DENIED_ERROR_CODE, 'Permission denied', ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
+                )
+                .pipe(
+                    mergeMap(() =>
+                        context.broker.forwardAndGetReply$(
+                            "Pos",
+                            "emigateway.graphql.mutation.salesPosPayVehicleSubscription",
+                            { root, args, jwt: context.encodedToken },
+                            2000
+                        )
+                    ),
+                    catchError(err => handleError$(err, "persistBusiness")),
+                    mergeMap(response => getResponseFromBackEnd$(response))
+                )
+                .toPromise();
+        },
+    },
 
     //// SUBSCRIPTIONS ///////
     Subscription: {
@@ -81,7 +160,7 @@ const eventDescriptors = [
         gqlSubscriptionName: 'SalesHelloWorldSubscription',
         dataExtractor: (evt) => evt.data,// OPTIONAL, only use if needed
         onError: (error, descriptor) => console.log(`Error processing ${descriptor.backendEventName}`),// OPTIONAL, only use if needed
-        onEvent: (evt, descriptor) => console.log(`Event of type  ${descriptor.backendEventName} arraived`),// OPTIONAL, only use if needed
+        // onEvent: (evt, descriptor) => console.log(`Event of type  ${descriptor.backendEventName} arraived`),// OPTIONAL, only use if needed
     },
 ];
 

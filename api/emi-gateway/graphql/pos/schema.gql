@@ -3,10 +3,71 @@ type HelloWorldSales{
   "text"
   sn: String!  
 }
+type CommandResponse {
+  "Response code"
+  code: Int
+  "Response message"
+  message: String
+}
+
+"Wallet info."
+type PosWallet {
+  "Wallet ID"
+  _id: ID!
+  "Owner fullname"
+  fullname: String
+  "Ownberdocument ID"
+  documentId: String
+  "ops: CLIENT | BUSINESS | USER | DRIVER"
+  type: String
+  "pocket info"
+  pockets: PosPocket!
+  "Wallet state"
+  spendingState: String
+  "Minimum amount operation"
+  minAmountOperation: Int
+  "Business ID"
+  businessId: String
+}
+
+type PosPocket{
+  "Main pocket"
+  main: Float
+  "bonus pocket"
+  bonus: Float
+}
+
+type SalesPosWalletTransactions{
+  "Wallet ID"
+  _id: ID!
+  "Timestamp where the transaction was created"
+  timestamp: BigInt!
+  "ID of the wallet associated with the transaction"
+  walletId: String
+  "Transaction type"
+  type: String!
+  "Transaction concept"
+  concept: String!
+  "Indicates which was the used pocket"
+  pocket: String
+  "Amount associated to the transaction"
+  amount: Float!
+  "User that performs the operation that create the transaction"
+  user: String!  
+  "Notes"
+  notes: String
+}
 
 type Query {
   "Hello world sample, please remove"
   getHelloWorldFromSales: HelloWorldSales
+  salesWalletsByFilter(filterText: String, businessId: String, limit: Int): [PosWallet]
+  SalesPosGetLastTransactions(walletId: String!, limit: Int): [SalesPosWalletTransactions]
+}
+
+type Mutation {
+  SalesPosReloadBalance(walletId: String!, businessId: String!, amount: Int!): CommandResponse
+  SalesPosPayVehicleSubscription(walletId: String!, businessId: String!, plate: String!, pack: String!, qty: Int!): CommandResponse
 }
 
 type Subscription {
