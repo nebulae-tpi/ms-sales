@@ -69,3 +69,14 @@ export const SalesHelloWorldSubscription = gql`
       sn
   }
 }`;
+
+export const SalesPoswalletsUpdates = gql`
+  subscription($walletId: String!) {
+    SalesPoswalletsUpdates(walletId: $walletId) {
+      pockets {
+        main
+        bonus
+      }
+    }
+  }
+`;

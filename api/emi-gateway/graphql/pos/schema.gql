@@ -37,7 +37,7 @@ type PosPocket{
   bonus: Float
 }
 
-type SalesPosWalletTransactions{
+type SalesPosWalletTransaction{
   "Wallet ID"
   _id: ID!
   "Timestamp where the transaction was created"
@@ -62,7 +62,7 @@ type Query {
   "Hello world sample, please remove"
   getHelloWorldFromSales: HelloWorldSales
   salesWalletsByFilter(filterText: String, businessId: String, limit: Int): [PosWallet]
-  SalesPosGetLastTransactions(walletId: String!, limit: Int): [SalesPosWalletTransactions]
+  SalesPosGetLastTransactions(walletId: String!, limit: Int): [SalesPosWalletTransaction]
 }
 
 type Mutation {
@@ -72,5 +72,6 @@ type Mutation {
 
 type Subscription {
   "Hello world sample, please remove"
-  SalesHelloWorldSubscription: HelloWorldSales  
+  SalesHelloWorldSubscription: HelloWorldSales
+  SalesPoswalletsUpdates(walletId: String!): PosWallet  
 }

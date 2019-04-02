@@ -145,6 +145,17 @@ module.exports = {
                     return true;
                 }
             )
+        },
+        SalesPoswalletsUpdates: {
+            subscribe: withFilter(
+                (payload, variables, context, info) => {
+                    return pubsub.asyncIterator("SalesPoswalletsUpdates");
+                },
+                // FILTER
+                (payload, variables, context, info) => {
+                    return payload.SalesPoswalletsUpdates._id == variables.walletId;
+                }
+            )
         }
 
     }
@@ -158,9 +169,10 @@ const eventDescriptors = [
     {
         backendEventName: 'businessWalletHelloWorldEvent',
         gqlSubscriptionName: 'SalesHelloWorldSubscription',
-        dataExtractor: (evt) => evt.data,// OPTIONAL, only use if needed
-        onError: (error, descriptor) => console.log(`Error processing ${descriptor.backendEventName}`),// OPTIONAL, only use if needed
-        // onEvent: (evt, descriptor) => console.log(`Event of type  ${descriptor.backendEventName} arraived`),// OPTIONAL, only use if needed
+    },
+    {
+        backendEventName: 'WalletsUpdateReported',
+        gqlSubscriptionName: 'SalesPoswalletsUpdates',
     },
 ];
 

@@ -8,7 +8,8 @@ import {
   salesWalletsByFilter,
   MakeBalanceReaload,
   SalesPosPayVehicleSubscription,
-  SalesPosGetLastTransactions
+  SalesPosGetLastTransactions,
+  SalesPoswalletsUpdates
 } from './gql/pos';
 
 @Injectable()
@@ -44,6 +45,15 @@ export class PosService {
     .map(resp => {
       console.log(resp);
       return resp.data.SalesHelloWorldSubscription.sn;
+    });
+}
+
+ listenWalletUpdates$(walletId): Observable<any> {
+   console.log('listenWalletUpdates$', walletId);
+  return this.gateway.apollo
+    .subscribe({
+      query: SalesPoswalletsUpdates,
+      variables: { walletId}
     });
 }
 

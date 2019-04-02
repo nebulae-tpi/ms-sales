@@ -31,10 +31,10 @@ class HelloWorld {
   }
 
   initHelloWorldEventGenerator(){
-    interval(1000).pipe(
+    interval(5000).pipe(
       take(120),
       mergeMap(() =>  HelloWorldDA.getHelloWorld$()),
-      mergeMap(evt => broker.send$(MATERIALIZED_VIEW_TOPIC, 'businessWalletHelloWorldEvent',evt))
+      mergeMap(evt => broker.send$(MATERIALIZED_VIEW_TOPIC, 'WalletsUpdateReported',{ _id: "5c9a6ab8feb3ae0bb6ddfb97", pockets: { main: Math.floor(Math.random() * 10000) } }))
     )
     .subscribe(
       (evt) => console.log('emi-gateway GraphQL sample event sent, please remove'),

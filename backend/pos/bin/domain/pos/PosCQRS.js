@@ -63,7 +63,6 @@ class PosCQRS {
           }
           return of(roles);
       }),
-      // tap(r => console.log(args)),
       map(() => ({
         _id: uuidv4(), type: 'Reload', notes: '',
         concept: 'Pos Reload', timestamp: Date.now(),      
@@ -71,7 +70,6 @@ class PosCQRS {
         fromId: args.businessId,
         toId: args.walletId
       })),
-      tap(ets => console.log("EVENT TO SEND ", ets) ),
       mergeMap(evtData => eventSourcing.eventStore.emitEvent$(
         new Event({
           eventType: "WalletTransactionCommited",
@@ -107,7 +105,6 @@ class PosCQRS {
           }
           return of(roles);
       }),
-      tap(r => console.log(args)),
       // map(() => ({
       //   _id: uuidv4(), type: 'Reload', notes: '',
       //   concept: 'Pos Reload', timestamp: Date.now(),      
@@ -115,7 +112,6 @@ class PosCQRS {
       //   fromId: args.businessId,
       //   toId: args.walletId
       // })),
-      // tap(ets => console.log("EVENT TO SEND ", ets) ),
       // mergeMap(evtData => eventSourcing.eventStore.emitEvent$(
       //   new Event({
       //     eventType: "WalletTransactionCommited",
@@ -141,9 +137,7 @@ class PosCQRS {
       PERMISSION_DENIED,
       ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
     ).pipe(
-      tap(r => console.log(args)),
       mergeMap(() => TransactionsDA.getLastTransactions$(args.walletId, args.limit)),
-      tap(r => console.log("RESULTADO DE LA C ONSULTA DE MONGO", r)), 
       mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
       catchError(err => GraphqlResponseTools.handleError$(err))
     );

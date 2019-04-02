@@ -64,6 +64,9 @@ export class PosComponent implements OnInit, OnDestroy {
 
   chargeBtnDisabled = false;
   paymentBtnDisabled = false;
+
+  private ngUnsubscribe = new Subject();
+  private walletsUpdatesUnsubscribe = new Subject();
   
   @ViewChild('walletInputFilter') walletInputFilter: ElementRef;
 
@@ -85,6 +88,22 @@ export class PosComponent implements OnInit, OnDestroy {
     this.initializeForms();
     this.initializeWalletAutoComplete();
     this.listenbusinessChanges(); // Listen busineses changes in toolbar
+    // this.listenWalletUpdates();
+  }
+
+  listenWalletUpdates(walletId: string){
+    this.posService.listenWalletUpdates$(walletId)
+    .pipe(
+      filter(r => {
+        console.log('RESPUESTADE  LA SUBSCRIPTIOIN', r);
+        return r.data.SalesPoswalletsUpdates;        
+      }),
+      map(r => r.data.SalesPoswalletsUpdates),
+      tap(r => this.selectedWallet.pockets = r.pockets),
+      takeUntil(this.walletsUpdatesUnsubscribe),
+      takeUntil(this.ngUnsubscribe),
+    )
+    .subscribe();
   }
 
   initializeForms(){
@@ -102,6 +121,8 @@ export class PosComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   makeBalanceReload(){
@@ -141,18 +162,18 @@ export class PosComponent implements OnInit, OnDestroy {
     .pipe(
       filter(r => (r && r.data && r.data.SalesPosGetLastTransactions)),
       map(r => r.data.SalesPosGetLastTransactions),
-      tap(txs => this.lastMovements = txs)
+      tap(txs => this.lastMovements = txs),
+      takeUntil(this.ngUnsubscribe)
+    ).subscribe(r => {}, e => {},() => {})
 
-    ).subscribe(
-      r => {},
-      e => {},
-      () => {}
-    )
+    this.listenWalletUpdates(wallet._id);
   }
 
   clearSelectedWallet(){
     this.selectedWallet= null;
     this.walletFilterCtrl.setValue(null);
+    this.walletsUpdatesUnsubscribe.next();
+    this.walletsUpdatesUnsubscribe.complete();
 
   }
 
@@ -181,9 +202,8 @@ export class PosComponent implements OnInit, OnDestroy {
           qty: new FormControl(1),
         });
         return of({});
-      })
-
-
+      }),
+      takeUntil(this.ngUnsubscribe),
     )
     .subscribe();
     
@@ -211,7 +231,8 @@ export class PosComponent implements OnInit, OnDestroy {
       .pipe(
         distinctUntilChanged(),
         filter(e => this.walletInputFilter.nativeElement.value === ''),
-        tap(r => this.clearSelectedWallet())
+        tap(r => this.clearSelectedWallet()),
+        takeUntil(this.ngUnsubscribe)
       )
       .subscribe()
   }
@@ -288,7 +309,8 @@ export class PosComponent implements OnInit, OnDestroy {
   listenbusinessChanges(){
     this.toolbarService.onSelectedBusiness$
     .pipe(
-      tap(bu => this.selectedBusinessId = (bu && bu.id) ? bu.id : undefined)
+      tap(bu => this.selectedBusinessId = (bu && bu.id) ? bu.id : undefined),
+      takeUntil(this.ngUnsubscribe),
     )
     .subscribe();
   }
