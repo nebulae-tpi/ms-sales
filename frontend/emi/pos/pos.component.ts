@@ -26,13 +26,15 @@ import { ToolbarService } from '../../toolbar/toolbar.service';
 import { locale as english } from './i18n/en';
 import { locale as spanish } from './i18n/es';
 import { FuseTranslationLoaderService } from '../../../core/services/translation-loader.service';
+import { DialogComponent } from './dialog/dialog.component';
 
 //////////// ANGULAR MATERIAL ///////////
 import {
   MatPaginator,
   MatSort,
   MatTableDataSource,
-  MatSnackBar
+  MatSnackBar,
+  MatDialog
 } from '@angular/material';
 
 
@@ -76,6 +78,7 @@ export class PosComponent implements OnInit, OnDestroy {
     private toolbarService: ToolbarService,
     private translationLoader: FuseTranslationLoaderService,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
     ) {
       this.translationLoader.loadTranslations(english, spanish);
   }
@@ -94,12 +97,12 @@ export class PosComponent implements OnInit, OnDestroy {
   listenWalletUpdates(walletId: string){
     this.posService.listenWalletUpdates$(walletId)
     .pipe(
-      filter(r => {
-        console.log('RESPUESTADE  LA SUBSCRIPTIOIN', r);
-        return r.data.SalesPoswalletsUpdates;        
-      }),
+      filter(r => r.data.SalesPoswalletsUpdates),
       map(r => r.data.SalesPoswalletsUpdates),
-      tap(r => this.selectedWallet.pockets = r.pockets),
+      tap((r) => {
+        this.selectedWallet.pockets = r.pockets;
+        this.updateLastMovements(walletId);
+      }), 
       takeUntil(this.walletsUpdatesUnsubscribe),
       takeUntil(this.ngUnsubscribe),
     )
@@ -128,8 +131,10 @@ export class PosComponent implements OnInit, OnDestroy {
   makeBalanceReload(){
     console.log(this.chargebalanceForm.getRawValue());
     const valueToReload = this.chargebalanceForm.getRawValue().chargeValue;
-    return of(this.selectedBusinessId)
+    
+    return this.showConfirmationDialog$('POS.DIALOG.RELOAD_WALLET_TITLE', 'SADAD AS A AS DASD AS DAD A SDASDA SDA')
     .pipe(
+      mergeMap(() => of(this.selectedBusinessId)),
       filter(buId => {
         if(!buId){
           this.showMessageSnackbar('ERRORS.2');
@@ -158,15 +163,23 @@ export class PosComponent implements OnInit, OnDestroy {
   onSelectWalletEvent(wallet){
     console.log('onSelectWalletEvent', wallet);
     this.selectedWallet = wallet;
-    this.posService.getlastwalletsMovements$(wallet._id, 10)
+    
+    this.updateLastMovements(wallet._id);
+    this.listenWalletUpdates(wallet._id);
+  }
+
+  /**
+   * @deprecated
+   * @param walletId 
+   */
+  updateLastMovements(walletId){
+    this.posService.getlastwalletsMovements$(walletId, 10)
     .pipe(
       filter(r => (r && r.data && r.data.SalesPosGetLastTransactions)),
       map(r => r.data.SalesPosGetLastTransactions),
       tap(txs => this.lastMovements = txs),
       takeUntil(this.ngUnsubscribe)
     ).subscribe(r => {}, e => {},() => {})
-
-    this.listenWalletUpdates(wallet._id);
   }
 
   clearSelectedWallet(){
@@ -175,6 +188,21 @@ export class PosComponent implements OnInit, OnDestroy {
     this.walletsUpdatesUnsubscribe.next();
     this.walletsUpdatesUnsubscribe.complete();
 
+  }
+
+  showConfirmationDialog$(dialogMessage, dialogTitle) {
+    return this.dialog
+      //Opens confirm dialog
+      .open(DialogComponent, {
+        data: {
+          dialogMessage,
+          dialogTitle
+        }
+      })
+      .afterClosed()
+      .pipe(
+        filter(okButton => okButton),
+      );
   }
 
   makePayment(){
@@ -193,14 +221,14 @@ export class PosComponent implements OnInit, OnDestroy {
       mergeMap(r => {
         console.log('GRAPQL RESPONSE =>', r);
         if(r.data.SalesPosPayVehicleSubscription.code === 200){
-          this.showMessageSnackbar('SUCCESS.1');
-          this.paymentBtnDisabled = false;          
+          this.showMessageSnackbar('SUCCESS.1');                   
         }
         this.productPaymentForm = new FormGroup({
           plate: new FormControl('', [Validators.required]),
           pack: new FormControl('WEEK'),
           qty: new FormControl(1),
         });
+        this.paymentBtnDisabled = false; 
         return of({});
       }),
       takeUntil(this.ngUnsubscribe),

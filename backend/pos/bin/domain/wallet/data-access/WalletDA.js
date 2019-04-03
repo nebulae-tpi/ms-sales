@@ -3,12 +3,12 @@
 require("datejs");
 let mongoDB = undefined;
 //const mongoDB = require('./MongoDB')();
-const COLLECTION_NAME = "Transactions";
+const COLLECTION_NAME = "Wallet";
 const { CustomError } = require("../../../tools/customError");
 const { map, mergeMap, reduce, tap } = require("rxjs/operators");
 const { of, Observable, defer, from, range } = require("rxjs");
 
-class TransactionsDA {
+class WalletDA {
   static start$(mongoDbInstance) {
     return Observable.create(observer => {
       if (mongoDbInstance) {
@@ -22,23 +22,14 @@ class TransactionsDA {
     });
   }
 
-  static getLastTransactions$(walletId, limit = 10) {
+  static updateOneWallet$(Wallet){
     const collection = mongoDB.db.collection(COLLECTION_NAME);
-    return defer(() => collection.find({ walletId: walletId })
-      .sort({ timestamp: 1 })
-      .limit(limit).toArray());
+    return defer(() => collection.findOneAndUpdate({_id: Wallet._id}, {$set: { ...Wallet }}))
   }
-
-
-  static insertOneTransaction$(wallet) {
-    const collection = mongoDB.db.collection(COLLECTION_NAME);
-    return defer(() => collection.insertOne(wallet));
-  }
-
 
   
 }
 /**
- * @returns {TransactionsDA}
+ * @returns {WalletDA}
  */
-module.exports = TransactionsDA;
+module.exports = WalletDA;

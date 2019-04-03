@@ -2,6 +2,7 @@ export const locale = {
   lang: 'es',
   data: {
     POS:{
+      CANCEL: 'Cancelar',
       TITLE: 'POS',
       MISSING_WALLET:'Selecciona Una Billetera',
       REALOAD_TITLE: 'Recarga de Saldo',

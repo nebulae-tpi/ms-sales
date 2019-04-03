@@ -1,6 +1,5 @@
 "use strict";
 
-const { helloWorldCQRS } = require("../../domain/hello-word");
 const { PosCQRS } = require("../../domain/pos");
 const broker = require("../../tools/broker/BrokerFactory")();
 const { of, from } = require("rxjs");
@@ -146,11 +145,6 @@ class GraphQlService {
   getSubscriptionDescriptors() {
     console.log("GraphQl Service starting ...");
     return [
-      //Sample incoming request, please remove
-      {
-        aggregateType: "HelloWorld",
-        messageType: "emi-gateway.graphql.query.getHelloWorldFromSales"
-      },
       {
         aggregateType: "Pos",
         messageType: "emigateway.graphql.query.salesWalletsByFilter"
@@ -176,11 +170,6 @@ class GraphQlService {
    */
   generateFunctionMap() {    
     return {
-      //Sample incoming request, please remove
-      "emi-gateway.graphql.query.getHelloWorldFromSales": {
-        fn: helloWorldCQRS.getHelloWorld$,
-        obj: helloWorldCQRS
-      },
       "emigateway.graphql.query.salesWalletsByFilter":{
         fn: PosCQRS.salesWalletsByFilter$,
         obj: PosCQRS

@@ -1,7 +1,8 @@
 "use strict";
 const { of, from, concat } = require("rxjs");
 const eventSourcing = require("../../tools/EventSourcing")();
-const { helloWorldES } = require("../../domain/hello-word");
+const { PosES } = require("../../domain/pos");
+const { WalletES } = require("../../domain/wallet");
 const { map, switchMap, filter, mergeMap, concatMap } = require('rxjs/operators');
 /**
  * Singleton instance
@@ -65,7 +66,7 @@ class EventStoreService {
     const subscription =
       //MANDATORY:  AVOIDS ACK REGISTRY DUPLICATIONS
       eventSourcing.eventStore.ensureAcknowledgeRegistry$(aggregateType).pipe(
-        mergeMap(() => eventSourcing.eventStore.getEventListener$(aggregateType, mbeKey)),
+        mergeMap(() => eventSourcing.eventStore.getEventListener$(aggregateType, mbeKey, false)),
         filter(evt => evt.et === eventType),
         mergeMap(evt => concat(
           handler.fn.call(handler.obj, evt),
@@ -121,11 +122,21 @@ class EventStoreService {
 
   generateFunctionMap() {
     return {
-      //Sample for handling event-sourcing events, please remove
-      HelloWorldEvent: {
-        fn: helloWorldES.handleHelloWorld$,
-        obj: helloWorldES
+      // Sales
+      SaleWalletRechargeCommited: {
+        fn: PosES.handleSaleWalletRechargeCommited$,
+        obj: PosES
       },
+      SaleVehicleSubscriptionCommited: {
+        fn: PosES.handleSaleVehicleSubscriptionCommited$,
+        obj: PosES
+      },
+
+      // wallet
+      WalletPocketUpdated: {
+        fn: WalletES.handleWalletPocketUpdated$,
+        obj: WalletES
+      }
 
     };
   }
@@ -135,10 +146,20 @@ class EventStoreService {
   */
   generateAggregateEventsArray() {
     return [
-      //Sample for assoc events and aggregates, please remove
+      // Sale
       {
-        aggregateType: "HelloWorld",
-        eventType: "HelloWorldEvent"
+        aggregateType: "Sale",
+        eventType: "SaleWalletRechargeCommited"
+      },
+      {
+        aggregateType: "Sale",
+        eventType: "SaleVehicleSubscriptionCommited"
+      },
+
+      // Wallet
+      {
+        aggregateType: "Wallet",
+        eventType: "WalletPocketUpdated"
       },
 
     ]
