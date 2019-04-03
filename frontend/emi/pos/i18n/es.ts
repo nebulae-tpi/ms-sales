@@ -38,13 +38,21 @@ export const locale = {
         BUSINESS: 'Unidad de Negocio',
         USER: 'Usuario',
         CLIENT: 'cliente'
+      },
+      DIALOG:{
+        RELOAD_WALLET_TITLE: 'Recarga de Saldo',
+        CONFIRMATION_RECHARGE: 'Estás Seguro que Deseas Recargar Saldo por valor de : ',
+        PURCHASE_WALLET_TITLE: 'Pago de Subscripción',
+        CONFIRMATION_PURCHASE: 'Estás Seguro que Deseas Pagar la Membrecía por : '
       }
     },
     ERRORS:{
-      2: 'Selecciona Primero Una Unidad de Negocio'
+      2: 'Selecciona Primero Una Unidad de Negocio',
+      19003: "Saldo Insuficiente"
     },
     SUCCESS:{
-      1: 'Recarga Realizada Con Éxito'
+      1: 'Recarga Realizada Con Éxito',
+     
     }
   }
 };

@@ -11,7 +11,6 @@ const graphQlService = require('./services/emi-gateway/GraphQlService')();
 const Rx = require('rxjs');
 const Pos = require("./domain/pos");
 const Wallet = require("./domain/pos");
-
 const start = () => {
     Rx.concat(
         eventSourcing.eventStore.start$(),

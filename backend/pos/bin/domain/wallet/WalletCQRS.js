@@ -1,7 +1,7 @@
 "use strict";
 
 const uuidv4 = require("uuid/v4");
-const { of, interval } = require("rxjs");
+const { of, interval, throwError } = require("rxjs");
 const { take, mergeMap, catchError, map, toArray, tap } = require('rxjs/operators');
 const Event = require("@nebulae/event-store").Event;
 const eventSourcing = require("../../tools/EventSourcing")();
@@ -126,23 +126,6 @@ class PosCQRS {
           }
           return of(roles);
       }),
-      // map(() => ({
-      //   _id: uuidv4(), type: 'Reload', notes: '',
-      //   concept: 'Pos Reload', timestamp: Date.now(),      
-      //   amount: args.amount,
-      //   fromId: args.businessId,
-      //   toId: args.walletId
-      // })),
-      // mergeMap(evtData => eventSourcing.eventStore.emitEvent$(
-      //   new Event({
-      //     eventType: "WalletTransactionCommited",
-      //     eventTypeVersion: 1,
-      //     aggregateType: "Wallet",
-      //     aggregateId: args.businessId,
-      //     data: evtData,
-      //     user: authToken.preferred_username
-      //   })
-      // )),
       map(() => ({ code: 200, message: `Reload Balance was made` })),
       mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
       catchError(err => GraphqlResponseTools.handleError$(err))
@@ -150,19 +133,17 @@ class PosCQRS {
 
   }
 
-  salesPosGetLastTransactions$({ args }, authToken) {
-    return RoleValidator.checkPermissions$(
-      authToken.realm_access.roles,
-      "Sales",
-      "salesPosGetLastTransactions",
-      PERMISSION_DENIED,
-      ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
-    ).pipe(
-      mergeMap(() => TransactionsDA.getLastTransactions$(args.walletId, args.limit)),
-      mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
-      catchError(err => GraphqlResponseTools.handleError$(err))
+            /**
+   * Creates a custom error observable
+   * @param {*} error Error code
+   * @param {*} methodError Method where the error was generated
+   */
+  createCustomError$(error, methodError) {
+    return throwError(
+      new CustomError(context, methodError || "", error.code, error.description )
     );
   }
+
 }
 
 /**

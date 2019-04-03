@@ -1,7 +1,7 @@
 "use strict";
 
 const uuidv4 = require("uuid/v4");
-const { of, interval } = require("rxjs");
+const { of, interval, throwError} = require("rxjs");
 const { take, mergeMap, catchError, map, toArray, tap } = require('rxjs/operators');
 const Event = require("@nebulae/event-store").Event;
 const eventSourcing = require("../../tools/EventSourcing")();
@@ -16,9 +16,12 @@ const {
   DefaultError,
   INTERNAL_SERVER_ERROR_CODE,
   PERMISSION_DENIED,
-  PERMISSION_DENIED_ERROR
+  PERMISSION_DENIED_ERROR,
+  INSUFFICIENT_BALANCE
 } = require("../../tools/customError");
 const Crosscutting = require("../../tools/Crosscutting");
+const vehicleSubscriptionPricePerWeek = process.env.VEHICLE_SUBS_WEEK_PRICE;
+const VehicleSubscriptionPrices = process.env.VEHICLE_SUBS_PRICES || { day: 0, week: 12000, month: 40000 }
 
 
 
@@ -104,7 +107,13 @@ class PosCQRS {
             );
           }
           return of(roles);
-      }),      
+      }),
+      mergeMap(() => PosDA.getWalletById$(args.walletId)),
+      mergeMap(wallet => {
+        return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < vehicleSubscriptionPricePerWeek * args.qty))
+          ? this.createCustomError$(INSUFFICIENT_BALANCE, 'salesPosPayVehicleSubscription')
+          : of({}) 
+      }),   
       mergeMap(evtData => eventSourcing.eventStore.emitEvent$(
         new Event({
           eventType: "SaleVehicleSubscriptionCommited",
@@ -122,17 +131,29 @@ class PosCQRS {
 
   }
 
-  salesPosGetLastTransactions$({ args }, authToken) {
+  getSalesPosProductPrices$({ args }, authToken){
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles,
       "Sales",
-      "salesPosGetLastTransactions",
+      "salesPosPayVehicleSubscription",
       PERMISSION_DENIED,
       ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
     ).pipe(
-      mergeMap(() => TransactionsDA.getLastTransactions$(args.walletId, args.limit)),
+      mergeMap(() => of(VehicleSubscriptionPrices)),
       mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
       catchError(err => GraphqlResponseTools.handleError$(err))
+    );
+
+  }
+
+            /**
+   * Creates a custom error observable
+   * @param {*} error Error
+   * @param {*} methodError Method where the error was generated
+   */
+  createCustomError$(error, methodError) {
+    return throwError(
+      new CustomError("POS CQRS", methodError || "", error.code, error.description )
     );
   }
 }

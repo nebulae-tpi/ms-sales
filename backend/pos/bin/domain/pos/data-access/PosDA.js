@@ -37,6 +37,13 @@ class PosDA {
     return defer(() => collection.find(filter).limit(limit).toArray());
   }
 
+  static getWalletById$(walletId) {
+    const collection = mongoDB.db.collection(COLLECTION_NAME);
+    return defer(() => collection.findOne({_id:walletId}))
+  }
+
+
+
   
 }
 /**

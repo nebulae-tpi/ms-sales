@@ -68,26 +68,27 @@ module.exports = {
                 mergeMap(response => getResponseFromBackEnd$(response))
             ).toPromise();
         },
-        SalesPosGetLastTransactions(root, args, context) {
+        SalesPosProductPrices(root, args, context) {
             return RoleValidator.checkPermissions$(
-                context.authToken.realm_access.roles, 'ms-sales', 'SalesPosGetLastTransactions',
+                context.authToken.realm_access.roles, 'ms-Sales', 'SalesPosProductPrices',
                 PERMISSION_DENIED_ERROR_CODE, 'Permission denied', ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
                 )
             .pipe(
                 mergeMap(() =>
-                    broker.forwardAndGetReply$(
+                    broker
+                    .forwardAndGetReply$(
                         "Pos",
-                        "emigateway.graphql.query.salesPosGetLastTransactions",
+                        "emigateway.graphql.query.salesPosProductPrices",
                         { root, args, jwt: context.encodedToken },
                         2000
                     )
                 ),
-                catchError(err => handleError$(err, "SalesPosGetLastTransactions")),
+                catchError(err => handleError$(err, "SalesPosProductPrices")),
                 mergeMap(response => getResponseFromBackEnd$(response))
             ).toPromise();
         },
+        
     },
-
     //// MUTATIONS ///////
     Mutation: {
         SalesPosReloadBalance(root, args, context) {

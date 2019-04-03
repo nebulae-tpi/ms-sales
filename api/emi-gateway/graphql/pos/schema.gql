@@ -57,12 +57,17 @@ type SalesPosWalletTransaction{
   "Notes"
   notes: String
 }
+type VehicleSubscriptionPrices {
+  month: Int
+  week: Int
+  day: Int
+}
 
 type Query {
   "Hello world sample, please remove"
   getHelloWorldFromSales: HelloWorldSales
   salesWalletsByFilter(filterText: String, businessId: String, limit: Int): [PosWallet]
-  SalesPosGetLastTransactions(walletId: String!, limit: Int): [SalesPosWalletTransaction]
+  SalesPosProductPrices(businessId: String!): VehicleSubscriptionPrices
 }
 
 type Mutation {

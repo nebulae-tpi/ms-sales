@@ -8,8 +8,8 @@ import {
   salesWalletsByFilter,
   MakeBalanceReaload,
   SalesPosPayVehicleSubscription,
-  SalesPosGetLastTransactions,
-  SalesPoswalletsUpdates
+  SalesPoswalletsUpdates,
+  SalesPosProductPrices
 } from './gql/pos';
 
 @Injectable()
@@ -67,15 +67,17 @@ getWalletsByFilter(filterText: String, businessId: String, limit: number): Obser
     });
 }
 
-getlastwalletsMovements$(walletId, limit){
+getProductsPrices$(businessId){
   return this.gateway.apollo
     .query<any>({
-      query: SalesPosGetLastTransactions,
-      variables: { walletId, limit },
+      query: SalesPosProductPrices,
+      variables: { businessId },
       fetchPolicy: 'network-only',
       errorPolicy: 'all'
     });
 }
+
+
 
 reloadBalance$(walletId: string, businessId: string, amount: number){
   return this.gateway.apollo

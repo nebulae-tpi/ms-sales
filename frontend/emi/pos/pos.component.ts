@@ -47,29 +47,26 @@ import {
 })
 export class PosComponent implements OnInit, OnDestroy {
 
-  helloWorld: String = 'Hello World static';
-  helloWorldLabelQuery$: Observable<any>;
-  helloWorldLabelSubscription$: Observable<any>;
   chargebalanceForm: FormGroup;
   productPaymentForm: FormGroup;
 
 
   selectedWallet = null;
 
-  lastMovements = [];
   walletFilterCtrl = new FormControl();
 
-  packOptions= ['DAY', 'WEEK', 'MONTH'];
+  packOptions = ['WEEK'];
 
   walletQueryFiltered$: Observable<any[]>; // Wallet autocomplete supplier
   selectedBusinessId: any;
 
   chargeBtnDisabled = false;
   paymentBtnDisabled = false;
+  productPrices = null;
 
   private ngUnsubscribe = new Subject();
   private walletsUpdatesUnsubscribe = new Subject();
-  
+
   @ViewChild('walletInputFilter') walletInputFilter: ElementRef;
 
   constructor(
@@ -85,13 +82,10 @@ export class PosComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.helloWorldLabelQuery$ = this.posService.getHelloWorld$();
-    this.helloWorldLabelSubscription$ = this.posService.getEventSourcingMonitorHelloWorldSubscription$();
 
     this.initializeForms();
     this.initializeWalletAutoComplete();
     this.listenbusinessChanges(); // Listen busineses changes in toolbar
-    // this.listenWalletUpdates();
   }
 
   listenWalletUpdates(walletId: string){
@@ -101,8 +95,7 @@ export class PosComponent implements OnInit, OnDestroy {
       map(r => r.data.SalesPoswalletsUpdates),
       tap((r) => {
         this.selectedWallet.pockets = r.pockets;
-        this.updateLastMovements(walletId);
-      }), 
+      }),
       takeUntil(this.walletsUpdatesUnsubscribe),
       takeUntil(this.ngUnsubscribe),
     )
@@ -131,12 +124,15 @@ export class PosComponent implements OnInit, OnDestroy {
   makeBalanceReload(){
     console.log(this.chargebalanceForm.getRawValue());
     const valueToReload = this.chargebalanceForm.getRawValue().chargeValue;
-    
-    return this.showConfirmationDialog$('POS.DIALOG.RELOAD_WALLET_TITLE', 'SADAD AS A AS DASD AS DAD A SDASDA SDA')
+
+    return this.showConfirmationDialog$(
+      this.translate.instant('POS.DIALOG.CONFIRMATION_RECHARGE'),
+      this.translate.instant('POS.DIALOG.RELOAD_WALLET_TITLE'),
+      'RECHARGE', valueToReload)
     .pipe(
       mergeMap(() => of(this.selectedBusinessId)),
       filter(buId => {
-        if(!buId){
+        if (!buId){
           this.showMessageSnackbar('ERRORS.2');
         }
         return buId;
@@ -145,9 +141,9 @@ export class PosComponent implements OnInit, OnDestroy {
       tap(() => this.chargeBtnDisabled = true ),
       mergeMap(r => {
         console.log('GRAPQL RESPONSE =>', r);
-        if(r.data.SalesPosReloadBalance.code === 200){
+        if (r.data.SalesPosReloadBalance.code === 200){
           this.showMessageSnackbar('SUCCESS.1');
-          this.chargeBtnDisabled = false;          
+          this.chargeBtnDisabled = false;
         }
         this.chargebalanceForm = new FormGroup({
           chargeValue: new FormControl(0, [Validators.required]),
@@ -163,40 +159,28 @@ export class PosComponent implements OnInit, OnDestroy {
   onSelectWalletEvent(wallet){
     console.log('onSelectWalletEvent', wallet);
     this.selectedWallet = wallet;
-    
-    this.updateLastMovements(wallet._id);
+
     this.listenWalletUpdates(wallet._id);
   }
 
-  /**
-   * @deprecated
-   * @param walletId 
-   */
-  updateLastMovements(walletId){
-    this.posService.getlastwalletsMovements$(walletId, 10)
-    .pipe(
-      filter(r => (r && r.data && r.data.SalesPosGetLastTransactions)),
-      map(r => r.data.SalesPosGetLastTransactions),
-      tap(txs => this.lastMovements = txs),
-      takeUntil(this.ngUnsubscribe)
-    ).subscribe(r => {}, e => {},() => {})
-  }
+
 
   clearSelectedWallet(){
-    this.selectedWallet= null;
+    this.selectedWallet = null;
     this.walletFilterCtrl.setValue(null);
     this.walletsUpdatesUnsubscribe.next();
     this.walletsUpdatesUnsubscribe.complete();
 
   }
 
-  showConfirmationDialog$(dialogMessage, dialogTitle) {
+  showConfirmationDialog$(dialogMessage, dialogTitle, type, value) {
     return this.dialog
-      //Opens confirm dialog
       .open(DialogComponent, {
         data: {
           dialogMessage,
-          dialogTitle
+          dialogTitle,
+          type, value
+
         }
       })
       .afterClosed()
@@ -208,33 +192,40 @@ export class PosComponent implements OnInit, OnDestroy {
   makePayment(){
     console.log(this.productPaymentForm.getRawValue());
     const args = this.productPaymentForm.getRawValue();
-    return of(this.selectedBusinessId)
+    return this.showConfirmationDialog$(
+      this.translate.instant('POS.DIALOG.CONFIRMATION_PURCHASE'),
+      this.translate.instant('POS.DIALOG.PURCHASE_WALLET_TITLE'),
+      'PURCHASE', args.qty * this.productPrices.week)
     .pipe(
+      mergeMap(() => of(this.selectedBusinessId)),
       filter(buId => {
-        if(!buId){
+        if (!buId){
           this.showMessageSnackbar('ERRORS.2');
         }
         return buId;
       }),
-      mergeMap((buId) => this.posService.payVehicleSubscription$(this.selectedWallet._id, buId, args.plate, args.pack, args.qty  )),
+      mergeMap((buId) => this.posService.payVehicleSubscription$(this.selectedWallet._id, buId, args.plate, args.pack, args.qty)),
+      mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
+      filter(r => (r && r.data && r.data.SalesPosPayVehicleSubscription)),
+
       tap(() => this.paymentBtnDisabled = true ),
       mergeMap(r => {
         console.log('GRAPQL RESPONSE =>', r);
-        if(r.data.SalesPosPayVehicleSubscription.code === 200){
-          this.showMessageSnackbar('SUCCESS.1');                   
+        if (r.data.SalesPosPayVehicleSubscription.code === 200){
+          this.showMessageSnackbar('SUCCESS.1');
         }
         this.productPaymentForm = new FormGroup({
           plate: new FormControl('', [Validators.required]),
           pack: new FormControl('WEEK'),
           qty: new FormControl(1),
         });
-        this.paymentBtnDisabled = false; 
+        this.paymentBtnDisabled = false;
         return of({});
       }),
       takeUntil(this.ngUnsubscribe),
     )
     .subscribe();
-    
+
   }
 
   displayFn(wallet): string | undefined {
@@ -262,7 +253,7 @@ export class PosComponent implements OnInit, OnDestroy {
         tap(r => this.clearSelectedWallet()),
         takeUntil(this.ngUnsubscribe)
       )
-      .subscribe()
+      .subscribe();
   }
 
 
@@ -270,7 +261,7 @@ export class PosComponent implements OnInit, OnDestroy {
     return this.posService.getWalletsByFilter(filterText, this.selectedBusinessId, limit)
       .pipe(
         mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
-        filter(resp => (!resp.errors && resp.data && resp.data.salesWalletsByFilter && resp.data.salesWalletsByFilter.length > 0 ) ),        
+        filter(resp => (!resp.errors && resp.data && resp.data.salesWalletsByFilter && resp.data.salesWalletsByFilter.length > 0 ) ),
         mergeMap(result => from(result.data.salesWalletsByFilter)),
         tap(r => console.log(r)),
         toArray()
@@ -334,13 +325,21 @@ export class PosComponent implements OnInit, OnDestroy {
     });
   }
 
-  listenbusinessChanges(){
+  listenbusinessChanges() {
     this.toolbarService.onSelectedBusiness$
-    .pipe(
-      tap(bu => this.selectedBusinessId = (bu && bu.id) ? bu.id : undefined),
-      takeUntil(this.ngUnsubscribe),
-    )
-    .subscribe();
+      .pipe(
+        map(bu => (bu && bu.id) ? bu.id : undefined),
+        tap(bu => this.selectedBusinessId = bu),
+        mergeMap(bu => bu
+          ? this.posService.getProductsPrices$(this.selectedBusinessId).pipe(map(r => (r && r.data) ? r.data.SalesPosProductPrices : null))
+          : of(null)
+        ),
+        tap(pp => this.productPrices = pp),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe();
   }
+
+
 
 }

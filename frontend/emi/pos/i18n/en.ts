@@ -17,7 +17,7 @@ export const locale = {
       },
       CHARGE_BALANCE: {
         AMOUNT: 'Amount',
-        MAKE_RELOAD: 'Charge',
+        MAKE_RELOAD: 'Recharge',
         AMOUNT_REQUIRED: 'Amount Required'
       },
       PAYMENTS: {
@@ -39,13 +39,21 @@ export const locale = {
         USER: 'Users',
         CLIENT: 'client'
       },
+      DIALOG:{
+        RELOAD_WALLET_TITLE: 'Reload Balance',
+        CONFIRMATION_RECHARGE: 'Are you sure you want to recharge the balance with: ',
+        PURCHASE_WALLET_TITLE: 'Subscription Payment',
+        CONFIRMATION_PURCHASE: 'Are you sure you want to Pay the Subscription by : '
+      }
       
     },
     ERRORS:{
-      2: 'Please Select a Business Unit'
+      2: 'Please Select a Business Unit',
+      19003: "Insufficient balance"
     },
     SUCCESS:{
-      1: 'Balance Reload Sent'
+      1: 'Balance Reload Sent',
+     
     }
     
   }

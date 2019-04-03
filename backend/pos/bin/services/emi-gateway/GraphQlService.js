@@ -159,7 +159,7 @@ class GraphQlService {
       },
       {
         aggregateType: "Pos",
-        messageType: "emigateway.graphql.query.salesPosGetLastTransactions"
+        messageType: "emigateway.graphql.query.salesPosProductPrices"
       },
     ];
   }
@@ -182,8 +182,8 @@ class GraphQlService {
         fn: PosCQRS.salesPosPayVehicleSubscription$,
         obj: PosCQRS
       },
-      "emigateway.graphql.query.salesPosGetLastTransactions":{
-        fn: PosCQRS.salesPosGetLastTransactions$,
+      "emigateway.graphql.query.salesPosProductPrices":{
+        fn: PosCQRS.getSalesPosProductPrices$,
         obj: PosCQRS
       }
     };

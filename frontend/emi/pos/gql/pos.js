@@ -27,21 +27,18 @@ export const salesWalletsByFilter = gql`
 `;
 
 
-export const SalesPosGetLastTransactions = gql`
-  query SalesPosGetLastTransactions($walletId: String!, $limit: Int) {
-    SalesPosGetLastTransactions(walletId: $walletId, limit: $limit) {
-      _id
-      timestamp
-      walletId
-      type
-      concept
-      pocket
-      amount
-      user
-      notes
+export const SalesPosProductPrices = gql`
+  query SalesPosProductPrices($businessId: String!) {
+    SalesPosProductPrices(businessId: $businessId,) {
+      day
+      week
+      month
     }
   }
 `;
+
+
+
 
 // Mutations
 export const MakeBalanceReaload = gql`

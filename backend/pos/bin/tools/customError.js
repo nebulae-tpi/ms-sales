@@ -47,5 +47,6 @@ class CustomError extends Error {
     CustomError,
     DefaultError,
     PERMISSION_DENIED: 00002,
-    PERMISSION_DENIED_ERROR
+    PERMISSION_DENIED_ERROR,
+    INSUFFICIENT_BALANCE:  {code: 19003, description: 'Insufficient balance'}
   } 
