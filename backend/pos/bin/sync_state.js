@@ -9,11 +9,18 @@ const eventSourcing = require('./tools/EventSourcing')();
 const eventStoreService = require('./services/event-store/EventStoreService')();
 const Rx = require('rxjs');
 
+const Pos = require("./domain/pos");
+const Wallet = require("./domain/wallet");
+
 const start = () => {
     Rx.concat(
+        Wallet.start$,
+        Pos.start$,
         // initializing needed resources
         mongoDB.start$(),
         eventSourcing.eventStore.start$(),
+
+
         
         // // executing maintenance tasks
         eventStoreService.syncState$(),
