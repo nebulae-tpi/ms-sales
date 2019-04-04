@@ -8,7 +8,7 @@ const WalletDA = require("./data-access/WalletDA");
 
 module.exports = {
   /**
-   * domain start workflow
+   * domain start workflow ---
    */
   start$: concat(WalletDA.start$()),
   /**

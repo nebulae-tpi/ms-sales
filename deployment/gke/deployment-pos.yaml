@@ -13,7 +13,7 @@ spec:
         app: pos
     spec:      
       containers:
-      - image: DOCKERHUB/pos.backend.pos:0.0.11
+      - image: DOCKERHUB/pos.backend.pos:0.0.12
         name: pos
         volumeMounts:
         - name: google-application-credentials
@@ -58,7 +58,7 @@ spec:
           value: PUBSUB
         # RESET LOCK INITIALIZE BACKED
         - name: LOCKVERSION
-          value: "04_04__2"
+          value: "04_04__3"
         # BACKEND PARAMETERS
         - name: GMT_TO_SERVE
           value: "GMT-5"

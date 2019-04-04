@@ -17,29 +17,6 @@ let instance;
 class WalletES {
   constructor() {
 
-      of({})
-      .pipe(
-        delay(2000),
-        mergeMap(() => eventSourcing.eventStore.emitEvent$(
-          new Event({
-            eventType: "WalletUpdated",
-            eventTypeVersion: 1,
-            aggregateType: "Wallet",
-            aggregateId: "sd989845--14-g4--f0-6-g4-6-45-f4o9",
-            data: { 
-              _id: "23423lk232342f2-2-34-",
-              businessId: "q1w2e3-r4t23e2-234r34-53t4-",
-              type: 'BUSINESS',
-              fullname: "(rawdata.generalInfo || {}).name",
-              documentId: "(rawdata.generalInfo || {}).documentId",
-              pockets: { main: 250, credit: 0, bonus: 0 }
-            },
-            user: "SYSTEM"
-          })
-        ))
-      )
-    .subscribe()
-
   }
 
   handleWalletUpdated$({aid, data}){
