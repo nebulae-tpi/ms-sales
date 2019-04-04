@@ -22,9 +22,9 @@ class WalletDA {
     });
   }
 
-  static updateOneWallet$(Wallet){
+  static updateOne$(wallet){
     const collection = mongoDB.db.collection(COLLECTION_NAME);
-    return defer(() => collection.findOneAndUpdate({_id: Wallet._id}, {$set: { ...Wallet }}))
+    return defer(() => collection.findOneAndUpdate({_id: wallet._id}, {$set: { ...wallet }}))
   }
 
   

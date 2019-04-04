@@ -17,13 +17,13 @@ let instance;
 class WalletES {
   constructor() {}
 
-  handleWalletPocketUpdated$({aid, data}){
-    // console.log("handleWalletPocketUpdated$", aid, data);
+  handleWalletUpdated$({aid, data}){
+    console.log("handleWalletUpdated$", aid, data);
     return of(data)
       .pipe(
         mergeMap(wallet => forkJoin(
           broker.send$(MATERIALIZED_VIEW_TOPIC, 'WalletsUpdateReported', wallet),
-          WalletDA.updateOneWallet$(wallet)
+          WalletDA.updateOne$(wallet)
         ))
       );
   }
