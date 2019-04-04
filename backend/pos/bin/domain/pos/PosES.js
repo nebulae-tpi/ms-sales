@@ -28,7 +28,6 @@ class PosES {
         type: 'SALE',
         concept: 'WALLET_RECHARGE',      
         amount: data.amount,
-        walletId: data.walletId,
         fromId: data.businessId,
         toId: data.walletId
       })),
@@ -54,7 +53,6 @@ class PosES {
         type: 'PURCHASE',
         concept: 'VEHICLE_SUBSCRIPTION',      
         amount: vehicleSubscriptionPricePerWeek * data.qty,
-        walletId: data.walletId,
         fromId: data.walletId,
         toId: data.businessId
       })),
@@ -99,7 +97,6 @@ class PosES {
         type: 'WITHDRAWAL',
         concept: 'DOORMAN_WITHDRAWAL',      
         amount: data.amount,
-        walletId: data.walletId,
         fromId: data.walletId,
         toId: data.businessId
       })),

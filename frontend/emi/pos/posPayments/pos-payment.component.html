@@ -30,36 +30,36 @@
     <!-- / HEADER -->
 
     <!-- CONTENT CARD -->
-    <div class="content-card mat-white-bg" >
-    
-      <div>
+    <div class="content-card mat-white-bg">    
+      <div fusePerfectScrollbar>
         <div fxFlex="100" class="p-12" fxLayout="row wrap">
           <!-- AUTOCOMPLETE -->
-          <div class="pt-12" fxFlex="100" fxLayoutAlign="start center" fxFlex fxFlex="100">
-              <label for="search" class="mr-8">
-                  <mat-icon class="secondary-text">search</mat-icon>
-                </label>    
-              <mat-form-field  fxFlex.gt-sm="50">
-                <input id="search" #walletInputFilter matInput [placeholder]="'POS.SELECT_WALLET' | translate"
-                  [formControl]="walletFilterCtrl" fxFlex [matAutocomplete]="auto">
-                  
-                <button mat-button *ngIf="selectedWallet" matSuffix mat-icon-button aria-label="Clear"
-                  (click)="clearSelectedWallet()">
-                  <mat-icon>close</mat-icon>
-                </button>
-              </mat-form-field>
+          <div class="pt-12" fxFlex="100" fxLayoutAlign="start center">
+            <label for="search" class="mr-8">
+              <mat-icon class="secondary-text">search</mat-icon>
+            </label>
+            <mat-form-field fxFlex.gt-sm="45">
+              <input id="search" #walletInputFilter matInput [placeholder]="'POS.SELECT_WALLET' | translate"
+                [formControl]="walletFilterCtrl" fxFlex [matAutocomplete]="auto">
+          
+              <button mat-button *ngIf="selectedWallet" matSuffix mat-icon-button aria-label="Clear"
+                (click)="clearSelectedWallet()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
           </div>
           <!-- AUTOCOMPLETE -->
           <!-- WALLET SUMMARY -->
-          <h2 fxFlex="100" *ngIf="!selectedWallet">{{'POS.MISSING_WALLET' | translate}}</h2>
-          <div fxFlex="100" *ngIf="selectedWallet" fxLayout="row wrap" id="wallet-sumary">
+          <span fxFlex="100" *ngIf="!selectedWallet" class="mat-headline pl-12">{{'POS.MISSING_WALLET' | translate}}</span>
+          
+          <div class="p-12" fxFlex="100" *ngIf="selectedWallet" fxLayout="row wrap" id="wallet-sumary">
     
             <div fxFlex="100" fxLayout="row" fxLayoutAlign="start center">
-              <h3 class="pl-8">{{'POS.CURRENT_WALLET_STATE' | translate}}</h3>
-              <h3 class="pl-8"
+              <span class="mat-headline">{{'POS.CURRENT_WALLET_STATE' | translate}}</span>
+              <span class="mat-headline pl-8"
                 [ngClass]="{'green-fg': selectedWallet.pockets.main > 0, 'red-fg':selectedWallet.pockets.main < 0}">
                 {{ selectedWallet.pockets.main | currency}}
-              </h3>
+              </span>
             </div>
     
             <mat-form-field fxFlex="100" fxFlex.gt-xs="50" class="pr-8 pl-8">
@@ -73,24 +73,13 @@
     
           </div>
           <!-- WALLET SUMMARY -->
-          <mat-divider fxFlex="100"></mat-divider>
+          <!-- <mat-divider fxFlex="100"></mat-divider> -->
     
           <!-- SALES AND PAYMENT -->
           <div fxFlex="100" fxLayout="row wrap">
-            <!-- RELOAD -->
-            <!-- <div fxFlex="100" fxFlex.gt-sm="50" name="chargebalanceForm" [formGroup]="chargebalanceForm" fxLayout="column">
-              <div>                
-              </div>
-            </div> -->
-            
+            <!-- RELOAD -->            
             <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="chargebalanceForm" [formGroup]="chargebalanceForm" fxLayout="column">
-              <mat-card-header>
-                  <mat-card-title>{{'POS.REALOAD_TITLE' | translate}}</mat-card-title>
-                <!-- <div mat-card-avatar class="example-header-image"></div>
-                            <mat-card-title>Shiba Inu</mat-card-title>
-                            <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
-              </mat-card-header>
-              <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+              <span class="mat-headline">{{'POS.REALOAD_TITLE' | translate}}</span>
               <mat-card-content>
                 <mat-form-field fxLayout="column" class="p-8">
                   <input matInput name="chargeValue" formControlName="chargeValue" maxlength="9" min="1"
@@ -111,11 +100,8 @@
             <!-- RELOAD -->
 
             <!-- PAYMENT -->
-            <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="productPaymentForm" [formGroup]="productPaymentForm" fxLayout="column">
-                <mat-card-header>
-                  <mat-card-title>{{'POS.PAYMENTS.TITLE' | translate}}</mat-card-title>
-                </mat-card-header>
-                <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+            <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="productPaymentForm" [formGroup]="productPaymentForm" fxLayout="column">               
+                <span class="mat-headline">{{'POS.PAYMENTS.TITLE' | translate}}</span>
                 <mat-card-content>
                     <mat-form-field fxLayout="column" class="p-8">
                         <input matInput name="plate" formControlName="plate" maxlength="9"

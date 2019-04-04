@@ -26,10 +26,11 @@
     <!-- CONTENT CARD -->
     <div class="content-card mat-white-bg">
     
-      <div>
-        <div fxFlex="100" class="p-12" fxLayout="row wrap">
+      <!-- CONTENT -->
+      <div fusePerfectScrollbar>
+        <div fxFlex="100" class="p-12" fxLayout="row wrap" >
           <!-- AUTOCOMPLETE -->
-          <div class="pt-12" fxFlex="100" fxLayoutAlign="start center" fxFlex fxFlex="100">
+          <div class="pt-12" fxFlex="50" fxFlex.gt-xs="100" fxLayoutAlign="start center">
               <label for="search" class="mr-8">
                   <mat-icon class="secondary-text">search</mat-icon>
                 </label>    
@@ -74,15 +75,9 @@
               </mat-card-content>
             </mat-card>
             <!-- WALLET SUMMARY -->
-            <!-- RELOAD -->
+            <!-- WITHDRAWAL -->
             <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="chargebalanceForm" [formGroup]="chargebalanceForm" fxLayout="column">
-                <mat-card-header>
-                    <mat-card-title>{{'WITHDRAWAL.WITHDRAWAL_TITLE' | translate}}</mat-card-title>
-                  <!-- <div mat-card-avatar class="example-header-image"></div>
-                              <mat-card-title>Shiba Inu</mat-card-title>
-                              <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
-                </mat-card-header>
-                <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+                <span class="mat-headline">{{'WITHDRAWAL.WITHDRAWAL_TITLE' | translate}}</span>                
                 <mat-card-content>
                   <mat-form-field fxLayout="column" class="p-8">
                     <input matInput name="withdrawalValue" formControlName="withdrawalValue" maxlength="9" min="1"
@@ -90,25 +85,29 @@
                       [options]="{ prefix: '$ ', thousands: ',', precision: '0' }">
                     <mat-error *ngIf="chargebalanceForm.hasError('required', ['withdrawalValue'])">
                       {{'WITHDRAWAL.BALANCE_WITHDRAWAL.AMOUNT_REQUIRED' | translate}}
-                    </mat-error>
+                    </mat-error>                    
                   </mat-form-field>
+                  <div *ngIf="selectedWallet  && chargebalanceForm.controls['withdrawalValue'].value > selectedWallet.pockets.main" class="label-error">
+                    {{'ERRORS.19003' | translate}}
+                  </div>
                 </mat-card-content>
                 <mat-card-actions>
-                  <button [disabled]="!selectedWallet || chargeBtnDisabled || chargebalanceForm.invalid" (click)="makeBalanceWithdraw()"
+                  <button [disabled]="!selectedWallet || chargeBtnDisabled || chargebalanceForm.invalid || (selectedWallet  && chargebalanceForm.controls['withdrawalValue'].value > selectedWallet.pockets.main)" (click)="makeBalanceWithdraw()"
                     mat-raised-button color="primary">
                     {{'WITHDRAWAL.BALANCE_WITHDRAWAL.MAKE_WITHDRAWAL' | translate}}
                   </button>
                 </mat-card-actions>
               </mat-card>
-            <!-- RELOAD -->
+            <!-- WITHDRAWAL -->
     
           </div>
     
         </div>    
-      </div>    
-      <!-- / CONTENT CARD -->
+      </div>
+      <!-- CONTENT -->  
+     
     </div>
-    <!-- / CENTER -->
+    <!-- CONTENT CARD -->
   </div>
 
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)='onSelectWalletEvent($event.option.value)'
