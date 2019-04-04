@@ -73,6 +73,7 @@ type Query {
 type Mutation {
   SalesPosReloadBalance(walletId: String!, businessId: String!, amount: Int!): CommandResponse
   SalesPosPayVehicleSubscription(walletId: String!, businessId: String!, plate: String!, pack: String!, qty: Int!): CommandResponse
+  SalesPosBalanceWithdraw(walletId: String!, businessId: String!, amount: Int!): CommandResponse
 }
 
 type Subscription {

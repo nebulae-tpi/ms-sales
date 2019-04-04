@@ -4,15 +4,29 @@ import { SharedModule } from '../../../core/modules/shared.module';
 import { DatePipe } from '@angular/common';
 import { FuseWidgetModule } from '../../../core/components/widget/widget.module';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
-import { DialogComponent } from './dialog/dialog.component';
+import { PosPaymentDialogComponent } from './posPayments/dialog/dialog.component';
 
-import { PosService } from './pos.service';
-import { PosComponent } from './pos.component';
+
+
+import { PosPaymentComponent } from './posPayments/pos-payment.component';
+import { PosPaymentService } from './posPayments/pos-payment.service';
+
+import { WithdrawalDialogComponent } from './withdrawals/dialog/dialog.component';
+import { WithdrawaltService } from './withdrawals/withdrawal.service';
+import { WithdrawalComponent } from './withdrawals/withdrawal.component'
 
 const routes: Routes = [
   {
     path: '',
-    component: PosComponent,
+    redirectTo: 'payments'
+  },
+  {
+    path: 'payments',
+    component: PosPaymentComponent,
+  },
+  {
+    path: 'withdrawal',
+    component: WithdrawalComponent,
   }
 ];
 
@@ -24,11 +38,13 @@ const routes: Routes = [
     CurrencyMaskModule
   ],
   declarations: [
-    DialogComponent,
-    PosComponent    
+    PosPaymentDialogComponent,
+    PosPaymentComponent,
+    WithdrawalDialogComponent,
+    WithdrawalComponent
   ],
-  entryComponents: [DialogComponent],
-  providers: [ PosService, DatePipe]
+  entryComponents: [PosPaymentDialogComponent, WithdrawalDialogComponent],
+  providers: [ DatePipe, PosPaymentService, WithdrawaltService]
 })
 
 export class PosModule {}

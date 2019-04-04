@@ -59,6 +59,9 @@ spec:
         # RESET LOCK INITIALIZE BACKED
         - name: LOCKVERSION
           value: "initial_lock"
+        # BACKEND PARAMETERS
+        - name: GMT_TO_SERVE
+          value: "GMT-5"
         
       volumes:
       - name: google-application-credentials

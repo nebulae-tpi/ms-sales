@@ -30,12 +30,11 @@
     <!-- / HEADER -->
 
     <!-- CONTENT CARD -->
-    <div class="content-card mat-white-bg">
+    <div class="content-card mat-white-bg" >
     
       <div>
         <div fxFlex="100" class="p-12" fxLayout="row wrap">
           <!-- AUTOCOMPLETE -->
-
           <div class="pt-12" fxFlex="100" fxLayoutAlign="start center" fxFlex fxFlex="100">
               <label for="search" class="mr-8">
                   <mat-icon class="secondary-text">search</mat-icon>
@@ -49,8 +48,8 @@
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-form-field>
-
           </div>
+          <!-- AUTOCOMPLETE -->
           <!-- WALLET SUMMARY -->
           <h2 fxFlex="100" *ngIf="!selectedWallet">{{'POS.MISSING_WALLET' | translate}}</h2>
           <div fxFlex="100" *ngIf="selectedWallet" fxLayout="row wrap" id="wallet-sumary">

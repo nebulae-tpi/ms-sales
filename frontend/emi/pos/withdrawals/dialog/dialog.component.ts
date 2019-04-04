@@ -2,19 +2,15 @@ import { Component, OnInit, Inject} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
-  selector: 'app-dialog.component',
+  selector: 'withdrawal-dialog.component',
   templateUrl: './dialog.component.html',
   styleUrls: ['./dialog.component.scss']
 })
-export class DialogComponent implements OnInit {
-  type: null;
-  value: 0;
+export class WithdrawalDialogComponent implements OnInit {
 
-  constructor(private dialogRef: MatDialogRef<DialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.type = data.type;
-    this.value = data.value;
-
-
+  constructor(
+    private dialogRef: MatDialogRef<WithdrawalDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 
   ngOnInit() {

@@ -1,0 +1,120 @@
+<div id="pos" class="page-layout carded fullwidth" fusePerfectScrollbar>
+
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg mat-accent-bg"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- CENTER -->
+  <div class="center">
+
+    <!-- HEADER -->
+    <div class="header white-fg" fxLayoutAlign="center center"
+      fxLayoutAlign.gt-xs="space-between center">
+
+      <!-- APP TITLE -->
+      <div class="logo my-12 m-sm-0" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">
+          business
+        </mat-icon>
+        <span class="logo-text h1" *fuseIfOnDom
+          [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">{{'WITHDRAWAL.TITLE' | translate}}</span>
+      </div>
+      <!-- / APP TITLE -->
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT CARD -->
+    <div class="content-card mat-white-bg">
+    
+      <div>
+        <div fxFlex="100" class="p-12" fxLayout="row wrap">
+          <!-- AUTOCOMPLETE -->
+          <div class="pt-12" fxFlex="100" fxLayoutAlign="start center" fxFlex fxFlex="100">
+              <label for="search" class="mr-8">
+                  <mat-icon class="secondary-text">search</mat-icon>
+                </label>    
+              <mat-form-field  fxFlex.gt-sm="50">
+                <input id="search" #walletInputFilter matInput [placeholder]="'WITHDRAWAL.SELECT_WALLET' | translate"
+                  [formControl]="walletFilterCtrl" fxFlex [matAutocomplete]="auto">
+                  
+                <button mat-button *ngIf="selectedWallet" matSuffix mat-icon-button aria-label="Clear"
+                  (click)="clearSelectedWallet()">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+
+          </div>
+          <!-- AUTOCOMPLETE -->
+          
+          <!-- <mat-divider fxFlex="100"></mat-divider> -->
+    
+          <div fxFlex="100" fxLayout="row wrap">
+             <!-- WALLET SUMMARY -->
+            <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="chargebalanceForm" [formGroup]="chargebalanceForm"
+              fxLayout="column">
+              <mat-card-header *ngIf="selectedWallet">            
+                <mat-card-title>{{'WITHDRAWAL.CURRENT_WALLET_STATE' | translate}}
+                  <span [ngClass]="{'green-fg': selectedWallet.pockets.main > 0, 'red-fg':selectedWallet.pockets.main < 0}">
+                    {{ selectedWallet.pockets.main | currency}}
+                  </span>
+                </mat-card-title>
+              </mat-card-header>
+              <mat-card-content *ngIf="selectedWallet" fxLayout="row wrap">
+                <mat-form-field fxFlex="100" fxFlex.gt-xs="50" class="pr-8 pl-8">
+                  <input matInput readonly placeholder="{{ 'WITHDRAWAL.WALLET_INFO.NAME' | translate }}"
+                    value="{{ selectedWallet.fullname }}">
+                </mat-form-field>
+                <mat-form-field fxFlex="100" fxFlex.gt-xs="50" class="pr-8 pl-8">
+                  <input matInput readonly placeholder="{{ 'WITHDRAWAL.WALLET_INFO.DOCUMENT_ID' | translate }}"
+                    value="{{ selectedWallet.documentId }}">
+                </mat-form-field>            
+              </mat-card-content>
+              <mat-card-content *ngIf="!selectedWallet">
+                <h2>{{'WITHDRAWAL.MISSING_WALLET' | translate}}</h2>
+              </mat-card-content>
+            </mat-card>
+            <!-- WALLET SUMMARY -->
+            <!-- RELOAD -->
+            <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="chargebalanceForm" [formGroup]="chargebalanceForm" fxLayout="column">
+                <mat-card-header>
+                    <mat-card-title>{{'WITHDRAWAL.WITHDRAWAL_TITLE' | translate}}</mat-card-title>
+                  <!-- <div mat-card-avatar class="example-header-image"></div>
+                              <mat-card-title>Shiba Inu</mat-card-title>
+                              <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
+                </mat-card-header>
+                <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+                <mat-card-content>
+                  <mat-form-field fxLayout="column" class="p-8">
+                    <input matInput name="withdrawalValue" formControlName="withdrawalValue" maxlength="9" min="1"
+                      placeholder="{{'WITHDRAWAL.BALANCE_WITHDRAWAL.AMOUNT' | translate}}" currencyMask
+                      [options]="{ prefix: '$ ', thousands: ',', precision: '0' }">
+                    <mat-error *ngIf="chargebalanceForm.hasError('required', ['withdrawalValue'])">
+                      {{'WITHDRAWAL.BALANCE_WITHDRAWAL.AMOUNT_REQUIRED' | translate}}
+                    </mat-error>
+                  </mat-form-field>
+                </mat-card-content>
+                <mat-card-actions>
+                  <button [disabled]="!selectedWallet || chargeBtnDisabled || chargebalanceForm.invalid" (click)="makeBalanceWithdraw()"
+                    mat-raised-button color="primary">
+                    {{'WITHDRAWAL.BALANCE_WITHDRAWAL.MAKE_WITHDRAWAL' | translate}}
+                  </button>
+                </mat-card-actions>
+              </mat-card>
+            <!-- RELOAD -->
+    
+          </div>
+    
+        </div>    
+      </div>    
+      <!-- / CONTENT CARD -->
+    </div>
+    <!-- / CENTER -->
+  </div>
+
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)='onSelectWalletEvent($event.option.value)'
+    [displayWith]="displayFnWrapper()">
+    <mat-option *ngFor="let wallet of walletQueryFiltered$ | async" [value]="wallet">
+      {{ wallet.fullname }}:{{ ' ' + wallet.documentId }}
+      ({{ 'WITHDRAWAL.ENTITY_TYPES.' + wallet.type | translate }})
+    </mat-option>
+  </mat-autocomplete>

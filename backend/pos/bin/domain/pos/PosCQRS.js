@@ -146,6 +146,37 @@ class PosCQRS {
 
   }
 
+  salesPosBalanceWithdraw$({ args }, authToken){
+    return RoleValidator.checkPermissions$(
+      authToken.realm_access.roles,
+      "Sales",
+      "salesPosPayVehicleSubscription",
+      PERMISSION_DENIED,
+      ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
+    ).pipe(
+      mergeMap(() => PosDA.getWalletById$(args.walletId)),
+      mergeMap(wallet => {
+        return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < args.amount))
+          ? this.createCustomError$(INSUFFICIENT_BALANCE, 'salesPosPayVehicleSubscription')
+          : of({}) 
+      }),
+      mergeMap(evtData => eventSourcing.eventStore.emitEvent$(
+        new Event({
+          eventType: "SalesPosWithdrawalCommitted",
+          eventTypeVersion: 1,
+          aggregateType: "Sale",
+          aggregateId: args.businessId,
+          data: args,
+          user: authToken.preferred_username
+        })
+      )),
+      map(() => ({ code: 200, message: `Reload Balance was made` })),
+      mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
+      catchError(err => GraphqlResponseTools.handleError$(err))
+    );
+    
+  }
+
             /**
    * Creates a custom error observable
    * @param {*} error Error

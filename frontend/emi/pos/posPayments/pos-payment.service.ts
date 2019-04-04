@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs';
-import { GatewayService } from '../../../api/gateway.service';
+import { GatewayService } from '../../../../api/gateway.service';
 import {
   getHelloWorld,
   SalesHelloWorldSubscription,
@@ -10,10 +9,10 @@ import {
   SalesPosPayVehicleSubscription,
   SalesPoswalletsUpdates,
   SalesPosProductPrices
-} from './gql/pos';
+} from '../gql/pos';
 
 @Injectable()
-export class PosService {
+export class PosPaymentService {
 
 
   constructor(private gateway: GatewayService) {

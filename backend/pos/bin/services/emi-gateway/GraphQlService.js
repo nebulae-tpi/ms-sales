@@ -161,6 +161,10 @@ class GraphQlService {
         aggregateType: "Pos",
         messageType: "emigateway.graphql.query.salesPosProductPrices"
       },
+      {
+        aggregateType: "Pos",
+        messageType: "emigateway.graphql.mutation.salesPosBalanceWithdraw"
+      },
     ];
   }
 
@@ -184,6 +188,10 @@ class GraphQlService {
       },
       "emigateway.graphql.query.salesPosProductPrices":{
         fn: PosCQRS.getSalesPosProductPrices$,
+        obj: PosCQRS
+      },
+      "emigateway.graphql.mutation.salesPosBalanceWithdraw": {
+        fn: PosCQRS.salesPosBalanceWithdraw$,
         obj: PosCQRS
       }
     };

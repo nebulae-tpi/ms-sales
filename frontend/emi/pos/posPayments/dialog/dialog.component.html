@@ -1,8 +1,8 @@
 <h1 mat-dialog-title>{{data.dialogTitle | translate}}</h1>
 <mat-dialog-content>
   
-  <p *ngIf="type == 'RECHARGE'" >{{data.dialogMessage}} {{ value | currency }} ? </p>
-  <p *ngIf="type == 'PURCHASE'" >{{data.dialogMessage}} {{ value }} ? </p>
+  <p *ngIf="data.type == 'RECHARGE'" >{{data.dialogMessage}} {{ data.value | currency }} ? </p>
+  <p *ngIf="data.type == 'PURCHASE'" >{{data.dialogMessage}} {{ data.value }} ? </p>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-raised-button (click)="pushButton(true)">Ok</button>

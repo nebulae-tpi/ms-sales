@@ -59,6 +59,15 @@ export const SalesPosPayVehicleSubscription = gql`
   }
 `;
 
+export const SalesPosBalanceWithdraw = gql`
+  mutation SalesPosBalanceWithdraw($walletId: String!, $businessId: String!, $amount: Int! ){
+    SalesPosBalanceWithdraw(walletId: $walletId, businessId: $businessId, amount: $amount){
+      code
+      message
+    }
+  }
+`;
+
 //Hello world sample, please remove
 export const SalesHelloWorldSubscription = gql`
   subscription{

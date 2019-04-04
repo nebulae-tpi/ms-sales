@@ -4,7 +4,7 @@
         "src": "frontend/emi/pos",
         "groups": [
             {
-              "id": "GROUP_NAME",
+              "id": "POS",
               "icon": "location_searching",
               "translate": {
                 "en": "Group Name",
@@ -15,20 +15,35 @@
           ],
         "contents": [
             {
-                "groupId": "GROUP_NAME",
-                "id": "pos",
+                "groupId": "POS",
+                "id": "posPayments",
                 "icon": "dashboard",
                 "translate": {
-                    "en": "pos_en",
-                    "es": "pos_es"
+                    "en": "POS",
+                    "es": "POS"
                 },
-                "navURL": "/pos",
+                "navURL": "/pos/payments",
                 "path": "pos",
                 "loadChildren": "./main/content/pos/pos.module#PosModule",
                 "priority": 1000,
                 "roles" : ["developer", "PLATFORM-ADMIN", "POS"],
                 "default" : false
-            }            
+            },
+            {
+              "groupId": "POS",
+              "id": "withdrawal",
+              "icon": "dashboard",
+              "translate": {
+                  "en": "Withdrawals",
+                  "es": "Retiros"
+              },
+              "navURL": "/pos/withdrawal",
+              "path": "pos",
+              "loadChildren": "./main/content/pos/pos.module#PosModule",
+              "priority": 1000,
+              "roles" : ["developer", "PLATFORM-ADMIN", "POS"],
+              "default" : false
+          }        
         ],
         "preBuildCommands": [
           "npm install ng2-currency-mask"

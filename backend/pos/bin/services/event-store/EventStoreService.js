@@ -131,7 +131,10 @@ class EventStoreService {
         fn: PosES.handleSaleVehicleSubscriptionCommited$,
         obj: PosES
       },
-
+      SalesPosWithdrawalCommitted:{
+        fn: PosES.handleSalesPosWithdrawalCommitted$,
+        obj: PosES
+      },
       // wallet
       WalletPocketUpdated: {
         fn: WalletES.handleWalletPocketUpdated$,
@@ -155,7 +158,10 @@ class EventStoreService {
         aggregateType: "Sale",
         eventType: "SaleVehicleSubscriptionCommited"
       },
-
+      {
+        aggregateType: "Sale",
+        eventType: "SalesPosWithdrawalCommitted"
+      },
       // Wallet
       {
         aggregateType: "Wallet",

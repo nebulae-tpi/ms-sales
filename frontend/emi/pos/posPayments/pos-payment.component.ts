@@ -1,6 +1,6 @@
-import { PosService } from './pos.service';
+
 import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { fuseAnimations } from '../../../core/animations';
+import { fuseAnimations } from '../../../../core/animations';
 import { TranslateService } from '@ngx-translate/core';
 import {
   map,
@@ -22,11 +22,11 @@ import {
   FormControl,
   Validators
 } from '@angular/forms';
-import { ToolbarService } from '../../toolbar/toolbar.service';
-import { locale as english } from './i18n/en';
-import { locale as spanish } from './i18n/es';
-import { FuseTranslationLoaderService } from '../../../core/services/translation-loader.service';
-import { DialogComponent } from './dialog/dialog.component';
+import { ToolbarService } from '../../../toolbar/toolbar.service';
+import { locale as english } from '../i18n/en';
+import { locale as spanish } from '../i18n/es';
+import { FuseTranslationLoaderService } from '../../../../core/services/translation-loader.service';
+import { PosPaymentDialogComponent } from './dialog/dialog.component';
 
 //////////// ANGULAR MATERIAL ///////////
 import {
@@ -36,16 +36,17 @@ import {
   MatSnackBar,
   MatDialog
 } from '@angular/material';
+import { PosPaymentService } from './pos-payment.service';
 
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'pos-component',
-  templateUrl: './pos.component.html',
-  styleUrls: ['./pos.component.scss'],
+  selector: 'pos-payment-component',
+  templateUrl: './pos-payment.component.html',
+  styleUrls: ['./pos-payment.component.scss'],
   animations: fuseAnimations
 })
-export class PosComponent implements OnInit, OnDestroy {
+export class PosPaymentComponent implements OnInit, OnDestroy {
 
   chargebalanceForm: FormGroup;
   productPaymentForm: FormGroup;
@@ -70,7 +71,7 @@ export class PosComponent implements OnInit, OnDestroy {
   @ViewChild('walletInputFilter') walletInputFilter: ElementRef;
 
   constructor(
-    private posService: PosService,
+    private posService: PosPaymentService,
     private translate: TranslateService,
     private toolbarService: ToolbarService,
     private translationLoader: FuseTranslationLoaderService,
@@ -122,7 +123,6 @@ export class PosComponent implements OnInit, OnDestroy {
   }
 
   makeBalanceReload(){
-    console.log(this.chargebalanceForm.getRawValue());
     const valueToReload = this.chargebalanceForm.getRawValue().chargeValue;
 
     return this.showConfirmationDialog$(
@@ -138,16 +138,16 @@ export class PosComponent implements OnInit, OnDestroy {
         return buId;
       }),
       mergeMap((buId) => this.posService.reloadBalance$(this.selectedWallet._id, buId, valueToReload)),
+      mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
       tap(() => this.chargeBtnDisabled = true ),
       mergeMap(r => {
-        console.log('GRAPQL RESPONSE =>', r);
         if (r.data.SalesPosReloadBalance.code === 200){
-          this.showMessageSnackbar('SUCCESS.1');
-          this.chargeBtnDisabled = false;
+          this.showMessageSnackbar('SUCCESS.1');         
         }
         this.chargebalanceForm = new FormGroup({
           chargeValue: new FormControl(0, [Validators.required]),
         });
+        this.chargeBtnDisabled = false;
         return of({});
       })
 
@@ -157,7 +157,6 @@ export class PosComponent implements OnInit, OnDestroy {
   }
 
   onSelectWalletEvent(wallet){
-    console.log('onSelectWalletEvent', wallet);
     this.selectedWallet = wallet;
 
     this.listenWalletUpdates(wallet._id);
@@ -175,7 +174,7 @@ export class PosComponent implements OnInit, OnDestroy {
 
   showConfirmationDialog$(dialogMessage, dialogTitle, type, value) {
     return this.dialog
-      .open(DialogComponent, {
+      .open(PosPaymentDialogComponent, {
         data: {
           dialogMessage,
           dialogTitle,
@@ -190,7 +189,6 @@ export class PosComponent implements OnInit, OnDestroy {
   }
 
   makePayment(){
-    console.log(this.productPaymentForm.getRawValue());
     const args = this.productPaymentForm.getRawValue();
     return this.showConfirmationDialog$(
       this.translate.instant('POS.DIALOG.CONFIRMATION_PURCHASE'),
@@ -204,13 +202,12 @@ export class PosComponent implements OnInit, OnDestroy {
         }
         return buId;
       }),
-      mergeMap((buId) => this.posService.payVehicleSubscription$(this.selectedWallet._id, buId, args.plate, args.pack, args.qty)),
+      mergeMap((buId) => this.posService.payVehicleSubscription$(this.selectedWallet._id, buId, args.plate.toUpperCase() , args.pack, args.qty)),
       mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
       filter(r => (r && r.data && r.data.SalesPosPayVehicleSubscription)),
 
       tap(() => this.paymentBtnDisabled = true ),
       mergeMap(r => {
-        console.log('GRAPQL RESPONSE =>', r);
         if (r.data.SalesPosPayVehicleSubscription.code === 200){
           this.showMessageSnackbar('SUCCESS.1');
         }
@@ -263,7 +260,6 @@ export class PosComponent implements OnInit, OnDestroy {
         mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
         filter(resp => (!resp.errors && resp.data && resp.data.salesWalletsByFilter && resp.data.salesWalletsByFilter.length > 0 ) ),
         mergeMap(result => from(result.data.salesWalletsByFilter)),
-        tap(r => console.log(r)),
         toArray()
       );
   }

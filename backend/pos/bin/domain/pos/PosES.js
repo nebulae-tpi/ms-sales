@@ -89,6 +89,34 @@ class PosES {
       )),
     );
   }
+
+  handleSalesPosWithdrawalCommitted$({aid, data, user}){
+    console.log("handleSalesPosWithdrawalCommitted$", aid, data);
+    return of({})
+    .pipe(
+      map(() => ({
+        _id: Crosscutting.generateHistoricalUuid(),
+        type: 'WITHDRAWAL',
+        concept: 'DOORMAN_WITHDRAWAL',      
+        amount: data.amount,
+        walletId: data.walletId,
+        fromId: data.walletId,
+        toId: data.businessId
+      })),
+      // to to something before send Other event 
+      mergeMap((tx) => eventSourcing.eventStore.emitEvent$(
+        new Event({
+          eventType: "WalletTransactionCommited",
+          eventTypeVersion: 1,
+          aggregateType: "Wallet",
+          aggregateId: uuidv4(),
+          data: tx,
+          user: user
+        })
+      )),
+    );
+
+  }
 }
 
 /**

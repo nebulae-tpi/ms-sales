@@ -106,7 +106,7 @@ module.exports = {
                             2000
                         )
                     ),
-                    catchError(err => handleError$(err, "persistBusiness")),
+                    catchError(err => handleError$(err, "SalesPosReloadBalance")),
                     mergeMap(response => getResponseFromBackEnd$(response))
                 )
                 .toPromise();
@@ -127,7 +127,26 @@ module.exports = {
                             2000
                         )
                     ),
-                    catchError(err => handleError$(err, "persistBusiness")),
+                    catchError(err => handleError$(err, "SalesPosPayVehicleSubscription")),
+                    mergeMap(response => getResponseFromBackEnd$(response))
+                )
+                .toPromise();
+        },
+        SalesPosBalanceWithdraw(root, args, context) {
+            return RoleValidator.checkPermissions$(
+                context.authToken.realm_access.roles, 'ms-Sales', 'SalesPosBalanceWithdraw',
+                PERMISSION_DENIED_ERROR_CODE, 'Permission denied', ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
+                )
+                .pipe(
+                    mergeMap(() =>
+                        context.broker.forwardAndGetReply$(
+                            "Pos",
+                            "emigateway.graphql.mutation.salesPosBalanceWithdraw",
+                            { root, args, jwt: context.encodedToken },
+                            2000
+                        )
+                    ),
+                    catchError(err => handleError$(err, "SalesPosBalanceWithdraw")),
                     mergeMap(response => getResponseFromBackEnd$(response))
                 )
                 .toPromise();
