@@ -15,7 +15,6 @@ class WalletDA {
         mongoDB = mongoDbInstance;
         observer.next("using given mongo instance");
       } else {
-        console.log('-------------using singleton system-wide mongo instance');
         mongoDB = require("../../../data/MongoDB").singleton();
         observer.next(" -------------using singleton system-wide mongo instance");
       }
@@ -24,6 +23,7 @@ class WalletDA {
   }
 
   static updateOne$(wallet){
+    console.log("updateOne$", wallet);
     const collection = mongoDB.db.collection(COLLECTION_NAME);
     return defer(() => collection.findOneAndUpdate({_id: wallet._id}, {$set: { ...wallet }}, {upsert: true} ))
   }

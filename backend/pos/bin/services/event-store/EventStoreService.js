@@ -140,7 +140,6 @@ class EventStoreService {
         fn: WalletES.handleWalletUpdated$,
         obj: WalletES
       }
-
     };
   }
 

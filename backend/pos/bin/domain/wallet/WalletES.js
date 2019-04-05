@@ -1,7 +1,7 @@
 "use strict";
 
-const { of, forkJoin} = require("rxjs");
-const { tap, mergeMap, catchError, map, mapTo, delay } = require("rxjs/operators");
+const { of, forkJoin } = require("rxjs");
+const { tap, mergeMap, catchError, map, mapTo, delay, filter } = require("rxjs/operators");
 const broker = require("../../tools/broker/BrokerFactory")();
 const MATERIALIZED_VIEW_TOPIC = "emi-gateway-materialized-view-updates";
 const Event = require("@nebulae/event-store").Event;
@@ -23,6 +23,7 @@ class WalletES {
     console.log("handleWalletUpdated$", aid, data);
     return of(data)
       .pipe(
+        filter(e => e != null),
         mergeMap(wallet => forkJoin(
           broker.send$(MATERIALIZED_VIEW_TOPIC, 'WalletsUpdateReported', wallet),
           WalletDA.updateOne$(wallet)
