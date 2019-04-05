@@ -9,7 +9,7 @@ const eventSourcing = require("../../tools/EventSourcing")();
 const uuidv4 = require("uuid/v4");
 const TransactionsDA = require("./data-access/TransactionsDA");
 const Crosscutting = require("../../tools/Crosscutting");
-const vehicleSubscriptionPricePerWeek = process.env.VEHICLE_SUBS_WEEK_PRICE;
+const vehicleSubscriptionPricePerWeek = process.env.VEHICLE_SUBS_WEEK_PRICE || 12000;
 const PRODUCT_DAYS_PACK_MAPPER = { WEEK: 7, DAY: 1 }
 
 /**
