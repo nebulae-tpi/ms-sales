@@ -94,8 +94,8 @@ class PosES {
     .pipe(
       map(() => ({
         _id: Crosscutting.generateHistoricalUuid(),
-        type: 'WITHDRAWAL',
-        concept: 'DOORMAN_WITHDRAWAL',      
+        type: 'MOVEMENT',
+        concept: 'WITHDRAWAL',      
         amount: data.amount,
         fromId: data.walletId,
         toId: data.businessId
