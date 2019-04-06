@@ -11,11 +11,13 @@ const Rx = require('rxjs');
 
 const Pos = require("./domain/pos");
 const Wallet = require("./domain/wallet");
+const Vehicle = require("./domain/vehicle");
 
 const start = () => {
     Rx.concat(
         Wallet.start$,
         Pos.start$,
+        Vehicle.start$,
         // initializing needed resources
         mongoDB.start$(),
         eventSourcing.eventStore.start$(),
