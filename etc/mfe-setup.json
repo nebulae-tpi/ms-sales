@@ -41,7 +41,7 @@
               "path": "pos",
               "loadChildren": "./main/content/pos/pos.module#PosModule",
               "priority": 1000,
-              "roles" : ["developer", "PLATFORM-ADMIN", "POS"],
+              "roles" : ["developer", "PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"],
               "default" : false
           }        
         ],
