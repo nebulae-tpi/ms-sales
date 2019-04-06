@@ -3,6 +3,7 @@ const { of, from, concat } = require("rxjs");
 const eventSourcing = require("../../tools/EventSourcing")();
 const { PosES } = require("../../domain/pos");
 const { WalletES } = require("../../domain/wallet");
+const { VehicleES } = require("../../domain/vehicle");
 const { map, switchMap, filter, mergeMap, concatMap } = require('rxjs/operators');
 /**
  * Singleton instance
@@ -11,7 +12,7 @@ let instance;
 /**
  * Micro-BackEnd key
  */
-const mbeKey = "ms-sales_mbe_pos_4";
+const mbeKey = "ms-sales_mbe_pos_5";
 
 class EventStoreService {
   constructor() {
@@ -139,7 +140,21 @@ class EventStoreService {
       WalletUpdated: {
         fn: WalletES.handleWalletUpdated$,
         obj: WalletES
-      }
+      },
+      //VEHICLE
+      VehicleCreated: {
+        fn: VehicleES.handleVehicleCreated$,
+        obj: VehicleES
+      },
+      VehicleGeneralInfoUpdated: {
+        fn: VehicleES.handleVehicleGeneralInfoUpdated$,
+        obj: VehicleES
+      },
+      VehicleStateUpdated: {
+        fn: VehicleES.handleVehicleStateUpdated$,
+        obj: VehicleES
+      },
+      
     };
   }
 
@@ -165,7 +180,20 @@ class EventStoreService {
       {
         aggregateType: "Wallet",
         eventType: "WalletUpdated"
-      }
+      },
+      // VEHICLE
+      {
+        aggregateType: "Vehicle",
+        eventType: "VehicleCreated"
+      },
+      {
+        aggregateType: "Vehicle",
+        eventType: "VehicleGeneralInfoUpdated"
+      },
+      {
+        aggregateType: "Vehicle",
+        eventType: "VehicleStateUpdated"
+      },
     ]
   }
 }

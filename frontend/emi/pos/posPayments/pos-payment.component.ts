@@ -205,7 +205,6 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       mergeMap((buId) => this.posService.payVehicleSubscription$(this.selectedWallet._id, buId, args.plate.toUpperCase() , args.pack, args.qty)),
       mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
       filter(r => (r && r.data && r.data.SalesPosPayVehicleSubscription)),
-
       tap(() => this.paymentBtnDisabled = true ),
       mergeMap(r => {
         if (r.data.SalesPosPayVehicleSubscription.code === 200){

@@ -6,6 +6,8 @@ const { take, mergeMap, catchError, map, toArray, tap } = require('rxjs/operator
 const Event = require("@nebulae/event-store").Event;
 const eventSourcing = require("../../tools/EventSourcing")();
 const PosDA = require('./data-access/PosDA');
+const VehicleDA = require('./data-access/VehicleDA');
+
 const TransactionsDA = require('./data-access/TransactionsDA');
 const broker = require("../../tools/broker/BrokerFactory")();
 const MATERIALIZED_VIEW_TOPIC = "emi-gateway-materialized-view-updates";
@@ -17,7 +19,9 @@ const {
   INTERNAL_SERVER_ERROR_CODE,
   PERMISSION_DENIED,
   PERMISSION_DENIED_ERROR,
-  INSUFFICIENT_BALANCE
+  INSUFFICIENT_BALANCE,
+  VEHICLE_NO_FOUND,
+  VEHICLE_IS_INACTIVE
 } = require("../../tools/customError");
 const Crosscutting = require("../../tools/Crosscutting");
 const vehicleSubscriptionPricePerWeek = process.env.VEHICLE_SUBS_WEEK_PRICE;
@@ -90,6 +94,7 @@ class PosCQRS {
   }
 
   salesPosPayVehicleSubscription$({ args }, authToken){
+    console.log("salesPosPayVehicleSubscription$", args);
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles,
       "Sales",
@@ -109,17 +114,25 @@ class PosCQRS {
           return of(roles);
       }),
       mergeMap(() => PosDA.getWalletById$(args.walletId)),
+      // VALIDATIONS
       mergeMap(wallet => {
         return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < vehicleSubscriptionPricePerWeek * args.qty))
           ? this.createCustomError$(INSUFFICIENT_BALANCE, 'salesPosPayVehicleSubscription')
-          : of({}) 
-      }),   
-      mergeMap(evtData => eventSourcing.eventStore.emitEvent$(
+          : VehicleDA.findByLicensePlate$(args.plate)
+      }),
+      mergeMap(v => !v 
+        ? this.createCustomError$(VEHICLE_NO_FOUND, "salesPosVehicleExist")
+        : (v && !v.state)
+          ? this.createCustomError$(VEHICLE_IS_INACTIVE, "salesPosVehicleExist")
+          : of({})
+      ),
+      tap(vr => console.log("%%%%%%%%%%%%%%%%%%%%  TO SEND SaleVehicleSubscriptionCommited ", args)),
+      mergeMap(() => eventSourcing.eventStore.emitEvent$(
         new Event({
           eventType: "SaleVehicleSubscriptionCommited",
           eventTypeVersion: 1,
           aggregateType: "Sale",
-          aggregateId: args.businessId,
+          aggregateId: uuidv4(),
           data: args,
           user: authToken.preferred_username
         })
@@ -177,7 +190,7 @@ class PosCQRS {
     
   }
 
-            /**
+  /**
    * Creates a custom error observable
    * @param {*} error Error
    * @param {*} methodError Method where the error was generated

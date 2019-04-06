@@ -11,12 +11,16 @@ const graphQlService = require('./services/emi-gateway/GraphQlService')();
 const Rx = require('rxjs');
 const Pos = require("./domain/pos");
 const Wallet = require("./domain/wallet");
+const Vehicle = require("./domain/vehicle");
+
+
 const start = () => {
     Rx.concat(
         eventSourcing.eventStore.start$(),
         eventStoreService.start$(),
         Wallet.start$,
         Pos.start$,
+        Vehicle.start$,
         mongoDB.start$(),
         graphQlService.start$()
     ).subscribe(

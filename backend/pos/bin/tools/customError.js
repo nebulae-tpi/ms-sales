@@ -48,5 +48,8 @@ class CustomError extends Error {
     DefaultError,
     PERMISSION_DENIED: 00002,
     PERMISSION_DENIED_ERROR,
-    INSUFFICIENT_BALANCE:  {code: 19003, description: 'Insufficient balance'}
+    INSUFFICIENT_BALANCE:  {code: 19003, description: 'Insufficient balance'},
+    VEHICLE_NO_FOUND: {code: 19004, description: 'Vehicle not found'},
+    VEHICLE_IS_INACTIVE: {code: 19005, description: 'Vehicle is inactive'},
+
   } 

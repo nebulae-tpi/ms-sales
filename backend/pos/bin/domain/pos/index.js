@@ -6,12 +6,13 @@ const PosES = require("./PosES")();
 
 const PosDA = require("./data-access/PosDA");
 const TransactionsDA = require("./data-access/TransactionsDA");
+const VehicleDA = require("./data-access/VehicleDA");
 
 module.exports = {
   /**
    * domain start workflow
    */
-  start$: concat(PosDA.start$(), TransactionsDA.start$() ),
+  start$: concat(PosDA.start$(), TransactionsDA.start$(), VehicleDA.start$() ),
   /**
    * @returns {PosCQRS}
    */

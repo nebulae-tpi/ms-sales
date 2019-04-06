@@ -4,7 +4,7 @@ export const locale = {
     POS:{
       CANCEL: 'Cancel',
       TITLE: 'POS',
-      MISSING_WALLET:'Select a Wallet to Operate',
+      MISSING_WALLET:'Select a Wallet',
       REALOAD_TITLE: 'Charge Balance',
       CURRENT_WALLET_STATE: 'Current Balance: ',
       SELECT_WALLET: 'Select a Wallet',
@@ -48,11 +48,13 @@ export const locale = {
       
     },
     ERRORS:{
-      2: 'Please Select a Business Unit',
-      19003: "Insufficient balance"
+      2: 'Please Select a Business Unit',      
+      19003: "Insufficient balance",
+      19004: 'Vehicle doesn\'t Exist in System',
+      19005: 'Vehicle doesn\'t active',
     },
     SUCCESS:{
-      1: 'Balance Reload Sent',
+      1: 'Balance Reload Successful',
      
     }
     
