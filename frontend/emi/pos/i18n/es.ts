@@ -54,7 +54,7 @@ export const locale = {
     },
     SUCCESS:{
       1: 'Recarga Exitosa',
-     
+      2: 'Pago de Subscripción Exitoso'     
     }
   }
 };

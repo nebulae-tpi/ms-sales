@@ -122,11 +122,10 @@ class PosCQRS {
       }),
       mergeMap(v => !v 
         ? this.createCustomError$(VEHICLE_NO_FOUND, "salesPosVehicleExist")
-        : (v && !v.state)
+        : (v && !v.active)
           ? this.createCustomError$(VEHICLE_IS_INACTIVE, "salesPosVehicleExist")
           : of({})
       ),
-      tap(vr => console.log("%%%%%%%%%%%%%%%%%%%%  TO SEND SaleVehicleSubscriptionCommited ", args)),
       mergeMap(() => eventSourcing.eventStore.emitEvent$(
         new Event({
           eventType: "SaleVehicleSubscriptionCommited",

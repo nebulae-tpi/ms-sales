@@ -208,7 +208,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       tap(() => this.paymentBtnDisabled = true ),
       mergeMap(r => {
         if (r.data.SalesPosPayVehicleSubscription.code === 200){
-          this.showMessageSnackbar('SUCCESS.1');
+          this.showMessageSnackbar('SUCCESS.2');
         }
         this.productPaymentForm = new FormGroup({
           plate: new FormControl('', [Validators.required]),

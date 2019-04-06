@@ -3,7 +3,7 @@
 require("datejs");
 let mongoDB = undefined;
 //const mongoDB = require('./MongoDB')();
-const COLLECTION_NAME = "Wallet";
+const COLLECTION_NAME = "Vehicle";
 const { CustomError } = require("../../../tools/customError");
 const { map, mergeMap, reduce, tap } = require("rxjs/operators");
 const { of, Observable, defer, from, range } = require("rxjs");
@@ -23,6 +23,7 @@ class VehicleDA {
   }
 
   static findByLicensePlate$(licensePlate){
+    console.log("findByLicensePlate$", licensePlate);
     const collection = mongoDB.db.collection(COLLECTION_NAME);
     return defer(() => collection.findOne({licensePlate : licensePlate}));
   }

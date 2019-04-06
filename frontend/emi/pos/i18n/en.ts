@@ -55,6 +55,7 @@ export const locale = {
     },
     SUCCESS:{
       1: 'Balance Reload Successful',
+      2: 'Successful Subscription Payment'
      
     }
     
