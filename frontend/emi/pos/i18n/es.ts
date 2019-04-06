@@ -49,7 +49,7 @@ export const locale = {
     ERRORS:{
       2: 'Seleccione Unidad de Negocio',
       19003: "Saldo Insuficiente",
-      19004: 'El Vehículo no Exite en el Sistema',
+      19004: 'El Vehículo no Existe en el Sistema',
       19005: 'El Vehículo no Está Activo',
     },
     SUCCESS:{
