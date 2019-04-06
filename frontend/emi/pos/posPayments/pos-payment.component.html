@@ -54,7 +54,7 @@
           
           <div class="p-12" fxFlex="100" *ngIf="selectedWallet" fxLayout="row wrap" id="wallet-sumary">
     
-            <div fxFlex="100" fxLayout="row" fxLayoutAlign="start center">
+            <div fxFlex="100" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutAlign.gt-xs="start center">
               <span class="mat-headline">{{'POS.CURRENT_WALLET_STATE' | translate}}</span>
               <span class="mat-headline pl-8"
                 [ngClass]="{'green-fg': selectedWallet.pockets.main > 0, 'red-fg':selectedWallet.pockets.main < 0}">
@@ -110,8 +110,9 @@
                           {{'POS.PAYMENTS.LICENSE_PLATE_REQUIRED' | translate}}
                         </mat-error>
                       </mat-form-field>
-                      <div class="p-8" fxLayoutAlign="start center" fxFlexLayout="row wrap">
-                        <mat-form-field fxflex="50">
+
+                      <div fxFlexLayoutAlign="start center" fxLayout="row wrap">
+                        <mat-form-field class="p-8" fxFlex="100" fxFlex.gt-xs="50" >
                           <mat-label>{{'POS.PAYMENTS.PACK_NAME_LBL' | translate}}</mat-label>
                           <mat-select name="pack" formControlName="pack">
                             <mat-option *ngFor="let food of packOptions" [value]="food">
@@ -120,7 +121,7 @@
                           </mat-select>
                         </mat-form-field>
                     
-                        <mat-form-field fxFlex="50" fxLayout="column" class="p-8">
+                        <mat-form-field class="p-8" fxFlex="100" fxFlex.gt-xs="50" fxLayout="column">
                           <input matInput type="number" name="qty" formControlName="qty" max="100" min="0"
                             placeholder="{{'POS.PAYMENTS.PACK_QUANTITY' | translate}}">
                           <mat-error *ngIf="productPaymentForm.hasError('min', ['qty'])">
@@ -131,7 +132,7 @@
                 </mat-card-content>
                 <mat-card-actions>
                   <button mat-raised-button color="primary" (click)="makePayment()"
-                    [disabled]="!selectedWallet || paymentBtnDisabled || productPaymentForm.invalid ">
+                    [disabled]="!selectedWallet || paymentBtnDisabled || productPaymentForm.invalid || !selectedBusinessId ">
                     {{'POS.PAYMENTS.MAKE_PAYMENT' | translate}}
                   </button>
                 </mat-card-actions>

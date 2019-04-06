@@ -52,15 +52,17 @@
           <div fxFlex="100" fxLayout="row wrap">
              <!-- WALLET SUMMARY -->
             <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="chargebalanceForm" [formGroup]="chargebalanceForm"
-              fxLayout="column">
-              <mat-card-header *ngIf="selectedWallet">            
-                <mat-card-title>{{'WITHDRAWAL.CURRENT_WALLET_STATE' | translate}}
-                  <span [ngClass]="{'green-fg': selectedWallet.pockets.main > 0, 'red-fg':selectedWallet.pockets.main < 0}">
-                    {{ selectedWallet.pockets.main | currency}}
-                  </span>
-                </mat-card-title>
-              </mat-card-header>
-              <mat-card-content *ngIf="selectedWallet" fxLayout="row wrap">
+              fxLayout="row wrap">
+
+              <div *ngIf="selectedWallet" fxFlex="100" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutAlign.gt-xs="start center">
+                <span class="mat-headline">{{'WITHDRAWAL.CURRENT_WALLET_STATE' | translate}}</span>
+                <span class="mat-headline pl-8"
+                  [ngClass]="{'green-fg': selectedWallet.pockets.main > 0, 'red-fg':selectedWallet.pockets.main < 0}">
+                  {{ selectedWallet.pockets.main | currency}}
+                </span>
+              </div>
+
+              <mat-card-content fxFlex="100" *ngIf="selectedWallet" fxLayout="row wrap">
                 <mat-form-field fxFlex="100" fxFlex.gt-xs="50" class="pr-8 pl-8">
                   <input matInput readonly placeholder="{{ 'WITHDRAWAL.WALLET_INFO.NAME' | translate }}"
                     value="{{ selectedWallet.fullname }}">
