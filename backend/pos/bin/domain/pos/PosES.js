@@ -78,7 +78,7 @@ class PosES {
               licensePlate: data.plate,
               packProduct: data.pack,
               quantity: data.qty,
-              daysPaid: PRODUCT_DAYS_PACK_MAPPER[data.pack]
+              daysPaid: PRODUCT_DAYS_PACK_MAPPER[data.pack] * data.qty
             },
             user: user
           })
