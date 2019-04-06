@@ -7,7 +7,6 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { PosPaymentDialogComponent } from './posPayments/dialog/dialog.component';
 
 
-
 import { PosPaymentComponent } from './posPayments/pos-payment.component';
 import { PosPaymentService } from './posPayments/pos-payment.service';
 
