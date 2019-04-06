@@ -70,9 +70,9 @@ class PosES {
         ),
         eventSourcing.eventStore.emitEvent$(
           new Event({
-            eventType: "Vehicle",
+            eventType: "VehicleSubscriptionPaid",
             eventTypeVersion: 1,
-            aggregateType: "VehicleSubscriptionPaid",
+            aggregateType: "Vehicle",
             aggregateId: uuidv4(),
             data: {
               licensePlate: data.plate,
