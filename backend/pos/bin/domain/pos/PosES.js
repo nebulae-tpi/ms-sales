@@ -25,7 +25,7 @@ class PosES {
     return of(data)
     .pipe(
       map(() => ({
-        type: 'SALE',
+        type: 'MOVEMENT',
         concept: 'WALLET_RECHARGE',      
         amount: data.amount,
         fromId: data.businessId,
