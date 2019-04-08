@@ -48,7 +48,7 @@ export class PosPaymentService {
 }
 
  listenWalletUpdates$(walletId): Observable<any> {
-   console.log('listenWalletUpdates$', walletId);
+  console.log('listenWalletUpdates$', walletId);
   return this.gateway.apollo
     .subscribe({
       query: SalesPoswalletsUpdates,

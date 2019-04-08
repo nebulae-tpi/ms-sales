@@ -69,6 +69,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   private walletsUpdatesUnsubscribe = new Subject();
 
   @ViewChild('walletInputFilter') walletInputFilter: ElementRef;
+  @ViewChild('plateInputFilter') plateInputFilter: ElementRef;
 
   constructor(
     private posService: PosPaymentService,
@@ -92,6 +93,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   listenWalletUpdates(walletId: string){
     this.posService.listenWalletUpdates$(walletId)
     .pipe(
+      tap(R => console.log("RAW DATA SUBSCRIPTION", R)),
       filter(r => r.data.SalesPoswalletsUpdates),
       map(r => r.data.SalesPoswalletsUpdates),
       tap((r) => {
@@ -100,7 +102,11 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       takeUntil(this.walletsUpdatesUnsubscribe),
       takeUntil(this.ngUnsubscribe),
     )
-    .subscribe();
+    .subscribe(
+      r => console.log('onResult => ', r),
+      e => console.log('onError', e),
+      () => console.log("SUBSCRIPTION COMPLETED")
+    );
   }
 
   initializeForms(){
@@ -247,6 +253,16 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
         filter(e => this.walletInputFilter.nativeElement.value === ''),
         tap(r => this.clearSelectedWallet()),
+        takeUntil(this.ngUnsubscribe)
+      )
+      .subscribe();
+
+      fromEvent(this.plateInputFilter.nativeElement, 'keyup')
+      .pipe(
+        distinctUntilChanged(),
+        filter(e => this.plateInputFilter.nativeElement.value !== ''),
+        map(e => this.plateInputFilter.nativeElement.value.toUpperCase() ),
+        tap(r => this.productPaymentForm.get('plate').setValue(r)),
         takeUntil(this.ngUnsubscribe)
       )
       .subscribe();

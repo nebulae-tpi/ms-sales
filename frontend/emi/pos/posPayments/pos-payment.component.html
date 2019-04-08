@@ -104,7 +104,7 @@
                 <span class="mat-headline">{{'POS.PAYMENTS.TITLE' | translate}}</span>
                 <mat-card-content>
                     <mat-form-field fxLayout="column" class="p-8">
-                        <input matInput name="plate" formControlName="plate" maxlength="9"
+                        <input #plateInputFilter matInput name="plate" formControlName="plate" maxlength="6" minlength="6"
                           placeholder="{{'POS.PAYMENTS.LICENSE_PLATE' | translate}}">
                         <mat-error *ngIf="productPaymentForm.hasError('required', ['plate'])">
                           {{'POS.PAYMENTS.LICENSE_PLATE_REQUIRED' | translate}}
