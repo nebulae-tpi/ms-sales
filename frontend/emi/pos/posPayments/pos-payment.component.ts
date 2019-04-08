@@ -99,8 +99,15 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       tap((r) => {
         this.selectedWallet.pockets = r.pockets;
       }),
-      takeUntil(this.walletsUpdatesUnsubscribe),
-      takeUntil(this.ngUnsubscribe),
+      takeUntil(() => {
+        console.log("Custom unsub");
+        return this.walletsUpdatesUnsubscribe;
+      }),
+      takeUntil(() => {
+        console.log("normal unsub");
+        return this.ngUnsubscribe;
+      }
+      ),
     )
     .subscribe(
       r => console.log('onResult => ', r),
@@ -164,7 +171,6 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
 
   onSelectWalletEvent(wallet){
     this.selectedWallet = wallet;
-
     this.listenWalletUpdates(wallet._id);
   }
 

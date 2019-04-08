@@ -7,8 +7,8 @@
               "id": "POS",
               "icon": "location_searching",
               "translate": {
-                "en": "Group Name",
-                "es": "Nombre de Grupo"
+                "en": "Point of Sale",
+                "es": "Punto de Venta"
               },
               "priority": 1000
             }
@@ -19,8 +19,8 @@
                 "id": "posPayments",
                 "icon": "dashboard",
                 "translate": {
-                    "en": "POS",
-                    "es": "POS"
+                    "en": "Payments and Recharge",
+                    "es": "Pagos y Recargas"
                 },
                 "navURL": "/pos/payments",
                 "path": "pos",

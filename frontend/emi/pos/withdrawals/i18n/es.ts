@@ -4,7 +4,7 @@ export const locale = {
     WITHDRAWAL: {
       CANCEL: 'Cancelar',
       TITLE: 'Retiros',
-      MISSING_WALLET:'Selecciona una Billetera',
+      MISSING_WALLET:'Selecciona Billetera',
       CURRENT_WALLET_STATE: 'Saldo Actual: ',
       SELECT_WALLET: 'Selecciona Billetera',
       WITHDRAWAL_TITLE: 'Retiro',
@@ -20,7 +20,7 @@ export const locale = {
         MAKE_WITHDRAWAL: 'Retirar'
       },
       DIALOG:{
-        CONFIRMATION_WITHDRAWAL: 'Esta Seguro de Retirar : ',
+        CONFIRMATION_WITHDRAWAL: 'Está Seguro de Retirar : ',
         BALANCE_WITHDRAWAL_TITLE: 'Retiro de Saldo'
       },
       ENTITY_TYPES: {

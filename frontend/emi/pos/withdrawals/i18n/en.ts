@@ -4,7 +4,7 @@ export const locale = {
     WITHDRAWAL: {
       CANCEL: 'Cancel',
       TITLE: 'Withdrawals',
-      MISSING_WALLET:'Select a Wallet to Operate',
+      MISSING_WALLET:'Select Wallet to Operate',
       CURRENT_WALLET_STATE: 'Current Balance: ',
       SELECT_WALLET: 'Select a Wallet',
       WITHDRAWAL_TITLE: 'Withdrawal',

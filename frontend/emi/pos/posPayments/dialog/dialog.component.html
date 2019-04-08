@@ -2,7 +2,7 @@
 <mat-dialog-content>
   
   <p *ngIf="data.type == 'RECHARGE'" >{{data.dialogMessage}} {{ data.value | currency }} ? </p>
-  <p *ngIf="data.type == 'PURCHASE'" >{{data.dialogMessage}} {{ data.value }} ? </p>
+  <p *ngIf="data.type == 'PURCHASE'" >{{data.dialogMessage}} {{ data.value | currency }} ? </p>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-raised-button (click)="pushButton(true)">Ok</button>
