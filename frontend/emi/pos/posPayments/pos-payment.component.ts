@@ -67,7 +67,10 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   productPrices = null;
 
   private ngUnsubscribe = new Subject();
-  private walletsUpdatesUnsubscribe = new Subject();
+  // private walletsUpdatesUnsubscribe = new Subject();
+
+  private walletSelected$ = new Subject();
+
 
   @ViewChild('walletInputFilter') walletInputFilter: ElementRef;
   @ViewChild('plateInputFilter') plateInputFilter: ElementRef;
@@ -89,19 +92,17 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
     this.initializeForms();
     this.initializeWalletAutoComplete();
     this.listenbusinessChanges(); // Listen busineses changes in toolbar
+    this.listenWalletUpdates();
   }
 
-  listenWalletUpdates(walletId: string){
-    this.posService.listenWalletUpdates$(walletId)
+  listenWalletUpdates(){
+    this.walletSelected$
     .pipe(
-
+      switchMap(walletId => this.posService.listenWalletUpdates$(walletId)),
       tap(R => console.log('RAW DATA SUBSCRIPTION', R)),
       filter(r => r.data.SalesPoswalletsUpdates),
       map(r => r.data.SalesPoswalletsUpdates),
-      tap((r) => {
-        this.selectedWallet.pockets = r.pockets;
-      }),
-      takeUntil(this.walletsUpdatesUnsubscribe),
+      tap((r) => this.selectedWallet.pockets = r.pockets)   
     )
     .subscribe(
       r => console.log('onResult => ', r),
@@ -128,8 +129,9 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
 
-    this.walletsUpdatesUnsubscribe.next();
-    this.walletsUpdatesUnsubscribe.complete();
+    // this.walletsUpdatesUnsubscribe.next();
+    // this.walletsUpdatesUnsubscribe.complete();
+  
   }
 
   makeBalanceReload(){
@@ -168,7 +170,9 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
 
   onSelectWalletEvent(wallet){
     this.selectedWallet = wallet;
-    this.listenWalletUpdates(wallet._id);
+    // this.listenWalletUpdates(wallet._id);
+    this.walletSelected$.next(wallet._id);
+
   }
 
 
@@ -176,10 +180,10 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   clearSelectedWallet(){
     this.selectedWallet = null;
     this.walletFilterCtrl.setValue(null);
-
+/*
     this.walletsUpdatesUnsubscribe.next();
     this.walletsUpdatesUnsubscribe.complete();
-
+*/
   }
 
   showConfirmationDialog$(dialogMessage, dialogTitle, type, value) {
