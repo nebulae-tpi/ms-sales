@@ -13,7 +13,8 @@ import {
   startWith,
   debounceTime,
   distinctUntilChanged,
-  take
+  take,
+  merge
 } from 'rxjs/operators';
 import { Subject, Observable, concat, forkJoin, from, of, fromEvent } from 'rxjs';
 import {
@@ -93,26 +94,19 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   listenWalletUpdates(walletId: string){
     this.posService.listenWalletUpdates$(walletId)
     .pipe(
-      tap(R => console.log("RAW DATA SUBSCRIPTION", R)),
+
+      tap(R => console.log('RAW DATA SUBSCRIPTION', R)),
       filter(r => r.data.SalesPoswalletsUpdates),
       map(r => r.data.SalesPoswalletsUpdates),
       tap((r) => {
         this.selectedWallet.pockets = r.pockets;
       }),
-      takeUntil(() => {
-        console.log("Custom unsub");
-        return this.walletsUpdatesUnsubscribe;
-      }),
-      takeUntil(() => {
-        console.log("normal unsub");
-        return this.ngUnsubscribe;
-      }
-      ),
+      takeUntil(this.walletsUpdatesUnsubscribe),
     )
     .subscribe(
       r => console.log('onResult => ', r),
       e => console.log('onError', e),
-      () => console.log("SUBSCRIPTION COMPLETED")
+      () => console.log('SUBSCRIPTION COMPLETED')
     );
   }
 
@@ -133,6 +127,9 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+
+    this.walletsUpdatesUnsubscribe.next();
+    this.walletsUpdatesUnsubscribe.complete();
   }
 
   makeBalanceReload(){
@@ -155,7 +152,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       tap(() => this.chargeBtnDisabled = true ),
       mergeMap(r => {
         if (r.data.SalesPosReloadBalance.code === 200){
-          this.showMessageSnackbar('SUCCESS.1');         
+          this.showMessageSnackbar('SUCCESS.1');
         }
         this.chargebalanceForm = new FormGroup({
           chargeValue: new FormControl(0, [Validators.required]),
@@ -179,6 +176,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   clearSelectedWallet(){
     this.selectedWallet = null;
     this.walletFilterCtrl.setValue(null);
+
     this.walletsUpdatesUnsubscribe.next();
     this.walletsUpdatesUnsubscribe.complete();
 

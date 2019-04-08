@@ -111,7 +111,8 @@ module.exports = {
                     mergeMap(response => getResponseFromBackEnd$(response))
                 )
                 .toPromise();
-        },        
+        },  
+              
         SalesPosPayVehicleSubscription(root, args, context) {
             // console.log("ServiceAssignVehicleToDriver", args);
             return RoleValidator.checkPermissions$(
