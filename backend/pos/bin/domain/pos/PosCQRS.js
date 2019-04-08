@@ -130,7 +130,9 @@ class PosCQRS {
         }else if(v.businessId != w.businessId){
           return this.createCustomError$(VEHICLE_FROM_OTHER_BU, "salesPosVehicleExist")
         }
-
+        else{
+          return of({})
+        }
       }),
       mergeMap(() => eventSourcing.eventStore.emitEvent$(
         new Event({
