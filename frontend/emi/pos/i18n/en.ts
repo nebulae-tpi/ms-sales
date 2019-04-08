@@ -52,6 +52,7 @@ export const locale = {
       19003: "Insufficient balance",
       19004: 'Vehicle doesn\'t Exist in System',
       19005: 'Vehicle doesn\'t active',
+      19006: 'Vehicle doesn\'t Exist in System',
     },
     SUCCESS:{
       1: 'Balance Reload Successful',

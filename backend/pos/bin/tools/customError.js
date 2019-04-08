@@ -51,5 +51,6 @@ class CustomError extends Error {
     INSUFFICIENT_BALANCE:  {code: 19003, description: 'Insufficient balance'},
     VEHICLE_NO_FOUND: {code: 19004, description: 'Vehicle not found'},
     VEHICLE_IS_INACTIVE: {code: 19005, description: 'Vehicle is inactive'},
+    VEHICLE_FROM_OTHER_BU : {code: 19006, description: 'Vehicle is OF other BU'},
 
   } 

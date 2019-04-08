@@ -1,7 +1,7 @@
 "use strict";
 
 const uuidv4 = require("uuid/v4");
-const { of, interval, throwError} = require("rxjs");
+const { of, interval, throwError, forkJoin} = require("rxjs");
 const { take, mergeMap, catchError, map, toArray, tap } = require('rxjs/operators');
 const Event = require("@nebulae/event-store").Event;
 const eventSourcing = require("../../tools/EventSourcing")();
@@ -21,7 +21,8 @@ const {
   PERMISSION_DENIED_ERROR,
   INSUFFICIENT_BALANCE,
   VEHICLE_NO_FOUND,
-  VEHICLE_IS_INACTIVE
+  VEHICLE_IS_INACTIVE,
+  VEHICLE_FROM_OTHER_BU
 } = require("../../tools/customError");
 const Crosscutting = require("../../tools/Crosscutting");
 const vehicleSubscriptionPricePerWeek = process.env.VEHICLE_SUBS_WEEK_PRICE;
@@ -118,14 +119,19 @@ class PosCQRS {
       mergeMap(wallet => {
         return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < vehicleSubscriptionPricePerWeek * args.qty))
           ? this.createCustomError$(INSUFFICIENT_BALANCE, 'salesPosPayVehicleSubscription')
-          : VehicleDA.findByLicensePlate$(args.plate)
+          : forkJoin(VehicleDA.findByLicensePlate$(args.plate), of(wallet))
       }),
-      mergeMap(v => !v 
-        ? this.createCustomError$(VEHICLE_NO_FOUND, "salesPosVehicleExist")
-        : (v && !v.active)
-          ? this.createCustomError$(VEHICLE_IS_INACTIVE, "salesPosVehicleExist")
-          : of({})
-      ),
+      mergeMap(([v, w]) =>  {
+        console.log("WALLET", w, "VEHICLE", v);
+        if(!v){
+          return this.createCustomError$(VEHICLE_NO_FOUND, "salesPosVehicleExist");
+        } else if (v && !v.active){
+          return this.createCustomError$(VEHICLE_IS_INACTIVE, "salesPosVehicleExist")
+        }else if(v.businessId != w.businessId){
+          return this.createCustomError$(VEHICLE_FROM_OTHER_BU, "salesPosVehicleExist")
+        }
+
+      }),
       mergeMap(() => eventSourcing.eventStore.emitEvent$(
         new Event({
           eventType: "SaleVehicleSubscriptionCommited",

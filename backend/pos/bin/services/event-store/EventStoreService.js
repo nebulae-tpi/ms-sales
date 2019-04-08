@@ -153,8 +153,7 @@ class EventStoreService {
       VehicleStateUpdated: {
         fn: VehicleES.handleVehicleStateUpdated$,
         obj: VehicleES
-      },
-      
+      }      
     };
   }
 
