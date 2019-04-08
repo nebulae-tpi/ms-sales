@@ -112,6 +112,7 @@ module.exports = {
                 )
                 .toPromise();
         },  
+        
               
         SalesPosPayVehicleSubscription(root, args, context) {
             // console.log("ServiceAssignVehicleToDriver", args);

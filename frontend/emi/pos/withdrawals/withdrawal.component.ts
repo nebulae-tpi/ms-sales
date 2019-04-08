@@ -65,7 +65,8 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
   productPrices = null;
 
   private ngUnsubscribe = new Subject();
-  private walletsUpdatesUnsubscribe = new Subject();
+  // private walletsUpdatesUnsubscribe = new Subject();
+  private walletSelected$ = new Subject();
 
   @ViewChild('walletInputFilter') walletInputFilter: ElementRef;
 
@@ -86,20 +87,25 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
     this.initializeForms();
     this.initializeWalletAutoComplete();
     this.listenbusinessChanges(); // Listen busineses changes in toolbar
+    this.listenWalletUpdates();
+
   }
 
-  listenWalletUpdates(walletId: string){
-    this.withdrawaltService.listenWalletUpdates$(walletId)
+  listenWalletUpdates(){
+
+    this.walletSelected$
     .pipe(
+      switchMap(walletId => this.withdrawaltService.listenWalletUpdates$(walletId)),
       filter((r: any) => r.data.SalesPoswalletsUpdates),
       map((r: any) => r.data.SalesPoswalletsUpdates),
-      tap((r: any) => {
-        this.selectedWallet.pockets = r.pockets;
-      }),
-      takeUntil(this.walletsUpdatesUnsubscribe),
+      tap((r: any) => this.selectedWallet.pockets = r.pockets),
       takeUntil(this.ngUnsubscribe),
     )
-    .subscribe();
+    .subscribe(
+      r => console.log('onResult => ', r),
+      e => console.log('onError', e),
+      () => console.log('SUBSCRIPTION COMPLETED')
+    );
   }
 
   initializeForms(){
@@ -149,8 +155,7 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
 
   onSelectWalletEvent(wallet){
     this.selectedWallet = wallet;
-
-    this.listenWalletUpdates(wallet._id);
+    this.walletSelected$.next(wallet._id);
   }
 
 
@@ -158,9 +163,6 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
   clearSelectedWallet(){
     this.selectedWallet = null;
     this.walletFilterCtrl.setValue(null);
-    this.walletsUpdatesUnsubscribe.next();
-    this.walletsUpdatesUnsubscribe.complete();
-
   }
 
   showConfirmationDialog$(dialogMessage, dialogTitle, type, value) {

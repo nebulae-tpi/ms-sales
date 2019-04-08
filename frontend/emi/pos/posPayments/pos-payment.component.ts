@@ -102,7 +102,8 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       tap(R => console.log('RAW DATA SUBSCRIPTION', R)),
       filter(r => r.data.SalesPoswalletsUpdates),
       map(r => r.data.SalesPoswalletsUpdates),
-      tap((r) => this.selectedWallet.pockets = r.pockets)   
+      tap((r) => this.selectedWallet.pockets = r.pockets),
+      takeUntil(this.ngUnsubscribe)
     )
     .subscribe(
       r => console.log('onResult => ', r),
