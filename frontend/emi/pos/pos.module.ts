@@ -9,7 +9,6 @@ import { PosPaymentDialogComponent } from './posPayments/dialog/dialog.component
 import { PosPaymentComponent } from './posPayments/pos-payment.component';
 import { PosPaymentService } from './posPayments/pos-payment.service';
 
-
 import { WithdrawalDialogComponent } from './withdrawals/dialog/dialog.component';
 import { WithdrawaltService } from './withdrawals/withdrawal.service';
 import { WithdrawalComponent } from './withdrawals/withdrawal.component'
