@@ -165,7 +165,7 @@ jobs:
 
 # ################ DEPLOYMENT ################ 
 
-  deploy-dev:
+  deploy:
       working_directory: ~/nebulae/
       docker:
         - image: google/cloud-sdk:latest
@@ -234,7 +234,7 @@ workflows:
             branches:
               only:
                 - develop     
-      - deploy-dev:
+      - deploy:
           context: TPI
           requires:
             - build-frontend
@@ -272,13 +272,13 @@ workflows:
             branches:
               only:
                 - master     
-      - deploy-dev:
+      - deploy:
           context: TPI_PROD
           name: deploy-prod
           requires:
-            - build-frontend
-            - build-api-emi
-            - build-backend-pos
+            - build-frontend-prod
+            - build-api-emi-prod
+            - build-backend-pos-prod
           filters:
             branches:
               only:
