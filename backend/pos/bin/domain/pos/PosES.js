@@ -21,12 +21,12 @@ class PosES {
   constructor() {}
 
   handleSaleWalletRechargeCommited$({aid, data, user}){
-    // console.log("handleSaleWalletRechargeCommited$", aid, data);
     return of(data)
     .pipe(
       map(() => ({
         type: 'MOVEMENT',
-        concept: 'WALLET_RECHARGE',      
+        concept: 'WALLET_RECHARGE',
+        businessId: data.businessId,
         amount: data.amount,
         fromId: data.businessId,
         toId: data.walletId
@@ -45,11 +45,11 @@ class PosES {
   }
 
   handleSaleVehicleSubscriptionCommited$({aid, data, user}){
-    // console.log("handleSaleVehicleSubscriptionCommited$", aid, data);
     return of({})
     .pipe(
       map(() => ({
         _id: Crosscutting.generateHistoricalUuid(),
+        businessId: data.businessId,
         type: 'PURCHASE',
         concept: 'VEHICLE_SUBSCRIPTION',      
         amount: vehicleSubscriptionPricePerWeek * data.qty,
@@ -89,11 +89,11 @@ class PosES {
   }
 
   handleSalesPosWithdrawalCommitted$({aid, data, user}){
-    // console.log("handleSalesPosWithdrawalCommitted$", aid, data);
     return of({})
     .pipe(
       map(() => ({
         _id: Crosscutting.generateHistoricalUuid(),
+        businessId: data.businessId,
         type: 'MOVEMENT',
         concept: 'WITHDRAWAL',      
         amount: data.amount,
