@@ -114,7 +114,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
 
   initializeForms(){
     this.chargebalanceForm = new FormGroup({
-      chargeValue: new FormControl(0, [Validators.required]),
+      chargeValue: new FormControl(null, [Validators.required]),
     });
 
     this.productPaymentForm = new FormGroup({

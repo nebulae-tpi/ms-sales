@@ -110,7 +110,7 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
 
   initializeForms(){
     this.chargebalanceForm = new FormGroup({
-      withdrawalValue: new FormControl(0, [Validators.required]),
+      withdrawalValue: new FormControl(null, [Validators.required]),
     });
   }
 
