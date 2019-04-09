@@ -23,7 +23,7 @@ class VehicleDA {
   }
 
   static findByLicensePlate$(licensePlate){
-    console.log("findByLicensePlate$", licensePlate);
+    // console.log("findByLicensePlate$", licensePlate);
     const collection = mongoDB.db.collection(COLLECTION_NAME);
     return defer(() => collection.findOne({licensePlate : licensePlate}));
   }

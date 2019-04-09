@@ -22,7 +22,7 @@ class VehicleES {
      * @param {*} businessCreatedEvent business created event
      */
     handleVehicleCreated$(vehicleCreatedEvent) {
-        console.log("handleVehicleCreated$");
+        // console.log("handleVehicleCreated$");
         return of(vehicleCreatedEvent.data)
         .pipe(
             map(vehicle => ({
@@ -41,7 +41,7 @@ class VehicleES {
      * @param {*} driverGeneralInfoUpdatedEvent driver created event
      */
     handleVehicleGeneralInfoUpdated$(vehicleGeneralInfoUpdated) { 
-        console.log("handleVehicleGeneralInfoUpdated$");
+        // console.log("handleVehicleGeneralInfoUpdated$");
         return of(vehicleGeneralInfoUpdated.data.generalInfo)
         .pipe(
             map(newGeneralInfo => ({licensePlate: newGeneralInfo.licensePlate,})),

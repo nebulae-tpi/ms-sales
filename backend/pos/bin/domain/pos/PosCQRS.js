@@ -95,7 +95,7 @@ class PosCQRS {
   }
 
   salesPosPayVehicleSubscription$({ args }, authToken){
-    console.log("salesPosPayVehicleSubscription$", args);
+    // console.log("salesPosPayVehicleSubscription$", args);
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles,
       "Sales",
@@ -122,7 +122,7 @@ class PosCQRS {
           : forkJoin(VehicleDA.findByLicensePlate$(args.plate), of(wallet))
       }),
       mergeMap(([v, w]) =>  {
-        console.log("WALLET", w, "VEHICLE", v);
+        // console.log("WALLET", w, "VEHICLE", v);
         if(!v){
           return this.createCustomError$(VEHICLE_NO_FOUND, "salesPosVehicleExist");
         } else if (v && !v.active){

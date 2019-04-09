@@ -21,7 +21,7 @@ class PosES {
   constructor() {}
 
   handleSaleWalletRechargeCommited$({aid, data, user}){
-    console.log("handleSaleWalletRechargeCommited$", aid, data);
+    // console.log("handleSaleWalletRechargeCommited$", aid, data);
     return of(data)
     .pipe(
       map(() => ({
@@ -45,7 +45,7 @@ class PosES {
   }
 
   handleSaleVehicleSubscriptionCommited$({aid, data, user}){
-    console.log("handleSaleVehicleSubscriptionCommited$", aid, data);
+    // console.log("handleSaleVehicleSubscriptionCommited$", aid, data);
     return of({})
     .pipe(
       map(() => ({
@@ -89,7 +89,7 @@ class PosES {
   }
 
   handleSalesPosWithdrawalCommitted$({aid, data, user}){
-    console.log("handleSalesPosWithdrawalCommitted$", aid, data);
+    // console.log("handleSalesPosWithdrawalCommitted$", aid, data);
     return of({})
     .pipe(
       map(() => ({
@@ -122,7 +122,7 @@ class PosES {
 module.exports = () => {
   if (!instance) {
     instance = new PosES();
-    console.log(`${instance.constructor.name} ##################Singleton created`);
+    console.log(`${instance.constructor.name} Singleton created`);
   }
   return instance;
 };

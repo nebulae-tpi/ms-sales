@@ -20,7 +20,7 @@ class WalletES {
   }
 
   handleWalletUpdated$({aid, data}){
-    console.log("handleWalletUpdated$", aid, data);
+    // console.log("handleWalletUpdated$", aid, data);
     return of(data)
       .pipe(
         filter(e => e != null),
@@ -38,7 +38,7 @@ class WalletES {
 module.exports = () => {
   if (!instance) {
     instance = new WalletES();
-    console.log(`${instance.constructor.name} ##################Singleton created`);
+    console.log(`${instance.constructor.name} Singleton created`);
   }
   return instance;
 };
