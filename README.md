@@ -56,20 +56,13 @@ Note: You may find the GraphQL schema [here](api/emi-gateway/graphql/pos/schema.
 
 
 ### GraphQL types
-* HelloWorld: Sample type, please remove
-    * sn: String! => sample string
+
     
 ### GraphQL Queries
-#### getHelloWorldFromsales
-* Description : sample query, please remove
-* returns : HelloWorld object.
 
 
 ### GraphQL Subscriptions
 
-#### salesHelloWorldSubscription
-* Description: sample subscription, please remove
-* Data: HelloWorld object
 
 ### GraphQL Mutations
     N/A

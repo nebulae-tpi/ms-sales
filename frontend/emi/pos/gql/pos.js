@@ -2,14 +2,7 @@ import gql from "graphql-tag";
 
 // We use the gql tag to parse our query string into a query document
 
-//Hello world sample, please remove
-export const getHelloWorld = gql`
-  query getHelloWorldFromSales{
-    getHelloWorldFromSales{
-      sn
-    }
-  }
-`;
+
 
 export const salesWalletsByFilter = gql`
   query salesWalletsByFilter($filterText: String, $businessId: String, $limit: Int) {
@@ -67,14 +60,6 @@ export const SalesPosBalanceWithdraw = gql`
     }
   }
 `;
-
-//Hello world sample, please remove
-export const SalesHelloWorldSubscription = gql`
-  subscription{
-    SalesHelloWorldSubscription{
-      sn
-  }
-}`;
 
 export const SalesPoswalletsUpdates = gql`
   subscription($walletId: String!) {

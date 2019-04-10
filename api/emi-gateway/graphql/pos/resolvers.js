@@ -34,22 +34,6 @@ module.exports = {
     //// QUERY ///////
 
     Query: {
-        getHelloWorldFromSales(root, args, context) {
-            return RoleValidator.checkPermissions$(context.authToken.realm_access.roles, 'ms-'+'Sales', 'getHelloWorldFromSales', PERMISSION_DENIED_ERROR_CODE, 'Permission denied', [])
-            .pipe(
-                mergeMap(() =>
-                    broker
-                    .forwardAndGetReply$(
-                        "HelloWorld",
-                        "emi-gateway.graphql.query.getHelloWorldFromSales",
-                        { root, args, jwt: context.encodedToken },
-                        2000
-                    )
-                ),
-                catchError(err => handleError$(err, "getHelloWorldFromSales")),
-                mergeMap(response => getResponseFromBackEnd$(response))
-            ).toPromise();
-        },
         salesWalletsByFilter(root, args, context) {
             return RoleValidator.checkPermissions$(
                 context.authToken.realm_access.roles, 'ms-Sales', 'SalesWalletsByFilter',
@@ -157,18 +141,6 @@ module.exports = {
 
     //// SUBSCRIPTIONS ///////
     Subscription: {
-        SalesHelloWorldSubscription: {
-            subscribe: withFilter(
-                (payload, variables, context, info) => {
-                    return pubsub.asyncIterator("SalesHelloWorldSubscription");
-                },
-                // FILTER
-                (payload, variables, context, info) => {
-                    console.log(payload);
-                    return true;
-                }
-            )
-        },
         SalesPoswalletsUpdates: {
             subscribe: withFilter(
                 (payload, variables, context, info) => {
@@ -189,10 +161,6 @@ module.exports = {
 //// SUBSCRIPTIONS SOURCES ////
 
 const eventDescriptors = [
-    {
-        backendEventName: 'businessWalletHelloWorldEvent',
-        gqlSubscriptionName: 'SalesHelloWorldSubscription',
-    },
     {
         backendEventName: 'WalletsUpdateReported',
         gqlSubscriptionName: 'SalesPoswalletsUpdates',

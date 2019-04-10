@@ -22,19 +22,19 @@ class PosDA {
     });
   }
 
-  static getFilteredWallets$(filterText, businessId, limit = 10) {
+  static getFilteredWallets$(filterText, businessId, limit = 10) {    
     const collection = mongoDB.db.collection(COLLECTION_NAME);
-    const filter = {};
+    const query = { active: true };
     if (filterText) {
-      filter["$or"] = [
+      query["$or"] = [
         { fullname: { $regex: filterText, $options: "i" } },
         { documentId: { $regex: filterText, $options: "i" } }
       ];
     }
     if (businessId) {
-      filter.businessId = businessId;
+      query.businessId = businessId;
     }
-    return defer(() => collection.find(filter).limit(limit).toArray());
+    return defer(() => collection.find(query).limit(limit).toArray());
   }
 
   static getWalletById$(walletId) {
