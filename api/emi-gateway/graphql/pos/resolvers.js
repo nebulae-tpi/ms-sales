@@ -1,12 +1,12 @@
 const withFilter = require("graphql-subscriptions").withFilter;
 const PubSub = require("graphql-subscriptions").PubSub;
 const pubsub = new PubSub();
+const { ApolloError } = require("apollo-server");
 const { of } = require("rxjs");
 const { map, mergeMap, catchError } = require('rxjs/operators');
 const broker = require("../../broker/BrokerFactory")();
 const RoleValidator = require('../../tools/RoleValidator');
 const {handleError$} = require('../../tools/GraphqlResponseTools');
-
 
 const INTERNAL_SERVER_ERROR_CODE = 1;
 const PERMISSION_DENIED_ERROR_CODE = 2;
@@ -14,25 +14,17 @@ const PERMISSION_DENIED_ERROR_CODE = 2;
 function getResponseFromBackEnd$(response) {
     return of(response)
     .pipe(
-        map(resp => {
-            if (resp.result.code != 200) {
-                const err = new Error();
-                err.name = 'Error';
-                err.message = resp.result.error;
-                // this[Symbol()] = resp.result.error;
-                Error.captureStackTrace(err, 'Error');
-                throw err;
+        map(({result, data}) => {            
+            if (result.code != 200) {
+                throw new ApolloError(result.error.msg, result.code, result.error );
             }
-            return resp.data;
+            return data;
         })
     );
 }
 
-
 module.exports = {
-
     //// QUERY ///////
-
     Query: {
         salesWalletsByFilter(root, args, context) {
             return RoleValidator.checkPermissions$(
@@ -71,8 +63,7 @@ module.exports = {
                 catchError(err => handleError$(err, "SalesPosProductPrices")),
                 mergeMap(response => getResponseFromBackEnd$(response))
             ).toPromise();
-        },
-        
+        }        
     },
     //// MUTATIONS ///////
     Mutation: {
@@ -95,9 +86,7 @@ module.exports = {
                     mergeMap(response => getResponseFromBackEnd$(response))
                 )
                 .toPromise();
-        },  
-               
-        
+        },
         SalesPosPayVehicleSubscription(root, args, context) {
             // console.log("ServiceAssignVehicleToDriver", args);
             return RoleValidator.checkPermissions$(
@@ -136,9 +125,8 @@ module.exports = {
                     mergeMap(response => getResponseFromBackEnd$(response))
                 )
                 .toPromise();
-        },
+        }
     },
-
     //// SUBSCRIPTIONS ///////
     Subscription: {
         SalesPoswalletsUpdates: {
@@ -152,14 +140,10 @@ module.exports = {
                 }
             )
         }
-
     }
 };
 
-
-
 //// SUBSCRIPTIONS SOURCES ////
-
 const eventDescriptors = [
     {
         backendEventName: 'WalletsUpdateReported',
@@ -182,7 +166,6 @@ eventDescriptors.forEach(descriptor => {
                 payload[descriptor.gqlSubscriptionName] = descriptor.dataExtractor ? descriptor.dataExtractor(evt) : evt.data
                 pubsub.publish(descriptor.gqlSubscriptionName, payload);
             },
-
             error => {
                 if (descriptor.onError) {
                     descriptor.onError(error, descriptor);
@@ -192,11 +175,6 @@ eventDescriptors.forEach(descriptor => {
                     error
                 );
             },
-
-            () =>
-                console.log(
-                    `${descriptor.gqlSubscriptionName} listener STOPED`
-                )
+            () => console.log(`${descriptor.gqlSubscriptionName} listener STOPED`)
         );
 });
-

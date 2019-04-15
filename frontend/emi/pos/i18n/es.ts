@@ -47,6 +47,7 @@ export const locale = {
       }
     },
     ERRORS:{
+      1: 'Error Interno del Servidor',
       2: 'Seleccione Unidad de Negocio',
       19003: "Saldo Insuficiente",
       19004: 'El Vehículo no Existe en el Sistema',

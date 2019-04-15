@@ -48,6 +48,7 @@ export const locale = {
       
     },
     ERRORS:{
+      1: 'Internal Server Error',
       2: 'Please Select a Business Unit',      
       19003: "Insufficient balance",
       19004: 'Vehicle doesn\'t Exist in System',

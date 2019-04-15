@@ -129,9 +129,6 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-
-    // this.walletsUpdatesUnsubscribe.next();
-    // this.walletsUpdatesUnsubscribe.complete();
   
   }
 
@@ -301,21 +298,11 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
    * Shows an error snackbar
    * @param response
    */
-  showSnackBarError(response) {
-    if (response.errors) {
-      if (Array.isArray(response.errors)) {
-        response.errors.forEach(error => {
-          if (Array.isArray(error)) {
-            error.forEach(errorDetail => {
-              this.showMessageSnackbar('ERRORS.' + errorDetail.message.code);
-            });
-          } else {
-            response.errors.forEach(errorData => {
-              this.showMessageSnackbar('ERRORS.' + errorData.message.code);
-            });
-          }
-        });
-      }
+  showSnackBarError(response) {  
+    if (response && Array.isArray(response.errors)) {
+      response.errors.forEach(error => {
+        this.showMessageSnackbar('ERRORS.' + ((error.extensions||{}).code || 1) )
+      });
     }
   }
 
