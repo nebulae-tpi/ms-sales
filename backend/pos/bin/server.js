@@ -13,10 +13,6 @@ const Pos = require("./domain/pos");
 const Wallet = require("./domain/wallet");
 const Vehicle = require("./domain/vehicle");
 
-
-
-
-
 const start = () => {
     Rx.concat(
         eventSourcing.eventStore.start$(),
@@ -35,7 +31,6 @@ const start = () => {
         () => console.log('sales started')
     );
 };
-
 
 start();
 
