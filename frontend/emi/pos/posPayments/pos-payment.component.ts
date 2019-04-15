@@ -288,23 +288,17 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   graphQlAlarmsErrorHandler$(response) {
     return of(JSON.parse(JSON.stringify(response))).pipe(
       tap((resp: any) => {
-        this.showSnackBarError(resp);
+        if (response && Array.isArray(response.errors)) {
+          response.errors.forEach(error => {
+            this.showMessageSnackbar('ERRORS.' + ((error.extensions||{}).code || 1) )
+          });
+        }
         return resp;
       })
     );
   }
 
-    /**
-   * Shows an error snackbar
-   * @param response
-   */
-  showSnackBarError(response) {  
-    if (response && Array.isArray(response.errors)) {
-      response.errors.forEach(error => {
-        this.showMessageSnackbar('ERRORS.' + ((error.extensions||{}).code || 1) )
-      });
-    }
-  }
+
 
     /**
    * Shows a message snackbar on the bottom of the page
