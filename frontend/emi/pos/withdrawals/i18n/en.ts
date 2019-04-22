@@ -36,8 +36,7 @@ export const locale = {
       19003: "Insufficient balance"
     },
     SUCCESS:{
-      1: 'Balance Reload Sent',
-     
+      1: 'Balance Reload Sent',     
     }
     
   }
