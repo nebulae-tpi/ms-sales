@@ -140,6 +140,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       this.translate.instant('POS.DIALOG.RELOAD_WALLET_TITLE'),
       'RECHARGE', valueToReload)
     .pipe(
+      tap(() => this.chargeBtnDisabled = true),
       mergeMap(() => of(this.selectedBusinessId)),
       filter(buId => {
         if (!buId){
@@ -148,8 +149,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
         return buId;
       }),
       mergeMap((buId) => this.posService.reloadBalance$(this.selectedWallet._id, buId, valueToReload)),
-      mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
-      tap(() => this.chargeBtnDisabled = true ),
+      mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),      
       mergeMap(r => {
         if (r.data.SalesPosReloadBalance.code === 200){
           this.showMessageSnackbar('SUCCESS.1');
@@ -157,11 +157,9 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
         this.chargebalanceForm = new FormGroup({
           chargeValue: new FormControl(0, [Validators.required]),
         });
-        this.chargeBtnDisabled = false;
         return of({});
-      })
-
-
+      }),
+      tap(() => this.chargeBtnDisabled = false),
     )
     .subscribe();
   }
@@ -207,6 +205,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       this.translate.instant('POS.DIALOG.PURCHASE_WALLET_TITLE'),
       'PURCHASE', args.qty * this.productPrices.week)
     .pipe(
+      tap(() => this.paymentBtnDisabled = true),
       mergeMap(() => of(this.selectedBusinessId)),
       filter(buId => {
         if (!buId){
@@ -216,8 +215,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       }),
       mergeMap((buId) => this.posService.payVehicleSubscription$(this.selectedWallet._id, buId, args.plate.toUpperCase() , args.pack, args.qty)),
       mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
-      filter(r => (r && r.data && r.data.SalesPosPayVehicleSubscription)),
-      tap(() => this.paymentBtnDisabled = true ),
+      filter(r => (r && r.data && r.data.SalesPosPayVehicleSubscription)),      
       mergeMap(r => {
         if (r.data.SalesPosPayVehicleSubscription.code === 200){
           this.showMessageSnackbar('SUCCESS.2');
@@ -227,9 +225,9 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
           pack: new FormControl('WEEK'),
           qty: new FormControl(1),
         });
-        this.paymentBtnDisabled = false;
         return of({});
       }),
+      tap(() => this.paymentBtnDisabled = false),
       takeUntil(this.ngUnsubscribe),
     )
     .subscribe();
