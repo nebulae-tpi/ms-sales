@@ -94,7 +94,7 @@
                   </div>
                 </mat-card-content>
                 <mat-card-actions>
-                  <button [disabled]="!selectedWallet || chargeBtnDisabled || chargebalanceForm.invalid || (selectedWallet  && chargebalanceForm.controls['withdrawalValue'].value > selectedWallet.pockets.main)" (click)="makeBalanceWithdraw()"
+                  <button [disabled]="!selectedWallet || disableWithdrawalBtn || chargebalanceForm.invalid || (selectedWallet  && chargebalanceForm.controls['withdrawalValue'].value > selectedWallet.pockets.main)" (click)="makeBalanceWithdraw()"
                     mat-raised-button color="primary">
                     {{'WITHDRAWAL.BALANCE_WITHDRAWAL.MAKE_WITHDRAWAL' | translate}}
                   </button>

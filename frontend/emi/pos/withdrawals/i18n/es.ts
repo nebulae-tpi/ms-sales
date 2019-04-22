@@ -4,9 +4,9 @@ export const locale = {
     WITHDRAWAL: {
       CANCEL: 'Cancelar',
       TITLE: 'Retiros',
-      MISSING_WALLET:'Selecciona Billetera',
+      MISSING_WALLET:'Seleccione Billetera',
       CURRENT_WALLET_STATE: 'Saldo Actual: ',
-      SELECT_WALLET: 'Selecciona Billetera',
+      SELECT_WALLET: 'Seleccione Billetera',
       WITHDRAWAL_TITLE: 'Retiro',
       WALLET_INFO:{
         NAME: 'Nombre',
@@ -32,11 +32,11 @@ export const locale = {
       
     },
     ERRORS:{
-      2: 'Por Favor Selecciona Una Unidad de Negocio',
+      2: 'Por Favor Seleccione Unidad de Negocio',
       19003: "Saldo Insuficiente"
     },
     SUCCESS:{
-      1: 'Retiro Realizado Con Éxito',     
+      1: 'Retiro Exitoso',     
     }
     
   }

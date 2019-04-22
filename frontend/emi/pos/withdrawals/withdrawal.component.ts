@@ -60,7 +60,7 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
   walletQueryFiltered$: Observable<any[]>; // Wallet autocomplete supplier
   selectedBusinessId: any;
 
-  chargeBtnDisabled = false;
+  disableWithdrawalBtn = false;
   paymentBtnDisabled = false;
   productPrices = null;
 
@@ -127,6 +127,7 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
       this.translate.instant('WITHDRAWAL.DIALOG.BALANCE_WITHDRAWAL_TITLE'),
       'WITHDRAWAL', valueToReload)
     .pipe(
+      tap(() => this.disableWithdrawalBtn = true),
       mergeMap(() => of(this.selectedBusinessId)),
       filter(buId => {
         if (!buId){
@@ -135,8 +136,7 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
         return buId;
       }),
       mergeMap((buId) => this.withdrawaltService.withdrawBalance$(this.selectedWallet._id, buId, valueToReload)),
-      mergeMap(r => this.graphQlAlarmsErrorHandler$(r) ),
-      tap(() => this.chargeBtnDisabled = true ),
+      mergeMap(r => this.graphQlAlarmsErrorHandler$(r)),      
       mergeMap(r => {
         if ( r && r.data && r.data.SalesPosBalanceWithdraw && r.data.SalesPosBalanceWithdraw.code === 200){
           this.showMessageSnackbar('SUCCESS.1');          
@@ -144,7 +144,7 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
         this.chargebalanceForm = new FormGroup({
           withdrawalValue: new FormControl(0, [Validators.required]),
         });
-        this.chargeBtnDisabled = false;
+        this.disableWithdrawalBtn = false;
         return of({});
       })
 
