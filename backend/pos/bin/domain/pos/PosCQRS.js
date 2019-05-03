@@ -25,7 +25,8 @@ const {
   VEHICLE_FROM_OTHER_BU
 } = require("../../tools/customError");
 const Crosscutting = require("../../tools/Crosscutting");
-const VehicleSubscriptionPrices = process.env.VEHICLE_SUBS_PRICES || { day: "2000", week: "12000", month: "40000" }
+// const VehicleSubscriptionPrices = process.env.VEHICLE_SUBS_PRICES || { day: "2000", week: "12000", month: "40000" }
+const VehicleSubscriptionPrices = { day: "2000", week: "12000", month: "40000" }
 
 
 
@@ -159,10 +160,17 @@ class PosCQRS {
       ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
     ).pipe(
       mergeMap(() => of(VehicleSubscriptionPrices)),
-      map(original => {
-        Object.keys(original).reduce((acc, key) => { acc[key] = parseInt(original[key]) ; return acc; } , {});
-        return original;
+      map(prices => {
+        console.log(process.env.VEHICLE_SUBS_PRICES);        
+        console.log(prices);
+        console.log(Object.keys(prices));
+        Object.keys(prices).reduce((acc, key) => {
+          console.log({key});
+          acc[key] = parseInt(prices[key]) ; return acc;
+        }, {});
+        return prices;
       }),
+      tap(e => console.log("=======> ", e)),
       mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
       catchError(err => GraphqlResponseTools.handleError$(err))
     );
