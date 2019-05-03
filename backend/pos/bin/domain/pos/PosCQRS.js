@@ -159,13 +159,13 @@ class PosCQRS {
       ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
     ).pipe(
       mergeMap(() => of(VehicleSubscriptionPrices)),
-      tap(e => console.log(e)),
-      map(original => Object.keys(original).reduce((acc, key) => { acc[key] = parseInt(original[key]) ; return acc; } , {})),
-      tap(e => console.log(e)),
+      map(original => {
+        Object.keys(original).reduce((acc, key) => { acc[key] = parseInt(original[key]) ; return acc; } , {});
+        return original;
+      }),
       mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
       catchError(err => GraphqlResponseTools.handleError$(err))
     );
-
   }
 
   salesPosBalanceWithdraw$({ args }, authToken){
