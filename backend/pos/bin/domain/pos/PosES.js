@@ -10,7 +10,7 @@ const uuidv4 = require("uuid/v4");
 const TransactionsDA = require("./data-access/TransactionsDA");
 const Crosscutting = require("../../tools/Crosscutting");
 const PRODUCT_DAYS_PACK_MAPPER = { WEEK: 7, DAY: 1 };
-const VehicleSubscriptionPrices = process.env.VEHICLE_SUBS_PRICES || { day: 2000, week: 12000, month: 40000 }
+const VehicleSubscriptionPrices = { day: 2000, week: 12000, month: 40000 }
 
 /**
  * Singleton instance
