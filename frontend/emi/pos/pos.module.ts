@@ -46,4 +46,5 @@ const routes: Routes = [
 })
 
 
+
 export class PosModule {}

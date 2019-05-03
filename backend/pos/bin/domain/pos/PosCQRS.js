@@ -25,8 +25,8 @@ const {
   VEHICLE_FROM_OTHER_BU
 } = require("../../tools/customError");
 const Crosscutting = require("../../tools/Crosscutting");
-// const VehicleSubscriptionPrices = process.env.VEHICLE_SUBS_PRICES || { day: "2000", week: "12000", month: "40000" }
-const VehicleSubscriptionPrices = { day: "2000", week: "12000", month: "40000" }
+const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) || { day: "2000", week: "12000", month: "40000" }
+// const VehicleSubscriptionPrices = { day: "2000", week: "12000", month: "40000" }
 
 
 
@@ -134,6 +134,7 @@ class PosCQRS {
           return of({})
         }
       }),
+      tap(r => console.log(args)),
       mergeMap(() => eventSourcing.eventStore.emitEvent$(
         new Event({
           eventType: "SaleVehicleSubscriptionCommited",
