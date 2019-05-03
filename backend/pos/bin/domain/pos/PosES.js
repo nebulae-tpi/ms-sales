@@ -9,8 +9,8 @@ const eventSourcing = require("../../tools/EventSourcing")();
 const uuidv4 = require("uuid/v4");
 const TransactionsDA = require("./data-access/TransactionsDA");
 const Crosscutting = require("../../tools/Crosscutting");
-const vehicleSubscriptionPricePerWeek = process.env.VEHICLE_SUBS_WEEK_PRICE || 12000;
-const PRODUCT_DAYS_PACK_MAPPER = { WEEK: 7, DAY: 1 }
+const PRODUCT_DAYS_PACK_MAPPER = { WEEK: 7, DAY: 1 };
+const VehicleSubscriptionPrices = process.env.VEHICLE_SUBS_PRICES || { day: 2000, week: 12000, month: 40000 }
 
 /**
  * Singleton instance
@@ -52,7 +52,7 @@ class PosES {
         businessId: data.businessId,
         type: 'PURCHASE',
         concept: 'VEHICLE_SUBSCRIPTION',      
-        amount: vehicleSubscriptionPricePerWeek * data.qty,
+        amount: VehicleSubscriptionPrices[data.pack.toLowerCase()] * data.qty,
         fromId: data.walletId,
         toId: data.businessId
       })),
@@ -78,7 +78,7 @@ class PosES {
               licensePlate: data.plate,
               packProduct: data.pack,
               quantity: data.qty,
-              amount: vehicleSubscriptionPricePerWeek * data.qty, // todo ==> have more option. weeks, days months,
+              amount: VehicleSubscriptionPrices[data.pack.toLowerCase()] * data.qty, // todo ==> have more option. weeks, days months,
               businessId: data.businessId,
               daysPaid: PRODUCT_DAYS_PACK_MAPPER[data.pack] * data.qty
             },

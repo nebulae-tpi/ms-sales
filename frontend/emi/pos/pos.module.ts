@@ -45,5 +45,4 @@ const routes: Routes = [
   providers: [ DatePipe, PosPaymentService, WithdrawaltService]
 })
 
-
 export class PosModule {}

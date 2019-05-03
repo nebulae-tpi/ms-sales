@@ -13,7 +13,7 @@ spec:
         app: pos
     spec:      
       containers:
-      - image: DOCKERHUB/pos.backend.pos:0.0.37
+      - image: DOCKERHUB/pos.backend.pos:0.0.38
         name: pos
         volumeMounts:
         - name: google-application-credentials
@@ -62,8 +62,8 @@ spec:
         # BACKEND PARAMETERS
         - name: GMT_TO_SERVE
           value: "GMT-5"
-        - name: VEHICLE_SUBS_WEEK_PRICE
-          value: "12000"
+        - name: VEHICLE_SUBS_PRICES
+          value: '{ "day": 2000, "week": 12000, "month": 40000 }'
         
       volumes:
       - name: google-application-credentials
