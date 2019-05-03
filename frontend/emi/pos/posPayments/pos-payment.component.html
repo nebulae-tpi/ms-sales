@@ -30,7 +30,7 @@
     <!-- / HEADER -->
 
     <!-- CONTENT CARD -->
-    <div class="content-card mat-white-bg">    
+    <div class="content-card mat-white-bg">
       <div fusePerfectScrollbar>
         <div fxFlex="100" class="p-12" fxLayout="row wrap">
           <!-- AUTOCOMPLETE -->
@@ -41,7 +41,7 @@
             <mat-form-field fxFlex.gt-sm="45">
               <input id="search" #walletInputFilter matInput [placeholder]="'POS.SELECT_WALLET' | translate"
                 [formControl]="walletFilterCtrl" fxFlex [matAutocomplete]="auto">
-          
+
               <button mat-button *ngIf="selectedWallet" matSuffix mat-icon-button aria-label="Clear"
                 (click)="clearSelectedWallet()">
                 <mat-icon>close</mat-icon>
@@ -51,9 +51,9 @@
           <!-- AUTOCOMPLETE -->
           <!-- WALLET SUMMARY -->
           <span fxFlex="100" *ngIf="!selectedWallet" class="mat-headline pl-12">{{'POS.MISSING_WALLET' | translate}}</span>
-          
+
           <div class="p-12" fxFlex="100" *ngIf="selectedWallet" fxLayout="row wrap" id="wallet-sumary">
-    
+
             <div fxFlex="100" fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutAlign.gt-xs="start center">
               <span class="mat-headline">{{'POS.CURRENT_WALLET_STATE' | translate}}</span>
               <span class="mat-headline pl-8"
@@ -61,7 +61,7 @@
                 {{ selectedWallet.pockets.main | currency}}
               </span>
             </div>
-    
+
             <mat-form-field fxFlex="100" fxFlex.gt-xs="50" class="pr-8 pl-8">
               <input matInput readonly placeholder="{{ 'POS.WALLET_INFO.NAME' | translate }}"
                 value="{{ selectedWallet.fullname }}">
@@ -70,14 +70,14 @@
               <input matInput readonly placeholder="{{ 'POS.WALLET_INFO.DOCUMENT_ID' | translate }}"
                 value="{{ selectedWallet.documentId }}">
             </mat-form-field>
-    
+
           </div>
           <!-- WALLET SUMMARY -->
           <!-- <mat-divider fxFlex="100"></mat-divider> -->
-    
+
           <!-- SALES AND PAYMENT -->
           <div fxFlex="100" fxLayout="row wrap">
-            <!-- RELOAD -->            
+            <!-- RELOAD -->
             <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="chargebalanceForm" [formGroup]="chargebalanceForm" fxLayout="column">
               <span class="mat-headline">{{'POS.REALOAD_TITLE' | translate}}</span>
               <mat-card-content>
@@ -100,7 +100,7 @@
             <!-- RELOAD -->
 
             <!-- PAYMENT -->
-            <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="productPaymentForm" [formGroup]="productPaymentForm" fxLayout="column">               
+            <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="productPaymentForm" [formGroup]="productPaymentForm" fxLayout="column">
                 <span class="mat-headline">{{'POS.PAYMENTS.TITLE' | translate}}</span>
                 <mat-card-content>
                     <mat-form-field fxLayout="column" class="p-8">
@@ -120,9 +120,9 @@
                             </mat-option>
                           </mat-select>
                         </mat-form-field>
-                    
+
                         <mat-form-field class="p-8" fxFlex="100" fxFlex.gt-xs="50" fxLayout="column">
-                          <input matInput type="number" name="qty" formControlName="qty" max="100" min="0"
+                          <input matInput type="number" name="qty" formControlName="qty" max="100" min="1"
                             placeholder="{{'POS.PAYMENTS.PACK_QUANTITY' | translate}}">
                           <mat-error *ngIf="productPaymentForm.hasError('min', ['qty'])">
                             {{'POS.PAYMENTS.LICENSE_PLATE_REQUIRED' | translate}}
@@ -138,12 +138,12 @@
                 </mat-card-actions>
               </mat-card>
             <!-- PAYMENT -->
-    
+
           </div>
           <!-- SALES AND PAYMENT -->
-    
-        </div>    
-      </div>    
+
+        </div>
+      </div>
       <!-- / CONTENT CARD -->
     </div>
     <!-- / CENTER -->

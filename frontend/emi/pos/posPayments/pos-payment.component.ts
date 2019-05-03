@@ -38,6 +38,7 @@ import {
   MatDialog
 } from '@angular/material';
 import { PosPaymentService } from './pos-payment.service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 
 @Component({
@@ -57,7 +58,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
 
   walletFilterCtrl = new FormControl();
 
-  packOptions = ['WEEK'];
+  packOptions = ['WEEK', 'DAY'];
 
   walletQueryFiltered$: Observable<any[]>; // Wallet autocomplete supplier
   selectedBusinessId: any;
@@ -121,15 +122,23 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       plate: new FormControl('', [Validators.required]),
       pack: new FormControl('WEEK'),
       qty: new FormControl(1),
-    });
+    }, this.validatePaymentForm.bind(this));
 
   }
 
+  validatePaymentForm(fg: FormGroup){
+    if (fg.get('pack').value === 'DAY'){
+      fg.get('qty').setValidators([Validators.max(6)]);
+    }else{
+      fg.get('qty').setValidators([Validators.max(10)]);
+    }
+    return false;
+  }
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
-  
+
   }
 
   makeBalanceReload(){
@@ -149,7 +158,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
         return buId;
       }),
       mergeMap((buId) => this.posService.reloadBalance$(this.selectedWallet._id, buId, valueToReload)),
-      mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),      
+      mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
       mergeMap(r => {
         if (r.data.SalesPosReloadBalance.code === 200){
           this.showMessageSnackbar('SUCCESS.1');
@@ -170,8 +179,6 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
     this.walletSelected$.next(wallet._id);
 
   }
-
-
 
   clearSelectedWallet(){
     this.selectedWallet = null;
@@ -215,7 +222,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       }),
       mergeMap((buId) => this.posService.payVehicleSubscription$(this.selectedWallet._id, buId, args.plate.toUpperCase() , args.pack, args.qty)),
       mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
-      filter(r => (r && r.data && r.data.SalesPosPayVehicleSubscription)),      
+      filter(r => (r && r.data && r.data.SalesPosPayVehicleSubscription)),
       mergeMap(r => {
         if (r.data.SalesPosPayVehicleSubscription.code === 200){
           this.showMessageSnackbar('SUCCESS.2');
@@ -272,7 +279,6 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       .subscribe();
   }
 
-
   getWalletsFiltered$(filterText: String, limit: number): Observable<any[]> {
     return this.posService.getWalletsByFilter(filterText, this.selectedBusinessId, limit)
       .pipe(
@@ -288,7 +294,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       tap((resp: any) => {
         if (response && Array.isArray(response.errors)) {
           response.errors.forEach(error => {
-            this.showMessageSnackbar('ERRORS.' + ((error.extensions||{}).code || 1) )
+            this.showMessageSnackbar('ERRORS.' + ((error.extensions || {}).code || 1));
           });
         }
         return resp;
@@ -296,9 +302,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
     );
   }
 
-
-
-    /**
+  /**
    * Shows a message snackbar on the bottom of the page
    * @param messageKey Key of the message to i18n
    * @param detailMessageKey Key of the detail message to i18n
@@ -338,7 +342,5 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       )
       .subscribe();
   }
-
-
 
 }
