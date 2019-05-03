@@ -68,5 +68,4 @@ payVehicleSubscription$(walletId: string, businessId: string, plate: string, pac
 
 }
 
-
 }
