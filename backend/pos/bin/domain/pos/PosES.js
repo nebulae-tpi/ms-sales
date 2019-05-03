@@ -71,13 +71,15 @@ class PosES {
         eventSourcing.eventStore.emitEvent$(
           new Event({
             eventType: "VehicleSubscriptionPaid",
-            eventTypeVersion: 1,
+            eventTypeVersion: 2,
             aggregateType: "Vehicle",
             aggregateId: uuidv4(),
             data: {
               licensePlate: data.plate,
               packProduct: data.pack,
               quantity: data.qty,
+              amount: vehicleSubscriptionPricePerWeek * data.qty, // todo ==> have more option. weeks, days months,
+              businessId: data.businessId,
               daysPaid: PRODUCT_DAYS_PACK_MAPPER[data.pack] * data.qty
             },
             user: user
