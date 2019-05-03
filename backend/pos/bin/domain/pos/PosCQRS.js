@@ -25,7 +25,7 @@ const {
   VEHICLE_FROM_OTHER_BU
 } = require("../../tools/customError");
 const Crosscutting = require("../../tools/Crosscutting");
-const VehicleSubscriptionPrices = process.env.VEHICLE_SUBS_PRICES || { day: 2000, week: 12000, month: 40000 }
+const VehicleSubscriptionPrices = process.env.VEHICLE_SUBS_PRICES || { day: "2000", week: "12000", month: "40000" }
 
 
 
@@ -116,7 +116,7 @@ class PosCQRS {
       mergeMap(() => PosDA.getWalletById$(args.walletId)),
       // VALIDATIONS
       mergeMap(wallet => {
-        return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < (VehicleSubscriptionPrices[args.pack.toLowerCase()]) * args.qty))
+        return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < parseInt(VehicleSubscriptionPrices[args.pack.toLowerCase()]) * args.qty))
           ? this.createCustomError$(INSUFFICIENT_BALANCE, 'salesPosPayVehicleSubscription')
           : forkJoin(VehicleDA.findByLicensePlate$(args.plate), of(wallet))
       }),
@@ -159,6 +159,7 @@ class PosCQRS {
       ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
     ).pipe(
       mergeMap(() => of(VehicleSubscriptionPrices)),
+      map(original => Object.keys(original).reduce((acc, key) => { acc[key] = parseInt(original[key]) ; return acc; } , {})),
       mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
       catchError(err => GraphqlResponseTools.handleError$(err))
     );
