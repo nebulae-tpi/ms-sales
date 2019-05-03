@@ -210,7 +210,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
     return this.showConfirmationDialog$(
       this.translate.instant('POS.DIALOG.CONFIRMATION_PURCHASE'),
       this.translate.instant('POS.DIALOG.PURCHASE_WALLET_TITLE'),
-      'PURCHASE', args.qty * this.productPrices.week)
+      'PURCHASE', args.qty * this.productPrices[args.pack.toLowerCase()])
     .pipe(
       tap(() => this.paymentBtnDisabled = true),
       mergeMap(() => of(this.selectedBusinessId)),
