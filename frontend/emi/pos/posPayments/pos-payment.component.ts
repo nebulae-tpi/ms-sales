@@ -13,6 +13,7 @@ import {
   startWith,
   debounceTime,
   distinctUntilChanged,
+
   take,
   merge
 } from 'rxjs/operators';
@@ -124,14 +125,25 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       qty: new FormControl(1),
     }, this.validatePaymentForm.bind(this));
 
+    this.productPaymentForm.get('pack').valueChanges
+    .pipe(
+      tap(pack => {
+        const quantity = this.productPaymentForm.get('qty').value;
+        if (pack === 'DAY'){
+          this.productPaymentForm.get('qty').setValidators([Validators.max(6)]);
+        }else{
+          this.productPaymentForm.get('qty').setValidators([Validators.max(10)]);
+        }
+        this.productPaymentForm.get('qty').setValue(quantity);
+        this.productPaymentForm.updateValueAndValidity();
+      }),
+      takeUntil(this.ngUnsubscribe)
+    )
+    .subscribe();
+
   }
 
   validatePaymentForm(fg: FormGroup){
-    if (fg.get('pack').value === 'DAY'){
-      fg.get('qty').setValidators([Validators.max(6)]);
-    }else{
-      fg.get('qty').setValidators([Validators.max(10)]);
-    }
     return false;
   }
 
