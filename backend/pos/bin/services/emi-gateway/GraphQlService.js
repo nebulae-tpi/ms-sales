@@ -165,6 +165,15 @@ class GraphQlService {
         aggregateType: "Pos",
         messageType: "emigateway.graphql.mutation.salesPosBalanceWithdraw"
       },
+      // DRIVER API
+      {
+        aggregateType: "Pos",
+        messageType: "drivergateway.graphql.query.salesPosProductPrices"
+      },
+      {
+        aggregateType: "Pos",
+        messageType: "drivergateway.graphql.mutation.salesPosPayVehicleSubscription"
+      },
     ];
   }
 
@@ -191,6 +200,15 @@ class GraphQlService {
         obj: PosCQRS
       },
       "emigateway.graphql.mutation.salesPosBalanceWithdraw": {
+        fn: PosCQRS.salesPosBalanceWithdraw$,
+        obj: PosCQRS
+      },
+      // DRIVER API
+      "drivergateway.graphql.query.salesPosProductPrices": {
+        fn: PosCQRS.getSalesPosProductPrices$,
+        obj: PosCQRS
+      },
+      "drivergateway.graphql.mutation.salesPosPayVehicleSubscription":{
         fn: PosCQRS.salesPosBalanceWithdraw$,
         obj: PosCQRS
       }

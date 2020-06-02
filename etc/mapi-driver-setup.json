@@ -1,0 +1,8 @@
+[
+    {
+        "name": "pos",
+        "type": "graphql",        
+        "src": "api/driver-gateway/graphql/pos",
+        "preBuildCommands": []
+    }
+]

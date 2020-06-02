@@ -1,0 +1,23 @@
+
+type CommandResponse {
+  "Response code"
+  code: Int
+  "Response message"
+  message: String
+}
+
+type VehicleSubscriptionPrices{
+  month: Int
+  week: Int
+  day: Int
+}
+
+type Query {
+  "Get the prices for day and week subscription"
+  SalesPosProductPrices(businessId: String!): VehicleSubscriptionPrices @requireAuth
+}
+
+type Mutation {  
+  SalesPosPayVehicleSubscription(walletId: String!, businessId: String!, plate: String!, pack: String!, qty: Int!): CommandResponse @requireAuth  
+}
+

@@ -110,6 +110,45 @@ jobs:
           paths:
             - api 
 
+  build-api-driver:    
+    working_directory: ~/nebulae/
+    docker:
+      - image: circleci/node:10.15.1
+        command: bash
+    steps:
+      - attach_workspace:
+          at: ~/nebulae
+      - run:
+          name: Installing NebulaE cli & Compose API
+          command: |    
+            source ~/nebulae/repo/.circleci/scripts/gitChanged.sh
+            cd ~/nebulae/repo/            
+            gitChanged api/driver-gateway || echo $GCP_SERVICE_ACCOUNT_DEV | base64 --decode --ignore-garbage > /tmp/gcloud-service-key.json
+            gitChanged api/driver-gateway || npm config set prefix '~/.npm-global'
+            gitChanged api/driver-gateway || export PATH=~/.npm-global/bin:$PATH
+            gitChanged api/driver-gateway || source ~/.profile
+            gitChanged api/driver-gateway || npm install -g @nebulae/cli
+            gitChanged api/driver-gateway || nebulae register microapi --microservice-id=wallet --api-id=driver-gateway --setup-file=/home/circleci/nebulae/repo/etc/mapi-driver-setup.json --store-type=GCP_DATASTORE --gcp-service-account-token=/tmp/gcloud-service-key.json            
+            gitChanged api/driver-gateway || nebulae compose-api production --api-type=NEBULAE_GATEWAY --api-repo=https://github.com/nebulae-tpi/driver-gateway.git --api-id=driver-gateway --output-dir=/home/circleci/nebulae/api/driver-gateway/ --store-type=GCP_DATASTORE --gcp-service-account-token=/tmp/gcloud-service-key.json      
+            gitChanged api/driver-gateway || ls /home/circleci/nebulae/api/driver-gateway/
+      - setup_remote_docker
+      - run:
+          name: Build docker image and push it to hub
+          command: | 
+            source ~/nebulae/repo/.circleci/scripts/gitChanged.sh
+            cd ~/nebulae/repo/
+            mkdir -p ~/nebulae/api-driver
+            gitChanged api/driver-gateway || ( cd  ~/nebulae/api-driver/ && git clone --depth=1 https://github.com/nebulae-tpi/driver-gateway  ~/nebulae/api-driver/shell )      
+            gitChanged api/driver-gateway || ls ~/nebulae/api-driver/shell
+            gitChanged api/driver-gateway || export DOCKERHUB_IMAGE=drivergateway
+            gitChanged api/driver-gateway || export API_SHELL_PATH=/home/circleci/nebulae/api/
+            gitChanged api/driver-gateway || ( cd ~/nebulae/api-driver/shell && sh ~/nebulae/api-driver/shell/deployment/docker/build-docker-hub.sh  && cd ~/nebulae/repo/ )
+            gitChanged api/driver-gateway || echo $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE@$(docker pull $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:latest | grep sha256 | cut -c 9-) > ~/nebulae/api-driver/DRIVER_DOCKERHUB_GENERATED_IMAGE_DIGEST
+      - persist_to_workspace:
+          root: ~/nebulae/
+          paths:
+            - api-driver
+
 # ################ MBINIT ################ 
             
   build-mbinit:    
@@ -153,7 +192,7 @@ jobs:
             mkdir ~/nebulae/backend
             cp ~/nebulae/go/mbinit ~/nebulae/repo/backend/pos/
             export DOCKERHUB_IMAGE=pos.backend.pos
-            export DOCKERHUB_TAG=0.0.47
+            export DOCKERHUB_TAG=0.0.48
             gitChanged backend/pos || docker build  -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:$DOCKERHUB_TAG -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:latest ~/nebulae/repo/backend/pos/
             gitChanged backend/pos || docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
             gitChanged backend/pos || docker push $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:$DOCKERHUB_TAG
@@ -224,6 +263,14 @@ workflows:
           filters:
             branches:
               only:
+                - develop
+      - build-api-driver:
+          context: TPI
+          requires:
+            - prepare
+          filters:
+            branches:
+              only:
                 - develop      
       - build-backend-pos:
           context: TPI
@@ -239,6 +286,7 @@ workflows:
           requires:
             - build-frontend
             - build-api-emi
+            - build-api-driver
             - build-backend-pos
           filters:
             branches:
@@ -261,7 +309,16 @@ workflows:
           filters:
             branches:
               only:
-                - master      
+                - master
+      - build-api-driver:
+          context: TPI_PROD
+          name: build-api-driver-prod
+          requires:
+            - prepare
+          filters:
+            branches:
+              only:
+                - master    
       - build-backend-pos:
           context: TPI_PROD
           name: build-backend-pos-prod
@@ -278,6 +335,7 @@ workflows:
           requires:
             - build-frontend-prod
             - build-api-emi-prod
+            - build-api-driver
             - build-backend-pos-prod
           filters:
             branches:

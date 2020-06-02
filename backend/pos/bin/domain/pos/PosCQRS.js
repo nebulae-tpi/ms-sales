@@ -154,11 +154,9 @@ class PosCQRS {
 
   getSalesPosProductPrices$({ args }, authToken){
     return RoleValidator.checkPermissions$(
-      authToken.realm_access.roles,
-      "Sales",
-      "salesPosPayVehicleSubscription",
-      PERMISSION_DENIED,
-      ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
+      authToken.realm_access.roles, "Sales",
+      "salesPosPayVehicleSubscription", PERMISSION_DENIED,
+      ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS", "DRIVER"]
     ).pipe(
       mergeMap(() => of(VehicleSubscriptionPrices)),
       map(prices => {
