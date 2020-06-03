@@ -170,13 +170,11 @@ class PosCQRS {
       map(prices => {
         console.log("ENV: ", process.env.VEHICLE_SUBS_PRICES);        
         console.log(JSON.stringify(prices));
-        Object.keys(prices).reduce((acc, key) => {
+        return Object.keys(prices).reduce((acc, key) => {
           console.log({key});
           acc[key] = parseInt(prices[key]);
           return acc;
         }, {});
-
-        return prices;
       }),
       tap(e => console.log("=======> ", e)),
       mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
