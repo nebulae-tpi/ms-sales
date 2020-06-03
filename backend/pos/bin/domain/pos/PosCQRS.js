@@ -32,10 +32,9 @@ const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) ||
   "b19c067e-57b4-468f-b970-d0101a31cacb": {day: "2000", week: "12000", month: "40000"},
   // NEBULAE
   "bf2807e4-e97f-43eb-b15d-09c2aff8b2ab": {day: "2000", week: "12000", month: "40000"},
+  // nebulae-development
+  "4ab03a09-9e34-40fe-9102-25cc6b5b2176": {day: "2000", week: "12000", month: "40000"}
   }
-
-
-
 
 /**
  * Singleton instance
@@ -169,16 +168,14 @@ class PosCQRS {
     ).pipe(
       mergeMap(() => of(VehicleSubscriptionPrices[businessId])),
       map(prices => {
-        console.log(process.env.VEHICLE_SUBS_PRICES);        
-        console.log(prices);
-        console.log(Object.keys(prices));
-
+        console.log("ENV: ", process.env.VEHICLE_SUBS_PRICES);        
+        console.log(JSON.stringify(prices));
         Object.keys(prices).reduce((acc, key) => {
           console.log({key});
           acc[key] = parseInt(prices[key]);
           return acc;
         }, {});
-        
+
         return prices;
       }),
       tap(e => console.log("=======> ", e)),
