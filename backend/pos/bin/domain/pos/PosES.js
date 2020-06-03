@@ -29,7 +29,7 @@ class PosES {
   constructor() {}
 
   handleSaleWalletRechargeCommited$({aid, data, user}){
-    const { businessId, amount, businessId, walletId  } = data;
+    const { businessId, amount, walletId  } = data;
     return of(data).pipe(
       map(() => ({
         type: 'MOVEMENT', concept: 'WALLET_RECHARGE',
@@ -51,7 +51,7 @@ class PosES {
   }
 
   handleSaleVehicleSubscriptionCommited$({aid, data, user}){
-    const { businessId, pack, qty, walletId, businessId, plate } = data;
+    const { businessId, pack, qty, walletId, plate } = data;
     const amount = parseInt(VehicleSubscriptionPrices[businessId][pack.toLowerCase()]) * qty;
     return of({}).pipe(
       map(() => ({
