@@ -209,7 +209,7 @@ class GraphQlService {
         obj: PosCQRS
       },
       "drivergateway.graphql.mutation.salesPosPayVehicleSubscription":{
-        fn: PosCQRS.salesPosBalanceWithdraw$,
+        fn: PosCQRS.salesPosPayVehicleSubscription$,
         obj: PosCQRS
       }
     };
