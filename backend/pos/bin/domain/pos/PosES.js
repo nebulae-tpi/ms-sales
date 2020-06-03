@@ -93,7 +93,7 @@ class PosES {
   }
 
   handleSalesPosWithdrawalCommitted$({aid, data, user}){
-    const { businessId, amount, walletId, businessId } = data;
+    const { businessId, amount, walletId } = data;
     return of({}).pipe(
       map(() => ({
         _id: Crosscutting.generateHistoricalUuid(),
