@@ -25,8 +25,14 @@ const {
   VEHICLE_FROM_OTHER_BU
 } = require("../../tools/customError");
 const Crosscutting = require("../../tools/Crosscutting");
-const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) || { day: "2000", week: "12000", month: "40000" }
-// const VehicleSubscriptionPrices = { day: "2000", week: "12000", month: "40000" }
+const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) || { 
+  // TX-PLUS-CALI
+  "75cafa6d-0f27-44be-aa27-c2c82807742d": {day: "2000", week: "12000", month: "40000"},
+  // TX-PLUS-MANIZALES
+  "b19c067e-57b4-468f-b970-d0101a31cacb": {day: "2000", week: "12000", month: "40000"},
+  // NEBULAE
+  "bf2807e4-e97f-43eb-b15d-09c2aff8b2ab": {day: "2000", week: "12000", month: "40000"},
+  }
 
 
 
@@ -96,6 +102,7 @@ class PosCQRS {
 
   salesPosPayVehicleSubscription$({ args }, authToken){
     // console.log("salesPosPayVehicleSubscription$", args);
+    const { businessId, pack, qty } = args;
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles,
       "Sales",
@@ -106,7 +113,7 @@ class PosCQRS {
       mergeMap(roles => {
         const isPlatformAdmin = roles["PLATFORM-ADMIN"];
         //If a user does not have the role to get info of a wallet from other business, we must return an error
-          if (!isPlatformAdmin && authToken.businessId != args.businessId) {
+          if (!isPlatformAdmin && authToken.businessId != businessId) {
             return this.createCustomError$(
               PERMISSION_DENIED_ERROR,
               'salesPosPayVehicleSubscription'
@@ -117,7 +124,8 @@ class PosCQRS {
       mergeMap(() => PosDA.getWalletById$(args.walletId)),
       // VALIDATIONS
       mergeMap(wallet => {
-        return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < parseInt(VehicleSubscriptionPrices[args.pack.toLowerCase()]) * args.qty))
+        const amount = parseInt( VehicleSubscriptionPrices[businessId][pack.toLowerCase()] * qty);
+        return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < amount ))
           ? this.createCustomError$(INSUFFICIENT_BALANCE, 'salesPosPayVehicleSubscription')
           : forkJoin(VehicleDA.findByLicensePlate$(args.plate), of(wallet))
       }),
@@ -153,20 +161,24 @@ class PosCQRS {
   }
 
   getSalesPosProductPrices$({ args }, authToken){
+    const { businessId } = args;
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles, "Sales",
       "salesPosPayVehicleSubscription", PERMISSION_DENIED,
       ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS", "DRIVER"]
     ).pipe(
-      mergeMap(() => of(VehicleSubscriptionPrices)),
+      mergeMap(() => of(VehicleSubscriptionPrices[businessId])),
       map(prices => {
         console.log(process.env.VEHICLE_SUBS_PRICES);        
         console.log(prices);
         console.log(Object.keys(prices));
+
         Object.keys(prices).reduce((acc, key) => {
           console.log({key});
-          acc[key] = parseInt(prices[key]) ; return acc;
+          acc[key] = parseInt(prices[key]);
+          return acc;
         }, {});
+        
         return prices;
       }),
       tap(e => console.log("=======> ", e)),
@@ -181,7 +193,7 @@ class PosCQRS {
       "Sales",
       "salesPosPayVehicleSubscription",
       PERMISSION_DENIED,
-      ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS"]
+      ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS", "DRIVER"]
     ).pipe(
       mergeMap(() => PosDA.getWalletById$(args.walletId)),
       mergeMap(wallet => {
