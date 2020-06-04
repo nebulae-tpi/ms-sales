@@ -84,14 +84,14 @@ jobs:
           command: |    
             source ~/nebulae/repo/.circleci/scripts/gitChanged.sh
             cd ~/nebulae/repo/            
-            gitChanged api || echo $GCP_SERVICE_ACCOUNT_DEV | base64 --decode --ignore-garbage > /tmp/gcloud-service-key.json
-            gitChanged api || npm config set prefix '~/.npm-global'
-            gitChanged api || export PATH=~/.npm-global/bin:$PATH
-            gitChanged api || source ~/.profile
-            gitChanged api || npm install -g @nebulae/cli
-            gitChanged api || nebulae register microapi --microservice-id=sales --api-id=emi-gateway --setup-file=/home/circleci/nebulae/repo/etc/mapi-setup.json --store-type=GCP_DATASTORE --gcp-service-account-token=/tmp/gcloud-service-key.json            
-            gitChanged api || nebulae compose-api production --api-type=NEBULAE_GATEWAY --api-repo=https://github.com/nebulae-tpi/emi-gateway.git --api-id=emi-gateway --output-dir=/home/circleci/nebulae/api/emi-gateway/ --store-type=GCP_DATASTORE --gcp-service-account-token=/tmp/gcloud-service-key.json      
-            gitChanged api || ls /home/circleci/nebulae/api/emi-gateway/
+            gitChanged api/emi-gateway || echo $GCP_SERVICE_ACCOUNT_DEV | base64 --decode --ignore-garbage > /tmp/gcloud-service-key.json
+            gitChanged api/emi-gateway || npm config set prefix '~/.npm-global'
+            gitChanged api/emi-gateway || export PATH=~/.npm-global/bin:$PATH
+            gitChanged api/emi-gateway || source ~/.profile
+            gitChanged api/emi-gateway || npm install -g @nebulae/cli
+            gitChanged api/emi-gateway || nebulae register microapi --microservice-id=sales --api-id=emi-gateway --setup-file=/home/circleci/nebulae/repo/etc/mapi-setup.json --store-type=GCP_DATASTORE --gcp-service-account-token=/tmp/gcloud-service-key.json            
+            gitChanged api/emi-gateway || nebulae compose-api production --api-type=NEBULAE_GATEWAY --api-repo=https://github.com/nebulae-tpi/emi-gateway.git --api-id=emi-gateway --output-dir=/home/circleci/nebulae/api/emi-gateway/ --store-type=GCP_DATASTORE --gcp-service-account-token=/tmp/gcloud-service-key.json      
+            gitChanged api/emi-gateway || ls /home/circleci/nebulae/api/emi-gateway/
       - setup_remote_docker
       - run:
           name: Build docker image (emi-gateway) and push it to hub
@@ -99,12 +99,12 @@ jobs:
             source ~/nebulae/repo/.circleci/scripts/gitChanged.sh
             cd ~/nebulae/repo/
             mkdir -p ~/nebulae/api
-            gitChanged api || ( cd  ~/nebulae/api/ && git clone --depth=1 https://github.com/nebulae-tpi/emi-gateway  ~/nebulae/api/shell )      
-            gitChanged api || ls ~/nebulae/api/shell
-            gitChanged api || export DOCKERHUB_IMAGE=emigateway
-            gitChanged api || export API_SHELL_PATH=/home/circleci/nebulae/api/
-            gitChanged api || ( cd ~/nebulae/api/shell && sh ~/nebulae/api/shell/deployment/docker/build-docker-hub.sh  && cd ~/nebulae/repo/ )
-            gitChanged api || echo $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE@$(docker pull $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:latest | grep sha256 | cut -c 9-) > ~/nebulae/api/DOCKERHUB_GENERATED_IMAGE_DIGEST
+            gitChanged api/emi-gateway || ( cd  ~/nebulae/api/ && git clone --depth=1 https://github.com/nebulae-tpi/emi-gateway  ~/nebulae/api/shell )      
+            gitChanged api/emi-gateway || ls ~/nebulae/api/shell
+            gitChanged api/emi-gateway || export DOCKERHUB_IMAGE=emigateway
+            gitChanged api/emi-gateway || export API_SHELL_PATH=/home/circleci/nebulae/api/
+            gitChanged api/emi-gateway || ( cd ~/nebulae/api/shell && sh ~/nebulae/api/shell/deployment/docker/build-docker-hub.sh  && cd ~/nebulae/repo/ )
+            gitChanged api/emi-gateway || echo $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE@$(docker pull $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:latest | grep sha256 | cut -c 9-) > ~/nebulae/api/DOCKERHUB_GENERATED_IMAGE_DIGEST
       - persist_to_workspace:
           root: ~/nebulae/
           paths:
@@ -192,7 +192,7 @@ jobs:
             mkdir ~/nebulae/backend
             cp ~/nebulae/go/mbinit ~/nebulae/repo/backend/pos/
             export DOCKERHUB_IMAGE=pos.backend.pos
-            export DOCKERHUB_TAG=0.0.57
+            export DOCKERHUB_TAG=0.0.58
             gitChanged backend/pos || docker build  -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:$DOCKERHUB_TAG -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:latest ~/nebulae/repo/backend/pos/
             gitChanged backend/pos || docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
             gitChanged backend/pos || docker push $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:$DOCKERHUB_TAG
