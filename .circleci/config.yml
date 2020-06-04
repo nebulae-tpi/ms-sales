@@ -335,7 +335,7 @@ workflows:
           requires:
             - build-frontend-prod
             - build-api-emi-prod
-            - build-api-driver
+            - build-api-driver-prod
             - build-backend-pos-prod
           filters:
             branches:

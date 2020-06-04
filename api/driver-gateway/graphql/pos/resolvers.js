@@ -31,8 +31,7 @@ function getResponseFromBackEnd$(response) {
 }
 
 module.exports = {
-  //// QUERY ///////
-  
+  //// QUERY ///////  
   Query: {
     SalesPosProductPrices(root, args, context) {
       return RoleValidator.checkPermissions$(
