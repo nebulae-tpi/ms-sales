@@ -141,7 +141,7 @@ class PosCQRS {
           return of({})
         }
       }),
-      tap(r => console.log(args)),
+      // tap(r => console.log(args)),
       mergeMap(() => eventSourcing.eventStore.emitEvent$(
         new Event({
           eventType: "SaleVehicleSubscriptionCommited",
@@ -168,15 +168,15 @@ class PosCQRS {
     ).pipe(
       mergeMap(() => of(VehicleSubscriptionPrices[businessId])),
       map(prices => {
-        console.log("ENV: ", process.env.VEHICLE_SUBS_PRICES);        
-        console.log(JSON.stringify(prices));
+        // console.log("ENV: ", process.env.VEHICLE_SUBS_PRICES);        
+        // console.log(JSON.stringify(prices));
         return Object.keys(prices).reduce((acc, key) => {
-          console.log({key});
+          // console.log({key});
           acc[key] = parseInt(prices[key]);
           return acc;
         }, {});
       }),
-      tap(e => console.log("=======> ", e)),
+      // tap(e => console.log("=======> ", e)),
       mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
       catchError(err => GraphqlResponseTools.handleError$(err))
     );

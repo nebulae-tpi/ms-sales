@@ -14,8 +14,6 @@ const { handleError$ } = require('../../tools/GraphqlResponseTools');
 
 const CONTEXT_NAME = 'ms-sales';
 
-
-
 function getResponseFromBackEnd$(response) {
   return of(response).pipe(
     map(resp => {
@@ -31,6 +29,8 @@ function getResponseFromBackEnd$(response) {
     })
   );
 }
+
+
 
 module.exports = {
   //// QUERY ///////
