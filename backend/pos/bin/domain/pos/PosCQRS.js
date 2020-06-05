@@ -105,6 +105,11 @@ class PosCQRS {
   salesPosPayVehicleSubscription$({ args }, authToken){
     // console.log("salesPosPayVehicleSubscription$", args);
     const { businessId, pack, qty } = args;
+
+    if(  !VehicleSubscriptionPrices[businessId] || !VehicleSubscriptionPrices[businessId][pack.toLowerCase()] ){
+      return this.createCustomError$(BUSINESS_HAVE_NOT_PRICES_CONF, "PricesConfigurationNoFound");
+    }
+
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles,
       "Sales",

@@ -192,7 +192,7 @@ jobs:
             mkdir ~/nebulae/backend
             cp ~/nebulae/go/mbinit ~/nebulae/repo/backend/pos/
             export DOCKERHUB_IMAGE=pos.backend.pos
-            export DOCKERHUB_TAG=0.0.62
+            export DOCKERHUB_TAG=0.0.63
             gitChanged backend/pos || docker build  -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:$DOCKERHUB_TAG -t $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:latest ~/nebulae/repo/backend/pos/
             gitChanged backend/pos || docker login -u $DOCKERHUB_USER -p $DOCKERHUB_PASS
             gitChanged backend/pos || docker push $DOCKERHUB_NAMESPACE/$DOCKERHUB_IMAGE:$DOCKERHUB_TAG
