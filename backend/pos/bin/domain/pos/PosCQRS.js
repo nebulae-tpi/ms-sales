@@ -106,10 +106,6 @@ class PosCQRS {
     // console.log("salesPosPayVehicleSubscription$", args);
     const { businessId, pack, qty } = args;
 
-    if(  !VehicleSubscriptionPrices[businessId] || !VehicleSubscriptionPrices[businessId][pack.toLowerCase()] ){
-      return this.createCustomError$(BUSINESS_HAVE_NOT_PRICES_CONF, "PricesConfigurationNoFound");
-    }
-
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles,
       "Sales",
@@ -125,6 +121,9 @@ class PosCQRS {
               PERMISSION_DENIED_ERROR,
               'salesPosPayVehicleSubscription'
             );
+          }
+          if(  !VehicleSubscriptionPrices[businessId] || !VehicleSubscriptionPrices[businessId][pack.toLowerCase()] ){
+            return this.createCustomError$(BUSINESS_HAVE_NOT_PRICES_CONF, "PricesConfigurationNoFound");
           }
           return of(roles);
       }),
@@ -169,30 +168,31 @@ class PosCQRS {
   salesPosPayVehicleSubscriptionForDriver$({ args }, authToken){
     console.log(`${new Date().toLocaleString()} -- [DRIVER] salesPosPayVehicleSubscriptionForDriver, ARGS: ${JSON.stringify(args)}`);
     
-
     const { pack, qty, plate } = args;
     console.log(JSON.stringify(authToken));
     const driverWalletId = authToken.driverId;
     const driverBusinessId = authToken.businessId;
     console.log({ driverBusinessId, driverWalletId });
 
-    if(!driverBusinessId){
-      return this.createCustomError$(BUSINESS_ID_MISSING_ON_TOKEN, "BusinessIdMisingOnToken");
-    }
-    if(!driverWalletId){
-      this.createCustomError$(DRIVER_ID_MISSING_ON_TOKEN, "DriverIdMisingOnToken");
-    }
-
-    if( !VehicleSubscriptionPrices[driverBusinessId] || !VehicleSubscriptionPrices[driverBusinessId][pack.toLowerCase()]){
-      console.log(`${new Date().toLocaleString()} -- [ERROR] -- Prices conf not found for BU: ${driverBusinessId}`);
-      return this.createCustomError$(BUSINESS_HAVE_NOT_PRICES_CONF, "PricesConfigurationNoFound");
-    }
-
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles, "Sales",
       "salesPosPayVehicleSubscription", PERMISSION_DENIED,
       ["DRIVER"]
     ).pipe(
+      mergeMap(() => {
+        if(!driverBusinessId){
+          return this.createCustomError$(BUSINESS_ID_MISSING_ON_TOKEN, "BusinessIdMisingOnToken");
+        }
+        if(!driverWalletId){
+          this.createCustomError$(DRIVER_ID_MISSING_ON_TOKEN, "DriverIdMisingOnToken");
+        }
+    
+        if( !VehicleSubscriptionPrices[driverBusinessId] || !VehicleSubscriptionPrices[driverBusinessId][pack.toLowerCase()]){
+          console.log(`${new Date().toLocaleString()} -- [ERROR] -- Prices conf not found for BU: ${driverBusinessId}`);
+          return this.createCustomError$(BUSINESS_HAVE_NOT_PRICES_CONF, "PricesConfigurationNoFound");
+        }
+        return of({});
+      }),
       mergeMap(() => PosDA.getWalletById$(driverWalletId)),
       // VALIDATIONS
       mergeMap(wallet => {
