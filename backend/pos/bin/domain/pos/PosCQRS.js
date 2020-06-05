@@ -21,6 +21,7 @@ const {
   PERMISSION_DENIED_ERROR,
   INSUFFICIENT_BALANCE,
   VEHICLE_NO_FOUND,
+  BUSINESS_HAVE_NOT_PRICES_CONF,
   VEHICLE_IS_INACTIVE,
   VEHICLE_FROM_OTHER_BU
 } = require("../../tools/customError");
@@ -164,6 +165,12 @@ class PosCQRS {
     const { pack, qty, plate } = args;
     const driverWalletId = authToken.driverId;
     const driverBusinessId = authToken.businessId;
+    console.log({ driverBusinessId, driverWalletId });
+
+    if(!VehicleSubscriptionPrices[driverBusinessId][pack.toLowerCase()]){
+      console.log(`${new Date().toLocaleString()} -- [ERROR] -- Prices conf not found for BU: ${driverBusinessId}`);
+      return this.createCustomError$(BUSINESS_HAVE_NOT_PRICES_CONF, "PricesConfigurationNoFound");
+    }
 
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles, "Sales",
