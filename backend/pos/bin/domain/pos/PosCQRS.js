@@ -162,6 +162,7 @@ class PosCQRS {
   salesPosPayVehicleSubscriptionForDriver$({ args }, authToken){
     console.log(`${new Date().toLocaleString()} -- [DRIVER] salesPosPayVehicleSubscriptionForDriver, ARGS: ${JSON.stringify(args)}`);
     
+    
     const { pack, qty, plate } = args;
     const driverWalletId = authToken.driverId;
     const driverBusinessId = authToken.businessId;
