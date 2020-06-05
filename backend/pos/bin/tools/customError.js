@@ -52,6 +52,7 @@ class CustomError extends Error {
     VEHICLE_NO_FOUND: {code: 19004, description: 'Vehicle not found'},
     VEHICLE_IS_INACTIVE: {code: 19005, description: 'Vehicle is inactive'},
     VEHICLE_FROM_OTHER_BU : {code: 19006, description: 'Vehicle is OF other BU'},
-    BUSINESS_HAVE_NOT_PRICES_CONF : {code: 19007, description: 'Prices configuration no found'},
-
+    BUSINESS_HAVE_NOT_PRICES_CONF : { code: 19007, description: 'Prices configuration no found'},
+    BUSINESS_ID_MISSING_ON_TOKEN: { code: 19008, description: 'Business ID missing on token' },
+    DRIVER_ID_MISSING_ON_TOKEN: { code: 19009, description: 'Driver ID missing on token'}
   } 

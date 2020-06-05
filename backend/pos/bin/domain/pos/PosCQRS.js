@@ -22,6 +22,8 @@ const {
   INSUFFICIENT_BALANCE,
   VEHICLE_NO_FOUND,
   BUSINESS_HAVE_NOT_PRICES_CONF,
+  BUSINESS_ID_MISSING_ON_TOKEN,
+  DRIVER_ID_MISSING_ON_TOKEN,
   VEHICLE_IS_INACTIVE,
   VEHICLE_FROM_OTHER_BU
 } = require("../../tools/customError");
@@ -162,8 +164,9 @@ class PosCQRS {
   salesPosPayVehicleSubscriptionForDriver$({ args }, authToken){
     console.log(`${new Date().toLocaleString()} -- [DRIVER] salesPosPayVehicleSubscriptionForDriver, ARGS: ${JSON.stringify(args)}`);
     
-    
+
     const { pack, qty, plate } = args;
+    console.log(JSON.stringify(authToken));
     const driverWalletId = authToken.driverId;
     const driverBusinessId = authToken.businessId;
     console.log({ driverBusinessId, driverWalletId });
@@ -171,6 +174,13 @@ class PosCQRS {
     if(!VehicleSubscriptionPrices[driverBusinessId][pack.toLowerCase()]){
       console.log(`${new Date().toLocaleString()} -- [ERROR] -- Prices conf not found for BU: ${driverBusinessId}`);
       return this.createCustomError$(BUSINESS_HAVE_NOT_PRICES_CONF, "PricesConfigurationNoFound");
+    }
+
+    if(!driverBusinessId){
+      return this.createCustomError$(BUSINESS_ID_MISSING_ON_TOKEN, "BusinessIdMisingOnToken");
+    }
+    if(!driverWalletId){
+      this.createCustomError$(DRIVER_ID_MISSING_ON_TOKEN, "DriverIdMisingOnToken");
     }
 
     return RoleValidator.checkPermissions$(
