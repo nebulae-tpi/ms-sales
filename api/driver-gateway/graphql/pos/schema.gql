@@ -18,6 +18,6 @@ type Query {
 }
 
 type Mutation {  
-  SalesPosPayVehicleSubscription(walletId: String!, businessId: String!, plate: String!, pack: String!, qty: Int!): CommandResponse @requireAuth  
+  SalesPosPayVehicleSubscription(plate: String!, pack: String!, qty: Int!): CommandResponse @requireAuth  
 }
 
