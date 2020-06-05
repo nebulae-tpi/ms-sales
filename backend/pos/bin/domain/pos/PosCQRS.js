@@ -141,7 +141,6 @@ class PosCQRS {
           return of({})
         }
       }),
-      // tap(r => console.log(args)),
       mergeMap(() => eventSourcing.eventStore.emitEvent$(
         new Event({
           eventType: "SaleVehicleSubscriptionCommited",
@@ -149,6 +148,60 @@ class PosCQRS {
           aggregateType: "Sale",
           aggregateId: uuidv4(),
           data: args,
+          user: authToken.preferred_username
+        })
+      )),
+      map(() => ({ code: 200, message: `Reload Balance was made` })),
+      mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
+      catchError(err => GraphqlResponseTools.handleError$(err))
+    );
+
+  }
+
+  salesPosPayVehicleSubscriptionForDriver$({ args }, authToken){
+    console.log(`${new Date().toLocaleString()} -- [DRIVER] salesPosPayVehicleSubscriptionForDriver, ARGS: ${JSON.stringify(args)}`);
+    
+    const { pack, qty, plate } = args;
+    const driverWalletId = authToken.driverId;
+    const driverBusinessId = authToken.businessId;
+
+    return RoleValidator.checkPermissions$(
+      authToken.realm_access.roles, "Sales",
+      "salesPosPayVehicleSubscription", PERMISSION_DENIED,
+      ["DRIVER"]
+    ).pipe(
+      mergeMap(() => PosDA.getWalletById$(driverWalletId)),
+      // VALIDATIONS
+      mergeMap(wallet => {
+        const amount = parseInt( VehicleSubscriptionPrices[driverBusinessId][pack.toLowerCase()] * qty);
+        return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < amount ))
+          ? this.createCustomError$(INSUFFICIENT_BALANCE, 'salesPosPayVehicleSubscription')
+          : forkJoin(VehicleDA.findByLicensePlate$(plate), of(wallet))
+      }),
+      mergeMap(([v, w]) =>  {
+        // console.log("WALLET", w, "VEHICLE", v);
+        if(!v){
+          return this.createCustomError$(VEHICLE_NO_FOUND, "salesPosVehicleExist");
+        } else if (v && !v.active){
+          return this.createCustomError$(VEHICLE_IS_INACTIVE, "salesPosVehicleExist")
+        }else if(v.businessId != w.businessId){
+          return this.createCustomError$(VEHICLE_FROM_OTHER_BU, "salesPosVehicleExist")
+        }
+        else{
+          return of({})
+        }
+      }),
+      mergeMap(() => eventSourcing.eventStore.emitEvent$(
+        new Event({
+          eventType: "SaleVehicleSubscriptionCommited",
+          eventTypeVersion: 1,
+          aggregateType: "Sale",
+          aggregateId: uuidv4(),
+          data: {
+            pack, qty, plate,
+            walletId: driverWalletId, 
+            businessId: driverBusinessId
+          },
           user: authToken.preferred_username
         })
       )),
@@ -168,15 +221,11 @@ class PosCQRS {
     ).pipe(
       mergeMap(() => of(VehicleSubscriptionPrices[businessId])),
       map(prices => {
-        // console.log("ENV: ", process.env.VEHICLE_SUBS_PRICES);        
-        // console.log(JSON.stringify(prices));
         return Object.keys(prices).reduce((acc, key) => {
-          // console.log({key});
           acc[key] = parseInt(prices[key]);
           return acc;
         }, {});
       }),
-      // tap(e => console.log("=======> ", e)),
       mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
       catchError(err => GraphqlResponseTools.handleError$(err))
     );
@@ -188,7 +237,7 @@ class PosCQRS {
       "Sales",
       "salesPosPayVehicleSubscription",
       PERMISSION_DENIED,
-      ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS", "DRIVER"]
+      ["PLATFORM-ADMIN", "BUSINESS-OWNER", "POS" ]
     ).pipe(
       mergeMap(() => PosDA.getWalletById$(args.walletId)),
       mergeMap(wallet => {
