@@ -20,4 +20,3 @@ type Query {
 type Mutation {  
   SalesPosPayVehicleSubscription(plate: String!, pack: String!, qty: Int!): CommandResponse @requireAuth  
 }
-
