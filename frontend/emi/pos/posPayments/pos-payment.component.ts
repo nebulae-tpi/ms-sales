@@ -59,7 +59,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
 
   walletFilterCtrl = new FormControl();
 
-  packOptions = ['WEEK', 'DAY'];
+  packOptions = ['WEEK', 'DAY']; 
 
   walletQueryFiltered$: Observable<any[]>; // Wallet autocomplete supplier
   selectedBusinessId: any;

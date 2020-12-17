@@ -87,7 +87,7 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
     this.initializeForms();
     this.initializeWalletAutoComplete();
     this.listenbusinessChanges(); // Listen busineses changes in toolbar
-    this.listenWalletUpdates();
+    this.listenWalletUpdates(); 
 
   }
 
