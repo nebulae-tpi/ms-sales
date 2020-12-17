@@ -63,7 +63,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
 
   walletQueryFiltered$: Observable<any[]>; // Wallet autocomplete supplier
   selectedBusinessId: any;
-
+ 
   chargeBtnDisabled = false;
   paymentBtnDisabled = false;
   productPrices = null;

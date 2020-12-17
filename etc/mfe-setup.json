@@ -46,7 +46,7 @@
           }        
         ],
         "preBuildCommands": [
-          "npm install ng2-currency-mask"
+          "npm install ng2-currency-mask@5.3.1"
         ],
         "environmentVars": {
         }
