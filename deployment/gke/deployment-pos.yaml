@@ -13,7 +13,7 @@ spec:
         app: pos
     spec:      
       containers:
-      - image: DOCKERHUB/pos.backend.pos:0.0.66
+      - image: DOCKERHUB/pos.backend.pos:0.0.67
         name: pos
         volumeMounts:
         - name: google-application-credentials

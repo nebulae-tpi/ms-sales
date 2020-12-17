@@ -21,7 +21,7 @@ class VehicleES {
      * Persists the driver on the materialized view according to the received data from the event store.
      * @param {*} businessCreatedEvent business created event
      */
-    handleVehicleCreated$(vehicleCreatedEvent) {
+    handleVehicleCreated$(vehicleCreatedEvent) { 
         // console.log("handleVehicleCreated$");
         return of(vehicleCreatedEvent.data)
         .pipe(

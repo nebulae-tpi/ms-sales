@@ -22,8 +22,8 @@ export const locale = {
       },
       PAYMENTS: {
         TITLE: 'Pagos',
-        LICENSE_PLATE: 'Placa',
-        LICENSE_PLATE_REQUIRED: 'Placa Requerida',
+        LICENSE_PLATE: 'Id Vehículo',
+        LICENSE_PLATE_REQUIRED: 'Id Vehículo Requerida',
         MAKE_PAYMENT: 'Realizar Pago',
         PACK_NAME_LBL: 'Plan',
         PACK_QUANTITY: 'Cantidad',
