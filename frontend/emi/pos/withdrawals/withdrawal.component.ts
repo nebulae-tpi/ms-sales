@@ -94,7 +94,7 @@ export class WithdrawalComponent implements OnInit, OnDestroy {
   listenWalletUpdates(){
 
     this.walletSelected$
-    .pipe( 
+    .pipe(
       switchMap(walletId => this.withdrawaltService.listenWalletUpdates$(walletId)),
       filter((r: any) => r.data.SalesPoswalletsUpdates),
       map((r: any) => r.data.SalesPoswalletsUpdates),

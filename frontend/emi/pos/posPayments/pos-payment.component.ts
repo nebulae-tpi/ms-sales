@@ -97,7 +97,8 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
     this.listenWalletUpdates();
   }
 
-  listenWalletUpdates(){
+  listenWalletUpdates() {
+    
     this.walletSelected$
     .pipe(
       switchMap(walletId => this.posService.listenWalletUpdates$(walletId)),
