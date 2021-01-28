@@ -349,9 +349,19 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
             const availableSalesOptions = bu.attributes.find(attr => attr.key === "availableSalesOptions");
             if (availableSalesOptions) {
               this.packOptions = availableSalesOptions.value.split(",")
+              this.productPaymentForm = new FormGroup({
+                plate: new FormControl('', [Validators.required]),
+                pack: new FormControl(this.packOptions[0]),
+                qty: new FormControl(1),
+              });
             }
             else { 
               this.packOptions = ['WEEK', 'DAY', 'MONTH', 'FORTNIGTH']; 
+              this.productPaymentForm = new FormGroup({
+                plate: new FormControl('', [Validators.required]),
+                pack: new FormControl('WEEK'),
+                qty: new FormControl(1),
+              });
             }
 
           }
