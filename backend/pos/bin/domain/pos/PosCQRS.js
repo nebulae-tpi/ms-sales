@@ -30,13 +30,13 @@ const {
 const Crosscutting = require("../../tools/Crosscutting");
 const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) || { 
   // TX-PLUS-CALI
-  "75cafa6d-0f27-44be-aa27-c2c82807742d": {day: "2000", week: "12000", month: "40000"},
+  "75cafa6d-0f27-44be-aa27-c2c82807742d": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"},
   // TX-PLUS-MANIZALES
-  "b19c067e-57b4-468f-b970-d0101a31cacb": {day: "2000", week: "12000", month: "40000"},
+  "b19c067e-57b4-468f-b970-d0101a31cacb": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"},
   // NEBULAE
-  "bf2807e4-e97f-43eb-b15d-09c2aff8b2ab": {day: "2000", week: "12000", month: "40000"},
+  "bf2807e4-e97f-43eb-b15d-09c2aff8b2ab": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"},
   // nebulae-development
-  "4ab03a09-9e34-40fe-9102-25cc6b5b2176": {day: "2000", week: "12000", month: "40000"}
+  "4ab03a09-9e34-40fe-9102-25cc6b5b2176": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"}
   }
 
 /**
