@@ -26,6 +26,7 @@ export const SalesPosProductPrices = gql`
       day
       week
       month
+      fortnigth
     }
   }
 `;

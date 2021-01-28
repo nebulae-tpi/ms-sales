@@ -30,7 +30,8 @@ export const locale = {
         PACK_OPTIONS: {
           DAY: 'Día',
           WEEK: 'Semana',
-          MONTH: 'Mes'
+          MONTH: 'Mes',
+          FORTNIGTH: 'Quincena'
         }
       },
       ENTITY_TYPES: {

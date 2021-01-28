@@ -20,7 +20,7 @@ class WalletES {
   }
 
   handleWalletUpdated$({aid, data}){
-    // console.log("handleWalletUpdated$", aid, data);
+    console.log("handleWalletUpdated$", aid, data);
     return of(data)
       .pipe(
         filter(e => e != null),

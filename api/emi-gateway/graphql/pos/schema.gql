@@ -58,6 +58,7 @@ type VehicleSubscriptionPrices {
   month: Int
   week: Int
   day: Int
+  fortnigth: Int
 }
 
 type Query {

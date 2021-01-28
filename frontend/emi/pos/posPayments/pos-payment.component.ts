@@ -58,7 +58,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   selectedWallet = null;
 
   walletFilterCtrl = new FormControl();
-
+  //OPTIONS ===> 'WEEK', 'DAY', 'MONTH', 'FORTNIGTH'
   packOptions = ['WEEK', 'DAY']; 
 
   walletQueryFiltered$: Observable<any[]>; // Wallet autocomplete supplier
@@ -344,6 +344,19 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   listenbusinessChanges() {
     this.toolbarService.onSelectedBusiness$
       .pipe(
+        tap(bu => { 
+          if (bu && bu.attributes && bu.attributes.length > 0) { 
+            const availableSalesOptions = bu.attributes.find(attr => attr.key === "availableSalesOptions");
+            if (availableSalesOptions) {
+              this.packOptions = availableSalesOptions.value.split(",")
+            }
+            else { 
+              this.packOptions = ['WEEK', 'DAY', 'MONTH', 'FORTNIGTH']; 
+            }
+
+          }
+          
+        }),
         map(bu => (bu && bu.id) ? bu.id : undefined),
         tap(bu => this.selectedBusinessId = bu),
         mergeMap(bu => bu

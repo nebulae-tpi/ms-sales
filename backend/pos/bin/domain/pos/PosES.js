@@ -9,7 +9,7 @@ const eventSourcing = require("../../tools/EventSourcing")();
 const uuidv4 = require("uuid/v4");
 const TransactionsDA = require("./data-access/TransactionsDA");
 const Crosscutting = require("../../tools/Crosscutting");
-const PRODUCT_DAYS_PACK_MAPPER = { WEEK: 7, DAY: 1 };
+const PRODUCT_DAYS_PACK_MAPPER = { WEEK: 7, DAY: 1, MONTH: 30, FORTNIGTH: 15 };
 const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) || { 
   // TX-PLUS-CALI
   "75cafa6d-0f27-44be-aa27-c2c82807742d": {day: "2000", week: "12000", month: "40000"},
@@ -18,7 +18,9 @@ const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) ||
   // NEBULAE
   "bf2807e4-e97f-43eb-b15d-09c2aff8b2ab": {day: "2000", week: "12000", month: "40000"},
   // nebulae-development
-  "4ab03a09-9e34-40fe-9102-25cc6b5b2176": {day: "2000", week: "12000", month: "40000"}
+  "4ab03a09-9e34-40fe-9102-25cc6b5b2176": { day: "2000", week: "12000", month: "40000" },
+  // TU-TAXI
+  "165e291d-5135-4674-aa25-a157933b2784": { day: "1500", week: "10500", month: "45000", fortnigth: "25000" }
   }
 /**
  * Singleton instance

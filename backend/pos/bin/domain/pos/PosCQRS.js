@@ -63,6 +63,7 @@ class PosCQRS {
   }
 
   salesPosReloadBalance$({ args }, authToken) {
+    //console.log("ENTRA RECARGA ===> ", args)
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles,
       "Sales",
@@ -250,7 +251,7 @@ class PosCQRS {
         }, {});
       }),
       mergeMap(rawResponse => GraphqlResponseTools.buildSuccessResponse$(rawResponse)),
-      catchError(err => GraphqlResponseTools.handleError$(err))
+      //catchError(err => GraphqlResponseTools.handleError$(err))
     );
   }
 
