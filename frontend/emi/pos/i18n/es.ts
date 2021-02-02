@@ -53,7 +53,8 @@ export const locale = {
       19003: "Saldo Insuficiente",
       19004: 'El Vehículo no Existe en el Sistema',
       19005: 'El Vehículo no Está Activo',
-      19006: 'El Vehículo no Existe en el Sistema'
+      19006: 'El Vehículo no Existe en el Sistema',
+      19010: 'Se ha encontrado una anomalia en la transacción, por favor verficar que se haya realizado correctamente'
     },
     SUCCESS:{
       1: 'Recarga Exitosa',

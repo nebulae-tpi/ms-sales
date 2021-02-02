@@ -54,5 +54,6 @@ class CustomError extends Error {
     VEHICLE_FROM_OTHER_BU : {code: 19006, description: 'Vehicle is OF other BU'},
     BUSINESS_HAVE_NOT_PRICES_CONF : { code: 19007, description: 'Prices configuration no found'},
     BUSINESS_ID_MISSING_ON_TOKEN: { code: 19008, description: 'Business ID missing on token' },
-    DRIVER_ID_MISSING_ON_TOKEN: { code: 19009, description: 'Driver ID missing on token'}
+    DRIVER_ID_MISSING_ON_TOKEN: { code: 19009, description: 'Driver ID missing on token' },
+    TRANSACTION_DUPLICATED: { code: 19010, description: 'Transaction duplicated'},
   } 

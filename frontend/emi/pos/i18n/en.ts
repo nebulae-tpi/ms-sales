@@ -55,6 +55,7 @@ export const locale = {
       19004: 'Vehicle doesn\'t Exist in System',
       19005: 'Vehicle doesn\'t active',
       19006: 'Vehicle doesn\'t Exist in System',
+      19010: 'Se ha encontrado una anomalia en la transacción, por favor verficar que se haya realizado correctamente'
     },
     SUCCESS:{
       1: 'Balance Reload Successful',

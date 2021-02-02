@@ -25,7 +25,8 @@ const {
   BUSINESS_ID_MISSING_ON_TOKEN,
   DRIVER_ID_MISSING_ON_TOKEN,
   VEHICLE_IS_INACTIVE,
-  VEHICLE_FROM_OTHER_BU
+  VEHICLE_FROM_OTHER_BU,
+  TRANSACTION_DUPLICATED
 } = require("../../tools/customError");
 const Crosscutting = require("../../tools/Crosscutting");
 const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) || { 
@@ -43,6 +44,9 @@ const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) ||
  * Singleton instance
  */
 let instance;
+
+const posTransactionsHistory = [];
+const TRANSACTION_THRESHOLD = 10000; 
 
 class PosCQRS {
   constructor() {
@@ -105,7 +109,7 @@ class PosCQRS {
 
   salesPosPayVehicleSubscription$({ args }, authToken){
     // console.log("salesPosPayVehicleSubscription$", args);
-    const { businessId, pack, qty } = args;
+    const { businessId, pack, qty, walletId } = args;
 
     return RoleValidator.checkPermissions$(
       authToken.realm_access.roles,
@@ -127,6 +131,25 @@ class PosCQRS {
             return this.createCustomError$(BUSINESS_HAVE_NOT_PRICES_CONF, "PricesConfigurationNoFound");
           }
           return of(roles);
+      }),
+      mergeMap(() => { 
+        const cacheTransactionIndex = posTransactionsHistory.findIndex(p => p.businessId === businessId && p.pack === pack && p.walletId === walletId)
+        if (cacheTransactionIndex !== -1 && (posTransactionsHistory[cacheTransactionIndex].timestamp + TRANSACTION_THRESHOLD) > Date.now()) {
+          return this.createCustomError$(TRANSACTION_DUPLICATED, "TransactionDuplicated");
+        } else { 
+          return of({}).pipe(
+            tap(() => { 
+              if (cacheTransactionIndex !== -1) {
+                posTransactionsHistory.splice(cacheTransactionIndex, 1);
+              }
+              posTransactionsHistory.unshift({businessId, pack, walletId, timestamp: Date.now()})
+
+              if (posTransactionsHistory.length > 50) { 
+                posTransactionsHistory.slice(0, 51);
+              }
+            })
+          )
+        }
       }),
       mergeMap(() => PosDA.getWalletById$(args.walletId)),
       // VALIDATIONS
@@ -193,6 +216,25 @@ class PosCQRS {
           return this.createCustomError$(BUSINESS_HAVE_NOT_PRICES_CONF, "PricesConfigurationNoFound");
         }
         return of({});
+      }),
+      mergeMap(() => { 
+        const cacheTransactionIndex = posTransactionsHistory.findIndex(p => p.businessId === driverBusinessId && p.pack === pack && p.walletId === driverWalletId)
+        if (cacheTransactionIndex !== -1 && (posTransactionsHistory[cacheTransactionIndex].timestamp + TRANSACTION_THRESHOLD) > Date.now()) {
+          return this.createCustomError$(TRANSACTION_DUPLICATED, "TransactionDuplicated");
+        } else { 
+          return of({}).pipe(
+            tap(() => { 
+              if (cacheTransactionIndex !== -1) {
+                posTransactionsHistory.splice(cacheTransactionIndex, 1);
+              }
+              posTransactionsHistory.unshift({businessId: driverBusinessId, pack, walletId: driverWalletId, timestamp: Date.now()})
+
+              if (posTransactionsHistory.length > 50) { 
+                posTransactionsHistory.slice(0, 51);
+              }
+            })
+          )
+        }
       }),
       mergeMap(() => PosDA.getWalletById$(driverWalletId)),
       // VALIDATIONS

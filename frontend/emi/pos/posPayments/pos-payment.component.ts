@@ -233,7 +233,8 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
         }
         return buId;
       }),
-      mergeMap((buId) => this.posService.payVehicleSubscription$(this.selectedWallet._id, buId, args.plate.toUpperCase() , args.pack, args.qty)),
+      mergeMap((buId) => this.posService.payVehicleSubscription$(this.selectedWallet._id, buId, args.plate.toUpperCase(), args.pack, args.qty)),
+      tap(() => this.paymentBtnDisabled = false),
       mergeMap(resp => this.graphQlAlarmsErrorHandler$(resp)),
       filter(r => (r && r.data && r.data.SalesPosPayVehicleSubscription)),
       mergeMap(r => {
@@ -247,10 +248,12 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
         });
         return of({});
       }),
-      tap(() => this.paymentBtnDisabled = false),
       takeUntil(this.ngUnsubscribe),
     )
-    .subscribe();
+      .subscribe(() => { },
+        error => { this.paymentBtnDisabled = false},
+        ()=> {}
+      );
 
   }
 
