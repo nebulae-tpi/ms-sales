@@ -157,7 +157,7 @@ class PosCQRS {
         const amount = parseInt( VehicleSubscriptionPrices[businessId][pack.toLowerCase()] * qty);
         return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < amount ))
           ? this.createCustomError$(INSUFFICIENT_BALANCE, 'salesPosPayVehicleSubscription')
-          : forkJoin(VehicleDA.findByLicensePlate$(args.plate), of(wallet))
+          : forkJoin([VehicleDA.findByLicensePlate$(args.plate), of(wallet)])
       }),
       mergeMap(([v, w]) =>  {
         // console.log("WALLET", w, "VEHICLE", v);
@@ -169,15 +169,15 @@ class PosCQRS {
           return this.createCustomError$(VEHICLE_FROM_OTHER_BU, "salesPosVehicleExist")
         }
         else{
-          return of({})
+          return of(v)
         }
       }),
-      mergeMap(() => eventSourcing.eventStore.emitEvent$(
+      mergeMap(vehicle => eventSourcing.eventStore.emitEvent$(
         new Event({
           eventType: "SaleVehicleSubscriptionCommited",
           eventTypeVersion: 1,
           aggregateType: "Sale",
-          aggregateId: uuidv4(),
+          aggregateId: vehicle._id,
           data: args,
           user: authToken.preferred_username
         })
@@ -254,15 +254,15 @@ class PosCQRS {
           return this.createCustomError$(VEHICLE_FROM_OTHER_BU, "salesPosVehicleExist")
         }
         else{
-          return of({})
+          return of(v)
         }
       }),
-      mergeMap(() => eventSourcing.eventStore.emitEvent$(
+      mergeMap(vehicle => eventSourcing.eventStore.emitEvent$(
         new Event({
           eventType: "SaleVehicleSubscriptionCommited",
           eventTypeVersion: 1,
           aggregateType: "Sale",
-          aggregateId: uuidv4(),
+          aggregateId: vehicle._id,
           data: {
             pack, qty, plate,
             walletId: driverWalletId, 

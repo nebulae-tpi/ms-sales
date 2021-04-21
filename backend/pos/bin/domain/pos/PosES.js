@@ -43,7 +43,7 @@ class PosES {
         new Event({
           eventType: "WalletTransactionCommited",
           eventTypeVersion: 1,
-          aggregateType: "Wallet",
+          aggregateType: "WalletTransaction",
           aggregateId: uuidv4(),
           data: evtData,
           user: user
@@ -69,7 +69,7 @@ class PosES {
           new Event({
             eventType: "WalletTransactionCommited",
             eventTypeVersion: 1,
-            aggregateType: "Wallet",
+            aggregateType: "WalletTransaction",
             aggregateId: uuidv4(),
             data: tx, user: user
           })
@@ -79,7 +79,7 @@ class PosES {
             eventType: "VehicleSubscriptionPaid",
             eventTypeVersion: 2,
             aggregateType: "Vehicle",
-            aggregateId: uuidv4(),
+            aggregateId: aid,
             data: {
               licensePlate: plate, packProduct: pack,
               quantity: qty, amount,
@@ -108,7 +108,7 @@ class PosES {
         new Event({
           eventType: "WalletTransactionCommited",
           eventTypeVersion: 1,
-          aggregateType: "Wallet",
+          aggregateType: "WalletTransaction",
           aggregateId: uuidv4(),
           data: tx, user
         })
