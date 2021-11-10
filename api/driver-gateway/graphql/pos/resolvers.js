@@ -54,7 +54,8 @@ module.exports = {
         .toPromise();
     }
   },
-  Mutation:{
+  Mutation:{ 
+    
     SalesPosPayVehicleSubscription(root, args, context) {
       return RoleValidator.checkPermissions$(
           context.authToken.realm_access.roles, 'ms-Sales', 'SalesPosPayVehicleSubscription',
