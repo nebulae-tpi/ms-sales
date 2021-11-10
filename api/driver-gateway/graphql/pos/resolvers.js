@@ -64,7 +64,7 @@ module.exports = {
                     "Pos",
                     "drivergateway.graphql.mutation.salesPosPayVehicleSubscription",
                     { root, args, jwt: context.encodedToken },
-                    2000
+                    10000
                 )
             ),
             catchError(err => handleError$(err, "SalesPosPayVehicleSubscription_DriverApp")),
