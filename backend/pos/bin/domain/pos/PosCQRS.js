@@ -287,6 +287,7 @@ class PosCQRS {
     ).pipe(
       mergeMap(() => of(VehicleSubscriptionPrices[businessId])),
       map(prices => {
+        prices = prices || {day: "2000", week: "12000", fortnigth: "20000", month: "40000"};
         return Object.keys(prices).reduce((acc, key) => {
           acc[key] = parseInt(prices[key]);
           return acc;
