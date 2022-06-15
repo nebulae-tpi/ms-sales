@@ -177,7 +177,7 @@ class PosCQRS {
           eventType: "SaleVehicleSubscriptionCommited",
           eventTypeVersion: 1,
           aggregateType: "Sale",
-          aggregateId: uuidv4(),
+          aggregateId: walletId,
           data: args,
           user: authToken.preferred_username
         })
@@ -262,7 +262,7 @@ class PosCQRS {
           eventType: "SaleVehicleSubscriptionCommited",
           eventTypeVersion: 1,
           aggregateType: "Sale",
-          aggregateId: uuidv4(),
+          aggregateId: driverWalletId,
           data: {
             pack, qty, plate,
             walletId: driverWalletId, 
