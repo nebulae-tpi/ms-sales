@@ -59,7 +59,7 @@ class PosES {
     const { businessId, pack, qty, walletId, plate } = data;
     const amount = parseInt(VehicleSubscriptionPrices[businessId][pack.toLowerCase()]) * qty;
     const cacheTransactionIndex = posTransactionsHistoryList.findIndex(p => p.businessId === businessId && p.pack === pack && p.walletId === walletId);
-    if(businessId === "bf2807e4-e97f-43eb-b15d-09c2aff8b2ab"){
+    // if(businessId === "bf2807e4-e97f-43eb-b15d-09c2aff8b2ab"){
       if (cacheTransactionIndex !== -1 && (posTransactionsHistoryList[cacheTransactionIndex].timestamp + TRANSACTION_THRESHOLD) > Date.now()) {
         return of({}).pipe(
           tap(() => {
@@ -114,45 +114,45 @@ class PosES {
           ))
         )
       }
-    }else {
-      return of({}).pipe(
-        map(() => ({
-          _id: Crosscutting.generateHistoricalUuid(),
-          type: 'PURCHASE', concept: 'VEHICLE_SUBSCRIPTION',      
-          businessId, amount,
-          fromId: walletId,
-          toId: businessId
-        })),
-        // to to something before send Other event 
-        mergeMap((tx) => forkJoin(
-          eventSourcing.eventStore.emitEvent$(
-            new Event({
-              eventType: "WalletTransactionCommited",
-              eventTypeVersion: 1,
-              aggregateType: "Wallet",
-              aggregateId: uuidv4(),
-              data: tx, user: user
-            })
-          ),
-          eventSourcing.eventStore.emitEvent$(
-            new Event({
-              eventType: "VehicleSubscriptionPaid",
-              eventTypeVersion: 2,
-              aggregateType: "Vehicle",
-              aggregateId: uuidv4(),
-              data: {
-                licensePlate: plate, packProduct: pack,
-                quantity: qty, amount,
-                businessId: businessId,
-                daysPaid: PRODUCT_DAYS_PACK_MAPPER[pack] * qty
-              },
-              user: user
-            })
-          ),
+    // }else {
+    //   return of({}).pipe(
+    //     map(() => ({
+    //       _id: Crosscutting.generateHistoricalUuid(),
+    //       type: 'PURCHASE', concept: 'VEHICLE_SUBSCRIPTION',      
+    //       businessId, amount,
+    //       fromId: walletId,
+    //       toId: businessId
+    //     })),
+    //     // to to something before send Other event 
+    //     mergeMap((tx) => forkJoin(
+    //       eventSourcing.eventStore.emitEvent$(
+    //         new Event({
+    //           eventType: "WalletTransactionCommited",
+    //           eventTypeVersion: 1,
+    //           aggregateType: "Wallet",
+    //           aggregateId: uuidv4(),
+    //           data: tx, user: user
+    //         })
+    //       ),
+    //       eventSourcing.eventStore.emitEvent$(
+    //         new Event({
+    //           eventType: "VehicleSubscriptionPaid",
+    //           eventTypeVersion: 2,
+    //           aggregateType: "Vehicle",
+    //           aggregateId: uuidv4(),
+    //           data: {
+    //             licensePlate: plate, packProduct: pack,
+    //             quantity: qty, amount,
+    //             businessId: businessId,
+    //             daysPaid: PRODUCT_DAYS_PACK_MAPPER[pack] * qty
+    //           },
+    //           user: user
+    //         })
+    //       ),
   
-        )),
-      );
-    }
+    //     )),
+    //   );
+    // }
   }
 
   handleSalesPosWithdrawalCommitted$({aid, data, user}){
