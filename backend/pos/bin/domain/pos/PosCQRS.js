@@ -45,7 +45,7 @@ const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) ||
  */
 let instance;
 
-const posTransactionsHistory = [];
+const posTransactionsHistoryList = [];
 const TRANSACTION_THRESHOLD = 10000; 
 
 class PosCQRS {
@@ -133,19 +133,19 @@ class PosCQRS {
           return of(roles);
       }),
       mergeMap(() => { 
-        const cacheTransactionIndex = posTransactionsHistory.findIndex(p => p.businessId === businessId && p.pack === pack && p.walletId === walletId)
-        if (cacheTransactionIndex !== -1 && (posTransactionsHistory[cacheTransactionIndex].timestamp + TRANSACTION_THRESHOLD) > Date.now()) {
+        const cacheTransactionIndex = posTransactionsHistoryList.findIndex(p => p.businessId === businessId && p.pack === pack && p.walletId === walletId)
+        if (cacheTransactionIndex !== -1 && (posTransactionsHistoryList[cacheTransactionIndex].timestamp + TRANSACTION_THRESHOLD) > Date.now()) {
           return this.createCustomError$(TRANSACTION_DUPLICATED, "TransactionDuplicated");
         } else { 
           return of({}).pipe(
             tap(() => { 
               if (cacheTransactionIndex !== -1) {
-                posTransactionsHistory.splice(cacheTransactionIndex, 1);
+                posTransactionsHistoryList.splice(cacheTransactionIndex, 1);
               }
-              posTransactionsHistory.unshift({businessId, pack, walletId, timestamp: Date.now()})
+              posTransactionsHistoryList.unshift({businessId, pack, walletId, timestamp: Date.now()})
 
-              if (posTransactionsHistory.length > 50) { 
-                posTransactionsHistory.slice(0, 51);
+              if (posTransactionsHistoryList.length > 50) { 
+                posTransactionsHistoryList.slice(0, 51);
               }
             })
           )
@@ -218,19 +218,18 @@ class PosCQRS {
         return of({});
       }),
       mergeMap(() => { 
-        const cacheTransactionIndex = posTransactionsHistory.findIndex(p => p.businessId === driverBusinessId && p.pack === pack && p.walletId === driverWalletId)
-        if (cacheTransactionIndex !== -1 && (posTransactionsHistory[cacheTransactionIndex].timestamp + TRANSACTION_THRESHOLD) > Date.now()) {
-          return this.createCustomError$(TRANSACTION_DUPLICATED, "TransactionDuplicated");
+        const cacheTransactionIndex = posTransactionsHistoryList.findIndex(p => p.businessId === driverBusinessId && p.pack === pack && p.walletId === driverWalletId)
+        if (cacheTransactionIndex !== -1 && (posTransactionsHistoryList[cacheTransactionIndex].timestamp + TRANSACTION_THRESHOLD) > Date.now()) {
+          return this.createCustomError$(TRANSACTION_DUPLICATED, "TransactionDuplicated"); 
         } else { 
           return of({}).pipe(
             tap(() => { 
               if (cacheTransactionIndex !== -1) {
-                posTransactionsHistory.splice(cacheTransactionIndex, 1);
+                posTransactionsHistoryList.splice(cacheTransactionIndex, 1);
               }
-              posTransactionsHistory.unshift({businessId: driverBusinessId, pack, walletId: driverWalletId, timestamp: Date.now()})
-
-              if (posTransactionsHistory.length > 50) { 
-                posTransactionsHistory.slice(0, 51);
+              posTransactionsHistoryList.unshift({businessId: driverBusinessId, pack, walletId: driverWalletId, timestamp: Date.now()})
+              if (posTransactionsHistoryList.length > 50) { 
+                posTransactionsHistoryList.slice(0, 51);
               }
             })
           )
