@@ -239,16 +239,9 @@ class PosCQRS {
       // VALIDATIONS
       mergeMap(wallet => {
         const amount = parseInt( VehicleSubscriptionPrices[driverBusinessId][pack.toLowerCase()] * qty);
-        if((wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < amount ))){
-          if(wallet._id === "e59194bb-b1e9-47ac-bebb-6e1f73c732fc"){
-            console.log("ERROR: wallet.pockets.main ====> ", {main: wallet.pockets.main, amount})
-          }
+        if((wallet && wallet.pockets && wallet.pockets.main != null && (wallet.pockets.main < amount ))){
           return this.createCustomError$(INSUFFICIENT_BALANCE, 'salesPosPayVehicleSubscription');
         }else {
-          if(wallet._id === "e59194bb-b1e9-47ac-bebb-6e1f73c732fc"){
-            console.log("wallet.pockets.main ====> ", {main: wallet.pockets.main, amount})
-            console.log("RES ===> ", (wallet.pockets.main < amount ))
-          }
           return forkJoin([VehicleDA.findByLicensePlate$(plate), of(wallet)])
         }
       }),
