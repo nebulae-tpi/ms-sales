@@ -41,7 +41,7 @@ const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) ||
   // free driver
   "2af56175-227e-40e7-97ab-84e8fa9e12ce": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"}
   }
-
+ 
 /**
  * Singleton instance
  */
