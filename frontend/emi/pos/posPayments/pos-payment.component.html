@@ -79,12 +79,15 @@
           <div fxFlex="100" fxLayout="row wrap">
             <!-- RELOAD -->
             <mat-card class="m-8" fxFlex="100" fxFlex.gt-sm="48" name="chargebalanceForm" [formGroup]="chargebalanceForm" fxLayout="column">
-              <span class="mat-headline">{{'POS.REALOAD_TITLE' | translate}}</span>
+              <span class="mat-headline">{{'POS.REALOAD_TITLE' | translate}}.</span>
               <mat-card-content>
                 <mat-form-field fxLayout="column" class="p-8">
                   <input matInput name="chargeValue" formControlName="chargeValue" maxlength="9" min="1"
                     placeholder="{{'POS.CHARGE_BALANCE.AMOUNT' | translate}}" currencyMask
                     [options]="{ prefix: '$ ', thousands: ',', precision: '0' }">
+                  <mat-error *ngIf="chargebalanceForm.hasError('min', ['chargeValue'])">
+                    {{minRechargeValue > 0 ? "*Solo se permiten recargas que superen "+(minRechargeValue | currency) : ""}}
+                    </mat-error>
                   <mat-error *ngIf="chargebalanceForm.hasError('required', ['chargeValue'])">
                     {{'POS.CHARGE_BALANCE.AMOUNT_REQUIRED' | translate}}
                   </mat-error>

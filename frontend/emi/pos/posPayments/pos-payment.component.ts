@@ -60,6 +60,7 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
   walletFilterCtrl = new FormControl();
   //OPTIONS ===> 'WEEK', 'DAY', 'MONTH', 'FORTNIGTH'
   packOptions = ['WEEK', 'DAY']; 
+  minRechargeValue = 0; 
 
   walletQueryFiltered$: Observable<any[]>; // Wallet autocomplete supplier
   selectedBusinessId: any;
@@ -350,8 +351,12 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
         tap(bu => { 
           if (bu && bu.attributes && bu.attributes.length > 0) { 
             const availableSalesOptions = bu.attributes.find(attr => attr.key === "availableSalesOptions");
+            this.minRechargeValue = parseInt(((bu.attributes.find(attr => attr.key === "minRechargeValue") || {} as any).value as any) || "0");
+            this.chargebalanceForm.controls['chargeValue'].setValidators([Validators.required, Validators.min(this.minRechargeValue)]);              
+
             if (availableSalesOptions) {
               this.packOptions = availableSalesOptions.value.split(",")
+              
               this.productPaymentForm = new FormGroup({
                 plate: new FormControl('', [Validators.required]),
                 pack: new FormControl(this.packOptions[0]),
