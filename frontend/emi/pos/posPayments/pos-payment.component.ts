@@ -344,10 +344,10 @@ export class PosPaymentComponent implements OnInit, OnDestroy {
       );
     });
   }
-
+ 
   listenbusinessChanges() {
     this.toolbarService.onSelectedBusiness$
-      .pipe(
+      .pipe( 
         tap(bu => { 
           if (bu && bu.attributes && bu.attributes.length > 0) { 
             const availableSalesOptions = bu.attributes.find(attr => attr.key === "availableSalesOptions");
