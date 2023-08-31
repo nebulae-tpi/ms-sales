@@ -39,7 +39,7 @@ const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) ||
   // nebulae-development
   "4ab03a09-9e34-40fe-9102-25cc6b5b2176": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"},
   // free driver
-  "2af56175-227e-40e7-97ab-84e8fa9e12ce": {day: "0", week: "0", fortnigth: "0", month: "0"}
+  "2af56175-227e-40e7-97ab-84e8fa9e12ce": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"}
   } 
    
 /**
