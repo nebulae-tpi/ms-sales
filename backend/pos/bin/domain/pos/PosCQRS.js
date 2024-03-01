@@ -31,15 +31,15 @@ const {
 const Crosscutting = require("../../tools/Crosscutting");
 const VehicleSubscriptionPrices = JSON.parse(process.env.VEHICLE_SUBS_PRICES) || { 
   // TX-PLUS-CALI
-  "75cafa6d-0f27-44be-aa27-c2c82807742d": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"},
+  "75cafa6d-0f27-44be-aa27-c2c82807742d": {day: "2200", week: "13200", fortnigth: "22000", month: "53000"},
   // TX-PLUS-MANIZALES
-  "b19c067e-57b4-468f-b970-d0101a31cacb": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"},
+  "b19c067e-57b4-468f-b970-d0101a31cacb": {day: "2200", week: "13200", fortnigth: "20000", month: "53000"},
   // NEBULAE
-  "bf2807e4-e97f-43eb-b15d-09c2aff8b2ab": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"},
+  "bf2807e4-e97f-43eb-b15d-09c2aff8b2ab": {day: "2200", week: "13200", fortnigth: "20000", month: "53000"},
   // nebulae-development
-  "4ab03a09-9e34-40fe-9102-25cc6b5b2176": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"},
+  "4ab03a09-9e34-40fe-9102-25cc6b5b2176": {day: "2200", week: "13200", fortnigth: "20000", month: "53000"},
   // free driver
-  "2af56175-227e-40e7-97ab-84e8fa9e12ce": {day: "2000", week: "12000", fortnigth: "20000", month: "40000"}
+  "2af56175-227e-40e7-97ab-84e8fa9e12ce": {day: "2200", week: "13200", fortnigth: "20000", month: "53000"}
   } 
    
 /**
@@ -290,7 +290,7 @@ class PosCQRS {
     ).pipe(
       mergeMap(() => of(VehicleSubscriptionPrices[businessId])),
       map(prices => {
-        prices = prices || {day: "2000", week: "12000", fortnigth: "20000", month: "40000"};
+        prices = prices || {day: "2200", week: "13200", fortnigth: "22000", month: "53000"};
         return Object.keys(prices).reduce((acc, key) => {
           acc[key] = parseInt(prices[key]);
           return acc;
