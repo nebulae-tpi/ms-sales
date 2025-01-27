@@ -79,7 +79,8 @@ class PosES {
           }),
           map(() => ({
             _id: Crosscutting.generateHistoricalUuid(),
-            type: 'PURCHASE', concept: 'VEHICLE_SUBSCRIPTION',      
+            type: 'PURCHASE', concept: 'VEHICLE_SUBSCRIPTION',
+            plate,
             businessId, amount,
             fromId: walletId,
             toId: businessId
