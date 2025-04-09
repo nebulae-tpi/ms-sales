@@ -110,7 +110,7 @@ class PosCQRS {
   }
 
   salesPosPayVehicleSubscription$({ args }, authToken){
-    // console.log("salesPosPayVehicleSubscription$", args);
+    //console.log("salesPosPayVehicleSubscription$", args);
     const { businessId, pack, qty, walletId } = args;
 
     return RoleValidator.checkPermissions$(
@@ -157,7 +157,7 @@ class PosCQRS {
       // VALIDATIONS
       mergeMap(wallet => {
         const amount = parseInt( VehicleSubscriptionPrices[businessId][pack.toLowerCase()] * qty);
-        return (wallet && wallet.pockets && wallet.pockets.main && (wallet.pockets.main < amount ))
+        return (((wallet || {}).pockets || {}).main < amount )
           ? this.createCustomError$(INSUFFICIENT_BALANCE, 'salesPosPayVehicleSubscription')
           : forkJoin(VehicleDA.findByLicensePlate$(args.plate), of(wallet))
       }),
